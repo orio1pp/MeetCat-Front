@@ -1,4 +1,4 @@
-package com.pes.meetcatui.common.composables
+package com.pes.meetcatui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

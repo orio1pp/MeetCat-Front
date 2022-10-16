@@ -10,6 +10,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,9 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import com.pes.meetcatui.R
-import com.pes.meetcatui.common.composables.BackButton
-import com.pes.meetcatui.common.composables.SpaceDp
+import com.pes.meetcatui.composables.BackButton
+import com.pes.meetcatui.composables.SpaceDp
+import okhttp3.internal.wait
+import org.koin.androidx.compose.getViewModel
 
+const val EventScreenDestination = "Event"
 @Composable
 fun EventDate(startDate: String = "[ ]", endDate: String = "[ ]") {
     Text(
@@ -72,7 +77,7 @@ fun EventDetailsLinkItem(name: String, url: String) {
 }
 
 @Composable
-fun EventDetails() {
+fun EventDetails(eventDescription: String) {
     EventDetailsItem(stringResource(R.string.location), "C. Jordi Girona, 12")
     SpaceDp(12)
     val strStartTime = "8:00"
@@ -80,48 +85,64 @@ fun EventDetails() {
     val strTimeInfo = "De $strStartTime a $strEndTime"
     EventDetailsItem(stringResource(R.string.time), strTimeInfo)
     SpaceDp(12)
-    EventDetailsItem(stringResource(R.string.description), "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in imperdiet dui, ut viverra ante. Morbi in eros tincidunt, convallis lorem in, commodo mauris. In ultricies turpis vel suscipit suscipit. Vestibulum a lectus nisl. Quisque viverra dolor eu nunc elementum consequat. Phasellus sed tempus velit. Vivamus et viverra enim. Proin tempus odio nec quam elementum, vel rutrum felis volutpat. Aenean dapibus consectetur luctus. Duis lacinia sem quis est venenatis, at mollis felis scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in imperdiet dui, ut viverra ante. Morbi in eros tincidunt, convallis lorem in, commodo mauris. In ultricies turpis vel suscipit suscipit. Vestibulum a lectus nisl. Quisque viverra dolor eu nunc elementum consequat. Phasellus sed tempus velit. Vivamus et viverra enim. Proin tempus odio nec quam elementum, vel rutrum felis volutpat. Aenean dapibus consectetur luctus. Duis lacinia sem quis est venenatis, at mollis felis scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in imperdiet dui, ut viverra ante. Morbi in eros tincidunt, convallis lorem in, commodo mauris. In ultricies turpis vel suscipit suscipit. Vestibulum a lectus nisl. Quisque viverra dolor eu nunc elementum consequat. Phasellus sed tempus velit. Vivamus et viverra enim. Proin tempus odio nec quam elementum, vel rutrum felis volutpat. Aenean dapibus consectetur luctus. Duis lacinia sem quis est venenatis, at mollis felis scelerisque.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in imperdiet dui, ut viverra ante. Morbi in eros tincidunt, convallis lorem in, commodo mauris. In ultricies turpis vel suscipit suscipit. Vestibulum a lectus nisl. Quisque viverra dolor eu nunc elementum consequat. Phasellus sed tempus velit. Vivamus et viverra enim. Proin tempus odio nec quam elementum, vel rutrum felis volutpat. Aenean dapibus consectetur luctus. Duis lacinia sem quis est venenatis, at mollis felis scelerisque.")
+    EventDetailsItem(stringResource(R.string.description), eventDescription)
     SpaceDp(12)
     EventDetailsLinkItem(stringResource(R.string.link), "https://www.youtube.com/watch?v=Hvtc9BWahMQ")
 }
 
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    MeetCatUITheme {
-        BackButton()
-        Column (
+fun EventDetailsContent(
+    eventName: String,
+    eventDescription: String,
+    eventDate: String
+) {
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = eventName,
+                style = MaterialTheme.typography.h2
+            )
+            Text(
+                text = "A party",
+                style = MaterialTheme.typography.h3
+            )
+            EventDate(startDate = eventDate)
+        }
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "MeetCat's Release Party",
-                    style = MaterialTheme.typography.h2
-                )
-                Text(
-                    text = "A party",
-                    style = MaterialTheme.typography.h3
-                )
-                EventDate(startDate = "13/10/2022")
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
-            ) {
-                SpaceDp()
-                EventDetails()
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                SpaceDp()
-                Button(onClick = {}) {
-                    Text("Join placeholder")
-                }
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.Start
+        ) {
+            SpaceDp()
+            EventDetails(eventDescription)
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            SpaceDp()
+            Button(onClick = {}) {
+                Text("Join placeholder")
             }
         }
+    }
+}
+
+@Composable
+fun EventScreen(
+    viewModel: EventViewModel,
+) {
+    val event by viewModel.event.collectAsState()
+
+    MeetCatUITheme {
+        BackButton()
+        EventDetailsContent(
+            eventName = event?.name ?: "MeetCat Release Party",
+            eventDescription = event?.description ?: "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\n",
+            eventDate = event?.date ?: "03/11/2999",
+        )
     }
 }

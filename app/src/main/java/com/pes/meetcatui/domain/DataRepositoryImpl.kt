@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 class DataRepositoryImpl (
     appScope: CoroutineScope,
@@ -18,7 +17,7 @@ class DataRepositoryImpl (
     }
 
     override fun getEvent(eventId: Int): Flow<Event> = flow {
-        emit(buildEvent(getEventDetails(eventId)!!))
+        emit(buildEvent(getEventDetails(eventId)))
     }
 
     private suspend fun getEventDetails(eventId: Int) = try {

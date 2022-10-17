@@ -1,4 +1,4 @@
-package com.pes.meetcatui.composables
+package com.pes.meetcatui.common
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding

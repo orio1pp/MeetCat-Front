@@ -3,15 +3,14 @@ package com.pes.meetcatui.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.pes.meetcatui.BuildConfig
 import com.pes.meetcatui.network.MeetCatApi
-import retrofit2.Retrofit
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
+import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-
 
 private val json = Json {
     ignoreUnknownKeys = true
@@ -54,5 +53,5 @@ val networkModule = module {
     }
 }
 
-private const val BASE_URL = "http://192.168.0.17:8080/esdeveniments/"
+private const val BASE_URL = "http://10.192.60.42:8080/esdeveniments/"
 private const val REQUEST_TIME_OUT = 30L

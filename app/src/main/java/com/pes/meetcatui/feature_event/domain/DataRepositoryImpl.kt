@@ -1,4 +1,4 @@
-package com.pes.meetcatui.domain
+package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.MeetCatApi

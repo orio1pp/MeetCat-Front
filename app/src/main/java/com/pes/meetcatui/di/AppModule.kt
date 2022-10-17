@@ -1,6 +1,6 @@
 package com.pes.meetcatui.di
 
-import com.pes.meetcatui.event.EventViewModel
+import com.pes.meetcatui.feature_event.presentation.EventViewModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
 import org.koin.dsl.module

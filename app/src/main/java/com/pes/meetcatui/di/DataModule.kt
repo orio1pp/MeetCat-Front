@@ -1,10 +1,7 @@
 package com.pes.meetcatui.di
 
-import android.content.Context
-
-import com.pes.meetcatui.domain.DataRepository
-import com.pes.meetcatui.domain.DataRepositoryImpl
-import org.koin.android.ext.koin.androidApplication
+import com.pes.meetcatui.feature_event.domain.DataRepository
+import com.pes.meetcatui.feature_event.domain.DataRepositoryImpl
 import org.koin.dsl.module
 
 val dataModule = module {

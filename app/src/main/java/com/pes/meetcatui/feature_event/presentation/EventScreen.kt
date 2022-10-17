@@ -1,4 +1,4 @@
-package com.pes.meetcatui.event
+package com.pes.meetcatui.feature_event.presentation
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent

@@ -8,13 +8,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.pes.meetcatui.event.EventScreen
+import com.pes.meetcatui.feature_event.presentation.EventScreen
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.pes.meetcatui.event.EventScreenDestination
+import com.pes.meetcatui.feature_event.presentation.EventScreenDestination
 
 
 class MainActivity : ComponentActivity() {

@@ -1,0 +1,9 @@
+package com.pes.meetcatui.network
+
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+interface MeetCatApi {
+    @GET("{eventId}")
+    suspend fun getEventData(@Path("eventId") eventId: Int): EventDetailsData
+}

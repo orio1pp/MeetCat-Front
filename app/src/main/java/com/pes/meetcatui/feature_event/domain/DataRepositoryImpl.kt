@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
 
 class DataRepositoryImpl (
     appScope: CoroutineScope,
@@ -30,10 +31,14 @@ class DataRepositoryImpl (
         eventData: EventDetailsData,
     ) = Event(
         eventId = eventData.eventId,
-        name = eventData.eventName,
-        description = eventData.eventDescription,
-        date = eventData.date,
+        name = eventData.name,
+        subtitle = eventData.subtitle,
+        description = eventData.description,
+        startDate = eventData.startDate,
+        endDate = eventData.endDate,
+        locationName = eventData.locationName,
+        address = eventData.address,
+        link = eventData.link
     )
 }
-
 

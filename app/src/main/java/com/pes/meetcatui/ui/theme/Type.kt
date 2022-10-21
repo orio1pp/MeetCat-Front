@@ -2,6 +2,7 @@ package com.pes.meetcatui.ui.theme
 
 
 import androidx.compose.material.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -42,12 +43,12 @@ val typo = Typography(
 
     h4 = TextStyle(
         fontWeight = FontWeight.Normal,
-        fontSize = 20.sp
+        fontSize = 20.sp,
     ),
 
     body1 = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp
+        fontSize = 16.sp,
     ),
 
     body2 = TextStyle(

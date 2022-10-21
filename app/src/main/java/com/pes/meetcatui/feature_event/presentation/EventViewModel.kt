@@ -10,6 +10,6 @@ class EventViewModel(
     dataRepository: DataRepository,
 ) : ViewModel() {
     val event = dataRepository
-        .getEvent(4)
+        .getEvent(5)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 }

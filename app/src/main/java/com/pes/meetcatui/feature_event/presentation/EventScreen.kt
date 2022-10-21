@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,20 +19,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.SpaceDp
+import com.pes.meetcatui.ui.theme.typo
 
 const val EventScreenDestination = "Event"
 @Composable
-fun EventDate(startDate: String = "[ ]", endDate: String = "[ ]") {
+fun EventDates(startDate: String?, endDate: String?) {
     Text(
         text = "$startDate - $endDate",
-        style = MaterialTheme.typography.h4,
+        style = typo.h4,
     )
 }
 
@@ -46,7 +45,7 @@ fun EventDetailsItem(name: String, content: String) {
     SpaceDp(4)
     Text(
         text = content,
-        style = MaterialTheme.typography.body1,
+        style = typo.body1,
         textAlign = TextAlign.Justify
     )
 }
@@ -74,24 +73,27 @@ fun EventDetailsLinkItem(name: String, url: String) {
 }
 
 @Composable
-fun EventDetails(eventDescription: String) {
-    EventDetailsItem(stringResource(R.string.location), "C. Jordi Girona, 12")
+fun EventDetails(description: String, startTime: String, endTime: String, locationName: String?, address: String, link: String?) {
+    EventDetailsItem(stringResource(R.string.location),  if (locationName.isNullOrEmpty()) address else "$locationName, \n $address")
     SpaceDp(12)
-    val strStartTime = "8:00"
-    val strEndTime = "18:00"
-    val strTimeInfo = "De $strStartTime a $strEndTime"
+    val strTimeInfo = "De $startTime a $endTime"
     EventDetailsItem(stringResource(R.string.time), strTimeInfo)
     SpaceDp(12)
-    EventDetailsItem(stringResource(R.string.description), eventDescription)
+    EventDetailsItem(stringResource(R.string.description), description)
     SpaceDp(12)
-    EventDetailsLinkItem(stringResource(R.string.link), "https://www.youtube.com/watch?v=Hvtc9BWahMQ")
+    if (!link.isNullOrEmpty()) EventDetailsLinkItem(stringResource(R.string.link), link)
 }
 
 @Composable
 fun EventDetailsContent(
-    eventName: String,
-    eventDescription: String,
-    eventDate: String
+    name: String,
+    subtitle: String?,
+    description: String,
+    startDate: String?,
+    endDate: String?,
+    locationName: String?,
+    address: String,
+    link: String?
 ) {
     Column (
         modifier = Modifier
@@ -102,14 +104,14 @@ fun EventDetailsContent(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = eventName,
-                style = MaterialTheme.typography.h2
+                text = name,
+                style = typo.h2
             )
             Text(
-                text = "A party",
-                style = MaterialTheme.typography.h3
+                text = "$subtitle",
+                style = typo.h3
             )
-            EventDate(startDate = eventDate)
+            EventDates(startDate = startDate, endDate = endDate)
         }
         Column(
             modifier = Modifier
@@ -117,11 +119,13 @@ fun EventDetailsContent(
             horizontalAlignment = Alignment.Start
         ) {
             SpaceDp()
-            EventDetails(eventDescription)
+            EventDetails(description, startDate?: "[ ]", endDate?: "[ ]", locationName, address, link)
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SpaceDp()
-            Button(onClick = {}) {
+            Button(
+                onClick = {},
+            ) {
                 Text("Join placeholder")
             }
         }
@@ -134,12 +138,15 @@ fun EventScreen(
 ) {
     val event by viewModel.event.collectAsState()
 
-    MeetCatUITheme {
-        BackButton()
-        EventDetailsContent(
-            eventName = event?.name ?: "MeetCat Release Party",
-            eventDescription = event?.description ?: "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\n",
-            eventDate = event?.date ?: "03/11/2999",
-        )
-    }
+    BackButton()
+    EventDetailsContent(
+        name = event?.name ?: "MeetCat Release Party",
+        subtitle = event?.subtitle,
+        description = event?.description ?: "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\n",
+        startDate = event?.startDate,
+        endDate = event?.endDate,
+        locationName = event?.locationName,
+        address = event?.address ?: "C. Jordi Girona 12",
+        link = event?.link
+    )
 }

@@ -16,10 +16,14 @@ buildscript {
         mavenCentral()
         google()
     }
-
+    ext {
+        compose_ui_version = '1.1.1'
+    }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.14'
+
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
     }
 

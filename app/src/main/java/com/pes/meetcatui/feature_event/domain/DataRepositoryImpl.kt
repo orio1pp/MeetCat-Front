@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_event.domain
 
-import com.pes.meetcatui.Resource
+import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.MeetCatApi
 import kotlinx.coroutines.CoroutineScope

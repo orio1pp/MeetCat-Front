@@ -8,6 +8,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.R
 
@@ -28,12 +29,14 @@ val typo = Typography(
     defaultFontFamily = Poppins,
     h1 = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 40.sp
+        fontSize = 40.sp,
+        textAlign = TextAlign.Center
     ),
 
     h2 = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 32.sp
+        fontSize = 32.sp,
+        textAlign = TextAlign.Center
     ),
 
     h3 = TextStyle(

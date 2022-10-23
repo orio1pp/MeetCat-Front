@@ -1,4 +1,4 @@
-package com.pes.meetcatui
+package com.pes.meetcatui.feature_event
 
 sealed class Resource<T>(
     val data: T? = null,

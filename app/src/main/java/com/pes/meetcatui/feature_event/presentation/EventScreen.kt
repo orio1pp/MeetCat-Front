@@ -47,9 +47,7 @@ fun EventScreen(
                 style = typo.h2
             )
         }
-
     } else {
-
         if (!eventState.hasError) {
             BackButton()
 
@@ -57,13 +55,13 @@ fun EventScreen(
 
             EventDetailsContent(
                 name = event.name,
-                subtitle = event?.subtitle,
+                subtitle = event.subtitle,
                 description = event.description,
                 startDate = event.startDate,
                 endDate = event.endDate,
-                locationName = event?.locationName,
+                locationName = event.locationName,
                 address = event.address,
-                link = event?.link
+                link = event.link
             )
         } else {
             Column(
@@ -184,10 +182,10 @@ private fun EventDetailsContent(
                 Text(
                     text = name,
                     style = typo.h2,
-                    color = MaterialTheme.colors.secondary
+                    color = MaterialTheme.colors.secondary,
                 )
                 Text(
-                    text = "$subtitle",
+                    text = subtitle ?: "",
                     style = typo.h3,
                     color = MaterialTheme.colors.secondary
                 )

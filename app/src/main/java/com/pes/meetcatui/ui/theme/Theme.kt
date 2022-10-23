@@ -14,14 +14,14 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Background,
+    primary = DarkGrey,
     primaryVariant = LightGray,
-    secondary = Gray
+    secondary = Gray,
 )
 
 @Composable
 fun MeetCatUITheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (true) {
+    val colors = if (darkTheme) {
         DarkColorPalette
     } else {
         LightColorPalette

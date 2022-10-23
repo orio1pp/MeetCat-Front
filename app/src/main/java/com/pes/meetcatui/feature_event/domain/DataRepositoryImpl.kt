@@ -7,7 +7,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerialName
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -26,7 +25,7 @@ class DataRepositoryImpl (
             emit(Resource.Loading())
             val apiResponse = meetcatApi.getEventData(eventId)
             if (apiResponse.isSuccessful) {
-                val result = apiResponse.body() as Event
+                val result = buildEvent(apiResponse.body()!!)
                 emit(Resource.Success(result))
             } else {
                 emit(Resource.Error("Api is unsuccessful"))

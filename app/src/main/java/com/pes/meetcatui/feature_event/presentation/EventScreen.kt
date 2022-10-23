@@ -10,8 +10,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.pes.meetcatui.R
-import com.pes.meetcatui.R.string.at
-import com.pes.meetcatui.R.string.location
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.TimeFormatter
@@ -39,27 +34,48 @@ const val EventScreenDestination = "Event"
 fun EventScreen(
     viewModel: EventViewModel,
 ) {
-    val eventState = viewModel._event //.collectAsState()
+    val eventState = viewModel._event.value
 
-    Text("Loading")
+    if (eventState.isLoading) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Loading...",
+                style = typo.h2
+            )
+        }
 
-    if (!eventState.isLoading) {
+    } else {
 
         if (!eventState.hasError) {
             BackButton()
 
-            val event = eventState.data
+            val event = eventState.data!!
 
             EventDetailsContent(
-                name = event?.name ?: "",
-                subtitle = event?.subtitle ?: "",
-                description = event?.description ?: "",
-                startDate = event?.startDate ?: "2000-01-01T00:00:00",
-                endDate = event?.endDate ?: "2099-12-31T23:59:59.9999",
+                name = event.name,
+                subtitle = event?.subtitle,
+                description = event.description,
+                startDate = event.startDate,
+                endDate = event.endDate,
                 locationName = event?.locationName,
-                address = event?.address ?: "",
+                address = event.address,
                 link = event?.link
             )
+        } else {
+            Column(
+                Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Error!",
+                    style = typo.h2,
+                    color = Color(0xFFA00000))
+            }
         }
     }
 }
@@ -117,7 +133,7 @@ private fun EventDetails(
     link: String?
 ) {
     EventDetailsItem(
-        stringResource(location),
+        stringResource(R.string.location),
         if (locationName.isNullOrEmpty()) address else "$locationName, $address"
     )
 

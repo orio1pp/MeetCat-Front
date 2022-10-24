@@ -5,4 +5,8 @@
     <string name="time">Hora</string>
     <string name="description">Descripció</string>
     <string name="link">Enllaç</string>
+    <string name="to">"al "</string>
+    <string name="from">"Del "</string>
+    <string name="at">"a les "</string>
+    <string name="at_singular">a l\'</string>
 </resources>

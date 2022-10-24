@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "818069305025",
+    "project_id": "meetcat-ui-d3943",
+    "storage_bucket": "meetcat-ui-d3943.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818069305025:android:0c9ee80b1aa8706f2f4640",
+        "android_client_info": {
+          "package_name": "com.pes.meetcatui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818069305025-4b3kpromjbp0jrh7b419v3241dumgve8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8gp8E9IAp-iDf2mNGBtlv8weI-_Gnm5Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "818069305025-4b3kpromjbp0jrh7b419v3241dumgve8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

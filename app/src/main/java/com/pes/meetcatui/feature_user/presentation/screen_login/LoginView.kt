@@ -1,5 +1,7 @@
 package com.pes.meetcatui.feature_user.presentation.screen_login
 
+import android.os.Bundle
+import android.view.View
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,7 +9,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,17 +24,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.ui.theme.typo
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.pes.meetcatui.LoginScreen
 import com.pes.meetcatui.R
-import com.pes.meetcatui.ui.theme.Background_alt
-import com.pes.meetcatui.ui.theme.Gray
-import com.pes.meetcatui.ui.theme.Highlight
+import com.pes.meetcatui.ui.theme.*
+
+
 
 @Preview
 @Composable
 fun LoginScreen(
     //viewModel: LoginViewModel,
 ) {
+
     val viewModel = LoginViewModel()
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -132,6 +139,17 @@ fun LoginScreen(
                     Row (
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
+                            .padding(horizontal = 128.dp, vertical = 8.dp),
+
+                    ) {
+                        CustomButtonGoogle(text = "Google Login",  username = username,
+                            password = password, viewModel = viewModel)
+                    }
+                }
+                item {
+                    Row (
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
                             .padding(horizontal = 48.dp)
                             .padding(top = 8.dp)) {
                         WarningText(text = viewModel.warning.value)
@@ -192,10 +210,45 @@ fun CustomButton(
         ),
         modifier = Modifier.fillMaxSize(),
         shape = RoundedCornerShape(50)
-    ) {
+    )
+    {
         Text (
             text = text,
             style = typo.body1
+        )
+    }
+}
+
+
+@Composable
+fun CustomButtonGoogle(
+    text: String,
+    username: String,
+    password: String,
+    viewModel: LoginViewModel
+) {
+    Button(
+        onClick = {
+            viewModel.Login(username = username, password = password)
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
+            contentColor = Color.White
+        ),
+        modifier = Modifier.fillMaxSize(),
+        shape = RoundedCornerShape(50)
+    )
+    {
+        Text (
+            text = text,
+            style = typo.body1
+        )
+        Icon(
+            Icons.Default.MailOutline,
+            modifier = Modifier
+                .size(18.dp),
+            contentDescription = "drawable icons",
+            tint = Color.Unspecified
         )
     }
 }

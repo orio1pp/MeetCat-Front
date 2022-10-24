@@ -5,4 +5,8 @@
     <string name="time">Hora</string>
     <string name="description">Descripción</string>
     <string name="link">Enlace</string>
+    <string name="to">"al "</string>
+    <string name="from">"Del "</string>
+    <string name="at">"a las "</string>
+    <string name="at_singular">"a la "</string>
 </resources>

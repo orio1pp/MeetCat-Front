@@ -9,11 +9,17 @@ data class EventDetailsData(
     @SerialName("id")
     val eventId: Int,
     @SerialName("titol")
-    val eventName: String,
+    val name: String,
+    @SerialName("subtitol")
+    val subtitle: String,
     @SerialName("descripcio")
-    val eventDescription: String,
-    @SerialName("data")
-    val date: String,
-    val lastUpdate: String,
-    val createdDate: String
+    val description: String,
+    @SerialName("dataInici")
+    val startDate: String,
+    @SerialName("dataFi")
+    val endDate: String,
+    @SerialName("nomLloc")
+    val locationName: String,
+    val address: String,
+    val link: String
 )

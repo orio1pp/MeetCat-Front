@@ -10,6 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.pes.meetcatui.feature_event.presentation.EventScreen
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
@@ -53,15 +54,11 @@ class MainActivity : ComponentActivity() {
             }
 
         }
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient= GoogleSignIn.getClient(this,gso)
 
     }
 }
 
+@Preview
 @Composable
 private fun App() {
     val navController = rememberNavController()

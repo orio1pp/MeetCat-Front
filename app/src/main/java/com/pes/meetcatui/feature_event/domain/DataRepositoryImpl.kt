@@ -39,6 +39,30 @@ class DataRepositoryImpl (
         }
     }
 
+    override fun getEventList(): Flow<Resource<List<Event>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getAllEvents()
+            if (apiResponse.isSuccessful) {
+                val result = mutableListOf<Event>()
+                val rawResult = apiResponse.body()!!
+                for (event in rawResult)
+                {
+                    result.add(buildEvent(event))
+                }
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
     private fun buildEvent(
         eventData: EventDetailsData,
     ) = Event(

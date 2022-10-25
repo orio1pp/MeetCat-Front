@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_eventList.presentation
+package com.pes.meetcatui.feature_event.presentation
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
@@ -6,20 +6,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pes.meetcatui.common.BackButton
+import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import java.lang.Math.round
 import kotlin.math.roundToInt
 
 
@@ -49,7 +47,7 @@ fun EventView(name: String, desc: String, date: String, location: String) {
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Row() {
+        Row {
 
             Column(
                 modifier = Modifier.width(192.dp)
@@ -70,7 +68,7 @@ fun EventView(name: String, desc: String, date: String, location: String) {
                         .width(1.dp)
                 )
             }
-            Column() {
+            Column {
                 Text(
                     text = date,
                     style = typo.body1,
@@ -95,7 +93,7 @@ fun EventView(name: String, desc: String, date: String, location: String) {
 fun ContinuousSlider(start: Float, end: Float) {
     val range = start..end
     var sliderPosition by remember { mutableStateOf(start) }
-    Row() {
+    Row {
         Text(
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
             text = sliderPosition.roundToInt().toString(),
@@ -113,9 +111,41 @@ fun ContinuousSlider(start: Float, end: Float) {
     }
 }
 
-@Preview(name = "Screen")
 @Composable
-fun Screen() {
+fun FiltersSelection() {
+    Row {
+        Column(modifier = Modifier.width(96.dp)) {
+            Text(
+                modifier = Modifier.padding(vertical = 12.dp),
+                text = "Distància",
+                style = typo.body1,
+            )
+        }
+        Column {
+            ContinuousSlider(10f, 50f)
+        }
+    }
+    Row {
+        Column(modifier = Modifier.width(96.dp)) {
+            Text(
+                modifier = Modifier.padding(vertical = 12.dp),
+                text = "Data",
+                style = typo.body1,
+            )
+        }
+        Column {
+            ContinuousSlider(10f, 50f)
+        }
+    }
+}
+
+@Composable
+fun Screen(
+    viewModel: EventListViewModel,
+) {
+
+    val eventState = viewModel._event.value
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
@@ -123,45 +153,61 @@ fun Screen() {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            Row() {
-                Column (modifier = Modifier.width(96.dp)) {
+            FiltersSelection()
+
+
+            if (eventState.isLoading) {
+                Column(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        text = "Distancia",
-                        style = typo.body1,
+                        "Loading...", style = typo.h2
                     )
                 }
-                Column {
-                    ContinuousSlider(10f, 50f)
-                }
-            }
-            Row() {
-                Column (modifier = Modifier.width(96.dp)) {
-                    Text(
-                        modifier = Modifier.padding(vertical = 12.dp),
-                        text = "Data",
-                        style = typo.body1,
+            } else {
+                if (!eventState.hasError) {
+                    BackButton()
+
+                    val eventList = eventState.data!!
+
+                    EventListScreen(
+                        eventList = eventList,
                     )
-                }
-                Column {
-                    ContinuousSlider(10f, 50f)
-                }
-            }
-            Column(
-                modifier = Modifier.height(680.dp).verticalScroll(state = ScrollState(0))
-            ) {
-                for (i in 1..10) {
-                    EventView(
-                        "FestiCAM 202$i",
-                        "Festival Internacional de Teatre i Circ d’Amposta",
-                        "5/10/202$i",
-                        "C. de Lepant, 150"
-                    )
+                } else {
+                    Column(
+                        Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Error!", style = typo.h2, color = Color(0xFFA00000)
+                        )
+                    }
                 }
             }
-            Row() {
-                Text(text = "MENU SELECCION DE MENU DE MENU")
+            Row {
+                Text(text = "MENU SELECCIÓN DE MENU DE MENU")
             }
+        }
+    }
+}
+
+@Composable
+private fun EventListScreen(eventList: List<Event>) {
+    Column(
+        modifier = Modifier
+            .height(680.dp)
+            .verticalScroll(state = ScrollState(0))
+    ) {
+        for (Event in eventList) {
+            EventView(
+                name = Event.name,
+                desc = Event.description,
+                date = Event.startDate,
+                location = Event.address,
+            )
         }
     }
 }

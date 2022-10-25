@@ -53,5 +53,5 @@ val networkModule = module {
     }
 }
 
-private const val BASE_URL = "http://192.168.0.17:8080/esdeveniments/"
+private const val BASE_URL = "http://10.4.41.48:8080/esdeveniments"
 private const val REQUEST_TIME_OUT = 30L

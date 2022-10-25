@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
     fun getEvent(eventId: Int): Flow<Resource<Event>>
+    fun getEventList(): Flow<Resource<List<Event>>>
 }
 

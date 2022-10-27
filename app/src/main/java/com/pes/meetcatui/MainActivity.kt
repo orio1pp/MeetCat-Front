@@ -11,7 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.pes.meetcatui.feature_event.presentation.EventScreen
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
 import androidx.navigation.compose.NavHost
@@ -21,17 +20,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.pes.meetcatui.feature_event.presentation.EventScreenDestination
+import com.pes.meetcatui.feature_event.presentation.*
 
 
 class MainActivity : ComponentActivity() {
 
     // declare the GoogleSignInClient
-    lateinit var mGoogleSignInClient: GoogleSignInClient
+    //lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private val auth by lazy {
+    /*private val auth by lazy {
         FirebaseAuth.getInstance()
-    }
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +42,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     App()
 
-                    Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
+                    /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)
                         startActivity(intent)
                         finish()
                     }}) {
 
-                    }
+                    }*/
                 }
             }
 
@@ -58,14 +57,21 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
 @Composable
 private fun App() {
     val navController = rememberNavController()
+    var viewmodel : EventListViewModel = getViewModel()
 
-    NavHost(navController = navController, startDestination = EventScreenDestination) {
+    NavHost(navController = navController, startDestination = EventListScreenDestination) {
+        composable(EventListScreenDestination) {
+            EventListScreen(viewmodel, navtoEvent = {
+                navController.navigate(EventScreenDestination)
+            })
+        }
         composable(EventScreenDestination) {
-            EventScreen(getViewModel())
+            EventScreen(viewmodel, navBack = {
+                navController.navigate(EventListScreenDestination)
+            })
         }
     }
 }

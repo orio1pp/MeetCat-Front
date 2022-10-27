@@ -16,11 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-// TODO: implement onclick
 @Composable
-fun BackButton() {
+fun BackButton(function: () -> Unit = {}) {
     IconButton(
-        onClick = {},
+        onClick = { function() },
         modifier = Modifier
             .alpha(1.0f)
             .padding(start = 16.dp, top = 16.dp)

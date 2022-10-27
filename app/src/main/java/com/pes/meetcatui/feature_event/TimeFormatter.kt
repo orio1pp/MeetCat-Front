@@ -44,4 +44,15 @@ class TimeFormatter {
 
         return "$fromText $startDateFormatted $atTextStart$startTime $toText $endDateFormatted $atTextEnd$endTime"
     }
+
+    fun strLocalDateTime_to_DateTime(date: String): String {
+        val startDate = LocalDateTime.parse(date)
+        val formatterDate = DateTimeFormatter.ofPattern("dd/MM/yy")
+        val startDateFormatted = startDate.toLocalDate().format(formatterDate)
+
+        val formatterTime = DateTimeFormatter.ofPattern("HH:mm")
+        val startTime = startDate.toLocalTime().format(formatterTime)
+
+        return "$startDateFormatted $startTime"
+    }
 }

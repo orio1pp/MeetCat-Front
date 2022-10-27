@@ -5,35 +5,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class EventListViewModel(dataRepository: DataRepository,
+class EventListViewModel(
+    dataRepository: DataRepository,
 ) : ViewModel() {
+    val dataRepository = dataRepository
 
-    val _event = mutableStateOf(EventListScreenState())
+    var id = 1
+    val _event = mutableStateOf(EventScreenState())
 
-    init {
-        viewModelScope.launch {
-            dataRepository.getEventList().collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        _event.value = EventListScreenState(
-                            data = resource.data,
-                        )
-                    }
-                    is Resource.Error -> {
-                        _event.value = EventListScreenState(
-                            hasError = true,
-                            errorMessage = resource.message
-                        )
-                    }
-                    is Resource.Loading -> {
-                        _event.value = EventListScreenState(
-                            isLoading = true
-                        )
-                    }
-                }
-            }
-        }
+    val eventList = dataRepository.getEventList().mapLatest { events ->
+        events.asSequence().sortedBy { it.eventId }.toList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    fun getEvent(id: Int) {
+        _event.value = EventScreenState(
+            data = eventList.value.get(id - 1),
+        )
+        println("break")
     }
+
 }

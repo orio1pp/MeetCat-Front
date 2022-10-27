@@ -2,16 +2,17 @@ package com.pes.meetcatui.feature_event.presentation
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +33,8 @@ const val EventScreenDestination = "Event"
 
 @Composable
 fun EventScreen(
-    viewModel: EventViewModel,
+    viewModel: EventListViewModel,
+    navBack: () -> Unit,
 ) {
     val eventState = viewModel._event.value
 
@@ -49,8 +51,6 @@ fun EventScreen(
         }
     } else {
         if (!eventState.hasError) {
-            BackButton()
-
             val event = eventState.data!!
 
             EventDetailsContent(

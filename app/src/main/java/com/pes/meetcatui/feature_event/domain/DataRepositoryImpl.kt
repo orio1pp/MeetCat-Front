@@ -1,6 +1,7 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.feature_event.Resource
+import com.pes.meetcatui.feature_event.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.MeetCatApi
 import kotlinx.coroutines.CoroutineScope
@@ -14,11 +15,16 @@ import java.util.concurrent.TimeoutException
 class DataRepositoryImpl (
     appScope: CoroutineScope,
     private val meetcatApi: MeetCatApi,
+    private val dataPreferences: DataPreferences,
 ) : DataRepository {
 
     init {
-        appScope.launch { }
+        appScope.launch {
+            downloadData()
+        }
     }
+
+    private val eventList = dataPreferences.getEventList()
 
     override fun getEvent(eventId: Int): Flow<Resource<Event>> = flow {
         try {
@@ -39,29 +45,21 @@ class DataRepositoryImpl (
         }
     }
 
-    override fun getEventList(): Flow<Resource<List<Event>>> = flow {
+    override suspend fun downloadData() {
+        val events = getEventsData()
+
+        dataPreferences.setEventList(buildEventList(events))
+    }
+
+    private suspend fun getEventsData(): List<EventDetailsData> {
         try {
-            emit(Resource.Loading())
-            val apiResponse = meetcatApi.getAllEvents()
-            if (apiResponse.isSuccessful) {
-                val result = mutableListOf<Event>()
-                val rawResult = apiResponse.body()!!
-                for (event in rawResult)
-                {
-                    result.add(buildEvent(event))
-                }
-                emit(Resource.Success(result))
-            } else {
-                emit(Resource.Error("Api is unsuccessful"))
-            }
-        } catch (e: IOException) {
-            emit(Resource.Error("IO Exception: ${e.message}"))
-        } catch (e: TimeoutException) {
-            emit(Resource.Error("Timeout Exception: ${e.message}"))
-        } catch (e: HttpException) {
-            emit(Resource.Error("Http Exception: ${e.message}"))
+            return meetcatApi.getAllEvents()
+        } catch (e: Exception) {
+            return emptyList()
         }
     }
+
+    override fun getEventList(): Flow<List<Event>> = eventList
 
     private fun buildEvent(
         eventData: EventDetailsData,
@@ -76,5 +74,19 @@ class DataRepositoryImpl (
         address = eventData.address,
         link = eventData.link
     )
+
+    private fun buildEventList(
+        eventListData: List<EventDetailsData>
+    ) : List<Event> {
+        val result = mutableListOf<Event>()
+        for (event in eventListData)
+        {
+            result.add(buildEvent(event))
+        }
+        return(result)
+    }
+
 }
+
+
 

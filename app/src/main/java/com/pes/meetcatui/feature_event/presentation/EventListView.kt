@@ -1,91 +1,154 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pes.meetcatui.common.BackButton
+import androidx.navigation.compose.rememberNavController
+import com.pes.meetcatui.feature_event.TimeFormatter
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.*
 import kotlin.math.roundToInt
 
+const val EventListScreenDestination = "EventList"
 
 @Composable
-fun EventView(name: String, desc: String, date: String, location: String) {
+fun EventListScreen(
+    viewModel: EventListViewModel,
+    navtoEvent: () -> Unit,
+) {
+    val eventList by viewModel.eventList.collectAsState()
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Background,
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            FiltersSelection()
+
+            EventListScreen(viewModel, eventList = eventList, navtoEvent)
+
+            Row {
+                Text(text = "MENU SELECCIÓN DE MENU DE MENU")
+            }
+        }
+    }
+}
+
+@Composable
+fun EventView(
+    id: Int,
+    name: String,
+    desc: String,
+    date: String,
+    location: String,
+    navtoEvent: () -> Unit,
+    viewModel: EventListViewModel,
+) {
     Column(
         modifier = Modifier
-            .border(
+            /*.border(
                 BorderStroke(
                     width = 1.dp,
                     color = Gray,
                 )
-            )
+            )*/
             .padding(8.dp)
             .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(vertical = 2.dp),
         ) {
-            Text(
-                text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            NameButton(viewModel, id, navtoEvent, name)
         }
         Row {
 
-            Column(
-                modifier = Modifier.width(192.dp)
-            ) {
-                Text(
-                    text = desc,
-                    style = typo.body1,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Column(
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                Divider(
-                    color = LightGray, modifier = Modifier
-                        .height(48.dp)
-                        .width(1.dp)
-                )
-            }
-            Column {
-                Text(
-                    text = date,
-                    style = typo.body1,
-                    color = LightGray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = location,
-                    style = typo.body1,
-                    color = LightGray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            EventData(desc, date, location)
 
         }
+        Row(
+            Modifier
+                .padding(horizontal = 8.dp)
+                .padding(top = 12.dp)
+        ) {
+            Divider(
+                color = LightGray, modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+private fun NameButton(
+    viewModel: EventListViewModel, id: Int, navtoEvent: () -> Unit, name: String
+) {
+    TextButton(
+        onClick = {
+            viewModel.getEvent(id = id)
+            navtoEvent()
+        },
+    ) {
+        Text(
+            text = name,
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun EventData(desc: String, date: String, location: String) {
+    Column(
+        modifier = Modifier.width(192.dp)
+    ) {
+        Text(
+            text = desc,
+            style = typo.body1,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        Divider(
+            color = LightGray, modifier = Modifier
+                .height(48.dp)
+                .width(1.dp)
+        )
+    }
+    Column {
+        Text(
+            text = date,
+            style = typo.body1,
+            color = LightGray,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = location,
+            style = typo.body1,
+            color = LightGray,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -139,75 +202,38 @@ fun FiltersSelection() {
     }
 }
 
+@Preview
 @Composable
-fun Screen(
-    viewModel: EventListViewModel,
-) {
-
-    val eventState = viewModel._event.value
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Background,
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            FiltersSelection()
-
-
-            if (eventState.isLoading) {
-                Column(
-                    Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "Loading...", style = typo.h2
-                    )
-                }
-            } else {
-                if (!eventState.hasError) {
-                    BackButton()
-
-                    val eventList = eventState.data!!
-
-                    EventListScreen(
-                        eventList = eventList,
-                    )
-                } else {
-                    Column(
-                        Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            "Error!", style = typo.h2, color = Color(0xFFA00000)
-                        )
-                    }
-                }
-            }
-            Row {
-                Text(text = "MENU SELECCIÓN DE MENU DE MENU")
-            }
-        }
-    }
+fun Test() {
+    //Screen(getViewModel())
 }
 
+
 @Composable
-private fun EventListScreen(eventList: List<Event>) {
+private fun EventListScreen(
+    viewModel: EventListViewModel,
+    eventList: List<Event>,
+    navtoEvent: () -> Unit,
+) {
     Column(
         modifier = Modifier
-            .height(680.dp)
+            .height(620.dp)
             .verticalScroll(state = ScrollState(0))
     ) {
-        for (Event in eventList) {
+        for (event in eventList) {
+
+            val startDateComplete = TimeFormatter().strLocalDateTime_to_DateTime(event.startDate)
+
             EventView(
-                name = Event.name,
-                desc = Event.description,
-                date = Event.startDate,
-                location = Event.address,
+                id = event.eventId,
+                name = event.name,
+                desc = event.description,
+                date = startDateComplete,
+                location = event.address,
+                navtoEvent = navtoEvent,
+                viewModel = viewModel,
             )
         }
     }
 }
+

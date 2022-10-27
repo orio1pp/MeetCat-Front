@@ -17,7 +17,7 @@
         android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="31" >
         <activity
-            android:name=".feature_user.presentation.screen_login.LoginView"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.MeetCatUI">

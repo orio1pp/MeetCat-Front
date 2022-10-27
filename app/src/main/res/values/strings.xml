@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MeetCat.UI</string>
+    <string name="location">Location</string>
+    <string name="time">Time</string>
+    <string name="description">Description</string>
+    <string name="link">Link</string>
+    <string name="from">"From "</string>
+    <string name="to">"To"</string>
+    <string name="at">at </string>
+    <string name="at_singular">at </string>
 </resources>

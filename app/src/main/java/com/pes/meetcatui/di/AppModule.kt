@@ -1,6 +1,7 @@
 package com.pes.meetcatui.di
 
 import com.pes.meetcatui.feature_event.presentation.EventViewModel
+import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
 import org.koin.dsl.module
@@ -10,6 +11,11 @@ val appModule = module {
     single { CoroutineScope(SupervisorJob()) }
     viewModel {
         EventViewModel(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        EventListViewModel(
             dataRepository = get(),
         )
     }

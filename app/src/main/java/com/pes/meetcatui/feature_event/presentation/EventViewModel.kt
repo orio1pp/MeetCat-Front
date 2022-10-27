@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
+import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.launch
 
 class EventViewModel(
@@ -15,7 +16,7 @@ class EventViewModel(
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvent(5).collect { resource ->
+            dataRepository.getEvent(1).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         _event.value = EventScreenState(
@@ -37,6 +38,11 @@ class EventViewModel(
             }
         }
     }
+
+    /*fun getEvent(id: Number) : Event {
+
+        return Event
+    }*/
     /*
     val eventResource = dataRepository
         .getEvent(5)

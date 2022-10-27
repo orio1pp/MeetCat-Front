@@ -1,10 +1,23 @@
 package com.pes.meetcatui.feature_user.domain
 
-class User(
-    private var id: Long,
-    private var username: String,
-    private var password: String,
-    private var friends: List<User>
-) {
 
+
+@kotlinx.serialization.Serializable
+class User {
+    var uid: String? = null
+    var name: String? = null
+    var email: String? = null
+
+    var isAuthenticated = false
+
+    var isNew = false
+    var isCreated = false
+
+    fun User() {}
+
+    fun User(uid: String?, name: String?, email: String?) {
+        this.uid = uid
+        this.name = name
+        this.email = email
+    }
 }

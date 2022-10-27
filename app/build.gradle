@@ -10,6 +10,10 @@ android {
     namespace 'com.pes.meetcatui'
     compileSdk 33
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.pes.meetcatui"
         minSdk 21

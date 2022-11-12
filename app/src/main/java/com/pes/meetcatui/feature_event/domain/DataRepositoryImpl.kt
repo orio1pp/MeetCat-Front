@@ -82,9 +82,10 @@ class DataRepositoryImpl (
         description = eventData.description,
         startDate = eventData.startDate,
         endDate = eventData.endDate,
-        locationName = eventData.locationName,
+        location = eventData.location,
+        placeName = eventData.placeName,
+        link = eventData.link,
         address = eventData.address,
-        link = eventData.link
     )
 }
 

@@ -5,9 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MeetCatApi {
-    @GET("esdeveniments/{eventId}")
+    @GET("events/{eventId}")
     suspend fun getEventData(@Path("eventId") eventId: Int): Response<EventDetailsData>
 
-    @GET("esdeveniments")
+    @GET("events")
     suspend fun getEvents(): Response<List<EventDetailsData>>
 }

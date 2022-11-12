@@ -36,7 +36,7 @@ fun EventDetails(
             description = event.description,
             startDate = event.startDate,
             endDate = event.endDate,
-            locationName = event.locationName,
+            placeName = event.placeName,
             address = event.address,
             link = event.link,
         )
@@ -89,15 +89,15 @@ private fun EventDetailsLinkItem(name: String, url: String) {
 
 @Composable
 private fun EventDetailsBody(
-    description: String,
+    description: String?,
     timeStr: String,
-    locationName: String?,
+    placeName: String?,
     address: String,
     link: String?
 ) {
     EventDetailsItem(
         stringResource(R.string.location),
-        if (locationName.isNullOrEmpty()) address else "$locationName, $address"
+        if (placeName.isNullOrEmpty()) address else "$placeName, $address"
     )
 
     SpaceDp(12)
@@ -109,10 +109,11 @@ private fun EventDetailsBody(
 
     SpaceDp(12)
 
-    EventDetailsItem(
-        stringResource(R.string.description),
-        description
-    )
+    if (!description.isNullOrEmpty())
+        EventDetailsItem(
+            stringResource(R.string.description),
+            description
+        )
 
     SpaceDp(12)
 
@@ -127,10 +128,10 @@ private fun EventDetailsBody(
 private fun EventDetailsContent(
     name: String,
     subtitle: String?,
-    description: String,
+    description: String?,
     startDate: String,
-    endDate: String,
-    locationName: String?,
+    endDate: String?,
+    placeName: String?,
     address: String,
     link: String?,
 ) {
@@ -154,7 +155,7 @@ private fun EventDetailsContent(
                     color = MaterialTheme.colors.secondary
                 )
                 SpaceDp()
-                if (!TimeFormatter()
+                if (!endDate.isNullOrEmpty() && !TimeFormatter()
                         .strLocalDateTime_to_Date(startDate, endDate)
                         .isNullOrEmpty()
                 ) {
@@ -172,17 +173,18 @@ private fun EventDetailsContent(
                 horizontalAlignment = Alignment.Start
             ) {
                 SpaceDp()
+
                 EventDetailsBody(
-                    description,
-                    TimeFormatter().strLocalDateTime_to_Time(
-                        startDate,
-                        endDate,
-                        stringResource(R.string.from),
-                        stringResource(R.string.to),
-                        if (checkSingularHour(startDate)) stringResource(R.string.at_singular) else stringResource(R.string.at),
-                        if (checkSingularHour(endDate)) stringResource(R.string.at_singular) else stringResource(R.string.at)
-                    ),
-                    locationName,
+                    description = description,
+                    timeStr = if (!endDate.isNullOrEmpty())
+                        TimeFormatter().strLocalDateTime_to_Time(
+                            startDate,
+                            endDate,
+                            stringResource(R.string.from),
+                            stringResource(R.string.to),
+                            if (checkSingularHour(startDate)) stringResource(R.string.at_singular) else stringResource(R.string.at),
+                            if (checkSingularHour(endDate)) stringResource(R.string.at_singular) else stringResource(R.string.at)) else "",
+                    placeName,
                     address,
                     link
                 )
@@ -212,7 +214,7 @@ fun EventScreenPreview() {
         description = "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy",
         startDate = "2000-01-01T01:00:00",
         endDate = "2099-12-31T23:59:59.9999",
-        locationName = "FIB",
+        placeName = "FIB",
         address = "C. Jordi Girona 12",
         link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
     )

@@ -1,9 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -17,11 +14,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.rememberNavController
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.feature_event.TimeFormatter
 import com.pes.meetcatui.feature_event.domain.Event
-import com.pes.meetcatui.ui.theme.*
+import com.pes.meetcatui.ui.theme.Background
+import com.pes.meetcatui.ui.theme.Highlight
+import com.pes.meetcatui.ui.theme.LightGray
+import com.pes.meetcatui.ui.theme.typo
 import kotlin.math.roundToInt
 
 const val EventListScreenDestination = "EventList"
@@ -130,7 +129,7 @@ fun EventView(
             EventData(
                 event.description,
                 event.endDate,
-                event.locationName ?: event.address
+                event.placeName ?: event.address
             )
         }
         Row(
@@ -167,12 +166,12 @@ private fun NameButton(
 }
 
 @Composable
-private fun EventData(desc: String, date: String, location: String) {
+private fun EventData(desc: String?, date: String?, location: String) {
     Column(
         modifier = Modifier.width(192.dp)
     ) {
         Text(
-            text = desc,
+            text = desc ?: "",
             style = typo.body1,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
@@ -189,7 +188,7 @@ private fun EventData(desc: String, date: String, location: String) {
     }
     Column {
         Text(
-            text = date,
+            text = date ?: "",
             style = typo.body1,
             color = LightGray,
             maxLines = 1,

@@ -1,12 +1,16 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -14,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.feature_event.TimeFormatter
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.*
@@ -26,8 +31,46 @@ fun EventListScreen(
     viewModel: EventListViewModel,
     navtoEvent: () -> Unit,
 ) {
-    val eventList by viewModel.eventList.collectAsState()
+    val eventList by viewModel._eventList
 
+    if (eventList.isLoading) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Loading...",
+                style = typo.h2
+            )
+        }
+    } else if (eventList.hasError) {
+        Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Error!",
+                style = typo.h2,
+                color = Color(0xFFA00000)
+            )
+        }
+    } else if (eventList.data != null) {
+        if (eventList.isDetailsSelected) {
+            EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
+                viewModel.setIsSelected()
+            }
+        } else {
+            EventListScreenContent(viewModel = viewModel, eventList = eventList.data!!) { event ->
+                viewModel.setSelectedEvent(event)
+            }
+        }
+    }
+}
+
+@Composable
+fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>, onEventClick: (event: Event) -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
@@ -37,8 +80,12 @@ fun EventListScreen(
         ) {
             FiltersSelection()
 
-            EventListScreen(viewModel, eventList = eventList, navtoEvent)
-
+            EventListScreen(
+                viewModel,
+                eventList = eventList!!,
+                { }, //navtoEvent
+                onEventClick = onEventClick,
+            )
             Row {
                 Text(text = "MENU SELECCIÓN DE MENU DE MENU")
             }
@@ -47,14 +94,21 @@ fun EventListScreen(
 }
 
 @Composable
+fun EventDetailsScreen(
+    event: Event,
+    onClick: () -> Unit
+)
+{
+    EventDetails(event = event)
+    BackButton(function = onClick)
+}
+
+@Composable
 fun EventView(
-    id: Int,
-    name: String,
-    desc: String,
-    date: String,
-    location: String,
+    event: Event,
     navtoEvent: () -> Unit,
     viewModel: EventListViewModel,
+    onEventClick: (event: Event) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -70,12 +124,14 @@ fun EventView(
         Row(
             modifier = Modifier.padding(vertical = 2.dp),
         ) {
-            NameButton(viewModel, id, navtoEvent, name)
+            NameButton(viewModel, event, onEventClick)
         }
         Row {
-
-            EventData(desc, date, location)
-
+            EventData(
+                event.description,
+                event.endDate,
+                event.locationName ?: event.address
+            )
         }
         Row(
             Modifier
@@ -93,16 +149,13 @@ fun EventView(
 
 @Composable
 private fun NameButton(
-    viewModel: EventListViewModel, id: Int, navtoEvent: () -> Unit, name: String
+    viewModel: EventListViewModel, event: Event, onEventClick: (event: Event) -> Unit
 ) {
     TextButton(
-        onClick = {
-            viewModel.getEvent(id = id)
-            navtoEvent()
-        },
+        onClick = { onEventClick(event) },
     ) {
         Text(
-            text = name,
+            text = event.name,
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
                 fontSize = 26.sp,
@@ -214,6 +267,7 @@ private fun EventListScreen(
     viewModel: EventListViewModel,
     eventList: List<Event>,
     navtoEvent: () -> Unit,
+    onEventClick: (event: Event) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -225,15 +279,11 @@ private fun EventListScreen(
             val startDateComplete = TimeFormatter().strLocalDateTime_to_DateTime(event.startDate)
 
             EventView(
-                id = event.eventId,
-                name = event.name,
-                desc = event.description,
-                date = startDateComplete,
-                location = event.address,
+                event = event,
                 navtoEvent = navtoEvent,
                 viewModel = viewModel,
+                onEventClick = onEventClick
             )
         }
     }
 }
-

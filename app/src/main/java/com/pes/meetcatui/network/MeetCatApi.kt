@@ -9,5 +9,5 @@ interface MeetCatApi {
     suspend fun getEventData(@Path("eventId") eventId: Int): Response<EventDetailsData>
 
     @GET("esdeveniments")
-    suspend fun getAllEvents(): List<EventDetailsData>
+    suspend fun getEvents(): Response<List<EventDetailsData>>
 }

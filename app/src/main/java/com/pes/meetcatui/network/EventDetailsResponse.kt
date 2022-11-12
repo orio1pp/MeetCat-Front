@@ -1,5 +1,6 @@
 package com.pes.meetcatui.network
 
+import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.*

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
+import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -13,20 +14,48 @@ import kotlinx.coroutines.launch
 class EventListViewModel(
     dataRepository: DataRepository,
 ) : ViewModel() {
+
     val dataRepository = dataRepository
 
-    var id = 1
-    val _event = mutableStateOf(EventScreenState())
+    val _eventList = mutableStateOf(EventListScreenState())
 
-    val eventList = dataRepository.getEventList().mapLatest { events ->
-        events.asSequence().sortedBy { it.eventId }.toList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-
-    fun getEvent(id: Int) {
-        _event.value = EventScreenState(
-            data = eventList.value.get(id - 1),
-        )
-        println("break")
+    init {
+        viewModelScope.launch {
+            dataRepository.getEvents().collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        _eventList.value = EventListScreenState(
+                            data = resource.data
+                        )
+                    }
+                    is Resource.Error -> {
+                        _eventList.value = EventListScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        _eventList.value = EventListScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
     }
 
+    fun setSelectedEvent(event: Event) {
+        _eventList.value = EventListScreenState(
+            isDetailsSelected = true,
+            eventDetailsSelected = event,
+            data = _eventList.value.data
+        )
+    }
+
+    fun setIsSelected() {
+        _eventList.value = EventListScreenState(
+            isDetailsSelected = false,
+            data = _eventList.value.data
+        )
+    }
 }

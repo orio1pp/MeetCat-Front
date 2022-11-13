@@ -17,21 +17,21 @@ class DataRepositoryImpl (
     private val meetcatApi: MeetCatApi,
     private val dataPreferences: DataPreferences,
 ) : DataRepository {
-
+    /*
     init {
         appScope.launch {
             downloadData()
         }
-    }
+    }*/
 
-    private val eventList = dataPreferences.getEventList()
+    //private val eventList = dataPreferences.getEventList()
 
-    override fun getEvent(eventId: Int): Flow<Resource<Event>> = flow {
+    override fun getEvents(): Flow<Resource<List<Event>>> = flow {
         try {
             emit(Resource.Loading())
-            val apiResponse = meetcatApi.getEventData(eventId)
+            val apiResponse = meetcatApi.getEvents()
             if (apiResponse.isSuccessful) {
-                val result = buildEvent(apiResponse.body()!!)
+                val result = buildEventList(apiResponse.body()!!)
                 emit(Resource.Success(result))
             } else {
                 emit(Resource.Error("Api is unsuccessful"))
@@ -45,6 +45,7 @@ class DataRepositoryImpl (
         }
     }
 
+    /*
     override suspend fun downloadData() {
         val events = getEventsData()
 
@@ -57,23 +58,9 @@ class DataRepositoryImpl (
         } catch (e: Exception) {
             return emptyList()
         }
-    }
+    }*/
 
-    override fun getEventList(): Flow<List<Event>> = eventList
-
-    private fun buildEvent(
-        eventData: EventDetailsData,
-    ) = Event(
-        eventId = eventData.eventId,
-        name = eventData.name,
-        subtitle = eventData.subtitle,
-        description = eventData.description,
-        startDate = eventData.startDate,
-        endDate = eventData.endDate,
-        locationName = eventData.locationName,
-        address = eventData.address,
-        link = eventData.link
-    )
+    //override fun getEventList(): Flow<List<Event>> = eventList
 
     private fun buildEventList(
         eventListData: List<EventDetailsData>
@@ -86,6 +73,20 @@ class DataRepositoryImpl (
         return(result)
     }
 
+    private fun buildEvent(
+        eventData: EventDetailsData,
+    ) = Event(
+        eventId = eventData.eventId,
+        name = eventData.name,
+        subtitle = eventData.subtitle,
+        description = eventData.description,
+        startDate = eventData.startDate,
+        endDate = eventData.endDate,
+        location = eventData.location,
+        placeName = eventData.placeName,
+        link = eventData.link,
+        address = eventData.address,
+    )
 }
 
 

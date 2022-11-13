@@ -4,15 +4,10 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -27,54 +22,24 @@ import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.TimeFormatter
+import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.typo
 
-const val EventScreenDestination = "Event"
-
 @Composable
-fun EventScreen(
-    viewModel: EventListViewModel,
-    navBack: () -> Unit,
+fun EventDetails(
+    event: Event,
 ) {
-    val eventState = viewModel._event.value
-
-    if (eventState.isLoading) {
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Loading...",
-                style = typo.h2
-            )
-        }
-    } else {
-        if (!eventState.hasError) {
-            val event = eventState.data!!
-
-            EventDetailsContent(
-                name = event.name,
-                subtitle = event.subtitle,
-                description = event.description,
-                startDate = event.startDate,
-                endDate = event.endDate,
-                locationName = event.locationName,
-                address = event.address,
-                link = event.link
-            )
-        } else {
-            Column(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    "Error!",
-                    style = typo.h2,
-                    color = Color(0xFFA00000))
-            }
-        }
+    if (event != null) {
+        EventDetailsContent(
+            name = event.name,
+            subtitle = event.subtitle,
+            description = event.description,
+            startDate = event.startDate,
+            endDate = event.endDate,
+            placeName = event.placeName,
+            address = event.address,
+            link = event.link,
+        )
     }
 }
 
@@ -123,16 +88,16 @@ private fun EventDetailsLinkItem(name: String, url: String) {
 }
 
 @Composable
-private fun EventDetails(
-    description: String,
+private fun EventDetailsBody(
+    description: String?,
     timeStr: String,
-    locationName: String?,
+    placeName: String?,
     address: String,
     link: String?
 ) {
     EventDetailsItem(
         stringResource(R.string.location),
-        if (locationName.isNullOrEmpty()) address else "$locationName, $address"
+        if (placeName.isNullOrEmpty()) address else "$placeName, $address"
     )
 
     SpaceDp(12)
@@ -144,10 +109,11 @@ private fun EventDetails(
 
     SpaceDp(12)
 
-    EventDetailsItem(
-        stringResource(R.string.description),
-        description
-    )
+    if (!description.isNullOrEmpty())
+        EventDetailsItem(
+            stringResource(R.string.description),
+            description
+        )
 
     SpaceDp(12)
 
@@ -162,15 +128,14 @@ private fun EventDetails(
 private fun EventDetailsContent(
     name: String,
     subtitle: String?,
-    description: String,
+    description: String?,
     startDate: String,
-    endDate: String,
-    locationName: String?,
+    endDate: String?,
+    placeName: String?,
     address: String,
-    link: String?
+    link: String?,
 ) {
-    MaterialTheme() {
-
+    MaterialTheme {
         Column (
             modifier = Modifier
                 .fillMaxWidth()
@@ -190,7 +155,7 @@ private fun EventDetailsContent(
                     color = MaterialTheme.colors.secondary
                 )
                 SpaceDp()
-                if (!TimeFormatter()
+                if (!endDate.isNullOrEmpty() && !TimeFormatter()
                         .strLocalDateTime_to_Date(startDate, endDate)
                         .isNullOrEmpty()
                 ) {
@@ -208,17 +173,18 @@ private fun EventDetailsContent(
                 horizontalAlignment = Alignment.Start
             ) {
                 SpaceDp()
-                EventDetails(
-                    description,
-                    TimeFormatter().strLocalDateTime_to_Time(
-                        startDate,
-                        endDate,
-                        stringResource(R.string.from),
-                        stringResource(R.string.to),
-                        if (checkSingularHour(startDate)) stringResource(R.string.at_singular) else stringResource(R.string.at),
-                        if (checkSingularHour(endDate)) stringResource(R.string.at_singular) else stringResource(R.string.at)
-                    ),
-                    locationName,
+
+                EventDetailsBody(
+                    description = description,
+                    timeStr = if (!endDate.isNullOrEmpty())
+                        TimeFormatter().strLocalDateTime_to_Time(
+                            startDate,
+                            endDate,
+                            stringResource(R.string.from),
+                            stringResource(R.string.to),
+                            if (checkSingularHour(startDate)) stringResource(R.string.at_singular) else stringResource(R.string.at),
+                            if (checkSingularHour(endDate)) stringResource(R.string.at_singular) else stringResource(R.string.at)) else "",
+                    placeName,
                     address,
                     link
                 )
@@ -226,7 +192,7 @@ private fun EventDetailsContent(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SpaceDp()
                 Button(
-                    onClick = {},
+                    onClick = { },
                 ) {
                     Text("Join placeholder")
                 }
@@ -242,15 +208,15 @@ private fun checkSingularHour(date: String): Boolean{
 @Preview(showBackground = true)
 @Composable
 fun EventScreenPreview() {
-    BackButton()
     EventDetailsContent(
         name = "MeetCat Release Party",
         subtitle = "Just a party",
         description = "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy",
         startDate = "2000-01-01T01:00:00",
         endDate = "2099-12-31T23:59:59.9999",
-        locationName = "FIB",
+        placeName = "FIB",
         address = "C. Jordi Girona 12",
-        link = "https://www.youtube.com/watch?v=oYzHlvI7bI8"
+        link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
     )
+    BackButton()
 }

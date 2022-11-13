@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BackButton(function: () -> Unit = {}) {
     IconButton(
-        onClick = { function() },
+        onClick = function,
         modifier = Modifier
             .alpha(1.0f)
             .padding(start = 16.dp, top = 16.dp)

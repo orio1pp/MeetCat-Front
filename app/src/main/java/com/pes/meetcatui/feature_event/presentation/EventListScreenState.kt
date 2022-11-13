@@ -6,5 +6,7 @@ data class EventListScreenState(
     val data: List<Event>? = null,
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isDetailsSelected: Boolean = false,
+    val eventDetailsSelected: Event? = null
 )

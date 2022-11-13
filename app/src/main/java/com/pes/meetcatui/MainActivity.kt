@@ -60,18 +60,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun App() {
     val navController = rememberNavController()
-    var viewmodel : EventListViewModel = getViewModel()
 
     NavHost(navController = navController, startDestination = EventListScreenDestination) {
         composable(EventListScreenDestination) {
-            EventListScreen(viewmodel, navtoEvent = {
-                navController.navigate(EventScreenDestination)
-            })
-        }
-        composable(EventScreenDestination) {
-            EventScreen(viewmodel, navBack = {
+            EventListScreen(getViewModel(), navtoEvent = {
+                //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
                 navController.navigate(EventListScreenDestination)
             })
         }
+        /*composable(EventScreenDestination) {
+            EventScreen(viewmodel, navBack = {
+                navController.navigate(EventListScreenDestination)
+            })
+        }*/
     }
 }

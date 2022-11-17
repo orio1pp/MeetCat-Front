@@ -6,5 +6,8 @@ import retrofit2.http.Path
 
 interface ChatApi {
     @GET("chats/{chatId}")
-    suspend fun getChatData(@Path("chatId") chatId: Int): Response<EventDetailsData>
+    suspend fun getChatData(@Path("chatId") chatId: Int): Response<ChatDetailsResponse>
+
+    @GET("chats")
+    suspend fun getAllChats(): List<ChatDetailsResponse>
 }

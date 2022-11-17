@@ -2,7 +2,10 @@ package com.pes.meetcatui.feature_chat.domain
 
 import com.pes.meetcatui.feature_event.Resource /* canviar aixooooo*/
 import com.pes.meetcatui.feature_chat.data.DataPreferences
+import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.network.ChatApi
+import com.pes.meetcatui.network.ChatDetailsResponse
+import com.pes.meetcatui.network.EventDetailsData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,12 +26,14 @@ class DataRepositoryImpl(
         }
     }
 
-    override fun getChat(chatId: Int): Flow<Resource<Message>> = flow {
+    private val chatList = dataPreferences.getChatList()
+
+    override fun getChat(chatId: Int): Flow<Resource<Chat>> = flow {
         try {
             emit(Resource.Loading())
             val apiResponse = chatApi.getChatData(chatId)
             if (apiResponse.isSuccessful) {
-                val result = buildEvent(apiResponse.body()!!)
+                val result = buildChat(apiResponse.body()!!)
                 emit(Resource.Success(result))
             } else {
                 emit(Resource.Error("Api is unsuccessful"))
@@ -43,6 +48,35 @@ class DataRepositoryImpl(
     }
 
     override suspend fun downloadData() {
-        TODO("Not yet implemented")
+        val chat = getChatsData()
+    }
+
+    private suspend fun getChatsData(): List<ChatDetailsResponse> {
+        try {
+            return chatApi.getAllChats()
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
+    override fun getChatList(): Flow<List<Chat>> = chatList
+
+    private fun buildChat(
+        chatData: ChatDetailsResponse,
+    ) = Chat(
+        chatId = chatData.chatId,
+        username = chatData.username,
+        messages = chatData.messages,
+    )
+
+    private fun buildChatList(
+        chatListData: List<ChatDetailsResponse>
+    ) : List<Chat> {
+        val result = mutableListOf<Chat>()
+        for (chat in chatListData)
+        {
+            result.add(buildChat(chat))
+        }
+        return(result)
     }
 }

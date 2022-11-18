@@ -3,19 +3,26 @@ package com.pes.meetcatui.feature_chat.presentation
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import java.util.concurrent.Flow
+import androidx.lifecycle.viewModelScope
+import com.pes.meetcatui.feature_chat.domain.DataRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 
-class ChatListViewModel : ViewModel() {
-    private val _friends = mutableStateOf(listOf(""))
-    val friends: State<List<String>> = _friends
+class ChatListViewModel(dataRepository: DataRepository) : ViewModel(
 
-    fun init() {
-        _friends.value = emptyList()
+) {
+    val dataRepository = dataRepository
+    val _chat = mutableStateOf(ChatScreenState())
 
-        _friends.value += "a"
-        _friends.value += "b"
-        _friends.value += "c"
-        _friends.value += "d"
-        _friends.value += "e"
+    val chatList = dataRepository.getChatList().mapLatest { chats ->
+        chats.asSequence().sortedBy { it.chatId }.toList()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    fun getChat(id: Int) {
+        _chat.value = ChatScreenState(
+            data = chatList.value.get(id - 1),
+        )
+        println("break")
     }
 }

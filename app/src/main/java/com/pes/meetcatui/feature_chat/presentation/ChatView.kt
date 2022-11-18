@@ -27,12 +27,12 @@ import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview
+//@Preview
 @Composable
 fun ChatScreen(
-    //viewModel: ChatListViewModel,
+    viewModel: ChatListViewModel,
 ) {
-    val viewModel = ChatViewModel()
+    //val viewModel = ChatViewModel(get())
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -42,7 +42,7 @@ fun ChatScreen(
         ) {
             item {
                 ChatHeader(username = "Oriol")
-            }
+            }/*
             viewModel.init()
             item {
                 for (message in viewModel.messages.value) {
@@ -53,7 +53,7 @@ fun ChatScreen(
                         MessageReceived(date = message.date.toString(), text = message.text)
                     }
                 }
-            }
+            }*/
         }
         Row (
             modifier = Modifier
@@ -62,7 +62,7 @@ fun ChatScreen(
                 .fillMaxHeight(0.2F),
             verticalAlignment = Alignment.Bottom
         ) {
-            Texting(viewModel = viewModel)
+            //Texting(viewModel = viewModel)
         }
         Row (
             modifier = Modifier.fillMaxHeight(0.2F),

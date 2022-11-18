@@ -8,6 +8,8 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
@@ -16,29 +18,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.commons.presentation.Navigation
+import com.pes.meetcatui.feature_chat.domain.DataRepository
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
 
-@Preview
 @Composable
 fun ChatListScreen(
-    //viewModel: ChatListViewModel,
+    viewModel: ChatListViewModel,
+    navtoChat: () -> Unit,
 ) {
-    val viewModel = ChatListViewModel()
+
+    val chatList by viewModel.chatList.collectAsState()
+
     Surface(
         modifier = Modifier.fillMaxSize(),
+        color = Background,
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
         ) {
 
-            viewModel.init()
             item {
-                for (friend in viewModel.friends.value) {
+                for (chat in chatList) {
                     Row {
-                        Chat(sender = friend, lastMessage = "")
+                        Chat(sender = chat.username, lastMessage = chat.messages.get(chat.messages.size - 1).text)
                     }
                 }
             }

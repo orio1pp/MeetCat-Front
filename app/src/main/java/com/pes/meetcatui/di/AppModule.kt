@@ -1,5 +1,7 @@
 package com.pes.meetcatui.di
 
+import com.pes.meetcatui.feature_chat.presentation.ChatListViewModel
+import com.pes.meetcatui.feature_chat.presentation.ChatViewModel
 import com.pes.meetcatui.feature_event.presentation.EventViewModel
 import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import kotlinx.coroutines.SupervisorJob
@@ -16,6 +18,17 @@ val appModule = module {
     }
     viewModel {
         EventListViewModel(
+            dataRepository = get(),
+        )
+    }
+
+    viewModel {
+        ChatViewModel(
+            //dataRepository = get(),
+        )
+    }
+    viewModel {
+        ChatListViewModel(
             dataRepository = get(),
         )
     }

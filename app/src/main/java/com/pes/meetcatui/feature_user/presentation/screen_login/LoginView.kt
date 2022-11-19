@@ -3,8 +3,6 @@ package com.pes.meetcatui.feature_user.presentation.screen_login
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
@@ -35,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -106,7 +104,8 @@ class LoginView : ComponentActivity() {
                     }
                     item {
                         Row(
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
                                 .padding(horizontal = 48.dp)
                                 .padding(top = 16.dp),
                         ) {
@@ -307,6 +306,8 @@ class LoginView : ComponentActivity() {
     @Composable
     fun CustomImage(
         image: Int
+        //51:79:f9:66:0d:b0:ef:6b:4b:7f:60:b1:3e:8f:ec:64:ca:0b:7e:32
+
     ) {
         Image(
             painter = painterResource(id = image),
@@ -394,13 +395,18 @@ class LoginView : ComponentActivity() {
                 finish()
             }
         }
+
     }
 
     override fun onStart() {
         super.onStart()
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {
-            //startActivity(Intent(this, MainActivity::class.java))
-            //finish()
+            Log.d("Logged!","Logging in as previous logged account")
+            SavedPreference.getEmail(this)?.let { Log.d("Email: ", it) }
+            SavedPreference.getUsername(this)?.let { Log.d("Email: ", it) }
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
     }
+
 }

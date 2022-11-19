@@ -57,6 +57,10 @@ android {
     }
 }
 
+task prepareKotlinBuildScriptModel {
+
+}
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

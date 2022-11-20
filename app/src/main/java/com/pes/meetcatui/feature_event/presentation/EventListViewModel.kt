@@ -21,11 +21,11 @@ class EventListViewModel(
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvents().collect { resource ->
+            dataRepository.getEvents(_eventList.value.page).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         _eventList.value = EventListScreenState(
-                            data = resource.data
+                            data = resource.data!!.events
                         )
                     }
                     is Resource.Error -> {

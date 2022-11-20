@@ -129,7 +129,7 @@ fun EventView(
             EventData(
                 event.description,
                 event.endDate,
-                event.placeName ?: event.address
+                event.address ?: ""
             )
         }
         Row(

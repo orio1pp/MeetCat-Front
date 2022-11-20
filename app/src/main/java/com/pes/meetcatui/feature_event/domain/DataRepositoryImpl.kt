@@ -3,6 +3,7 @@ package com.pes.meetcatui.feature_event.domain
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
+import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -26,12 +27,13 @@ class DataRepositoryImpl (
 
     //private val eventList = dataPreferences.getEventList()
 
-    override fun getEvents(): Flow<Resource<List<Event>>> = flow {
+    override fun getEvents(pageNum:Int): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
-            val apiResponse = meetcatApi.getEvents()
+            val apiResponse = meetcatApi.getEvents(pageNum,20)
             if (apiResponse.isSuccessful) {
                 val result = buildEventList(apiResponse.body()!!)
+
                 emit(Resource.Success(result))
             } else {
                 emit(Resource.Error("Api is unsuccessful"))
@@ -63,14 +65,15 @@ class DataRepositoryImpl (
     //override fun getEventList(): Flow<List<Event>> = eventList
 
     private fun buildEventList(
-        eventListData: List<EventDetailsData>
-    ) : List<Event> {
-        val result = mutableListOf<Event>()
-        for (event in eventListData)
+        eventsData: EventsData
+    ) : EventPage {
+        val eventList = mutableListOf<Event>()
+        for (event in eventsData.events)
         {
-            result.add(buildEvent(event))
+            eventList.add(buildEvent(event))
         }
-        return(result)
+        val eventPage = EventPage(eventList, eventsData.page!!)
+        return(eventPage)
     }
 
     private fun buildEvent(

@@ -8,5 +8,6 @@ data class EventListScreenState(
     val hasError: Boolean = false,
     val errorMessage: String? = null,
     val isDetailsSelected: Boolean = false,
-    val eventDetailsSelected: Event? = null
+    val eventDetailsSelected: Event? = null,
+    val page: Int = 0,
 )

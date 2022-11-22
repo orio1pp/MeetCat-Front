@@ -30,7 +30,7 @@ fun EventListScreen(
     viewModel: EventListViewModel,
     navtoEvent: () -> Unit,
 ) {
-    val eventList by viewModel._eventList
+    val eventList by viewModel.eventList
 
     if (eventList.isLoading) {
         Column(

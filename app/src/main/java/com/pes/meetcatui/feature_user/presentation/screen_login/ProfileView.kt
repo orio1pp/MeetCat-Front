@@ -82,8 +82,8 @@ class ProfileView : ComponentActivity() {
             notification.value = ""
         }
 
-        var name by rememberSaveable { mutableStateOf("default name") }
-        var username by rememberSaveable { mutableStateOf("default username") }
+        var name by rememberSaveable { mutableStateOf(SavedPreference.getEmail(this)) }
+        var username by rememberSaveable { mutableStateOf(SavedPreference.getUsername(this)) }
         var bio by rememberSaveable { mutableStateOf("default bio") }
 
 
@@ -117,14 +117,16 @@ class ProfileView : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Name", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
+                name?.let {
+                    TextField(
+                        value = it,
+                        onValueChange = { name = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            textColor = Color.Black
+                        )
                     )
-                )
+                }
             }
 
 
@@ -136,14 +138,16 @@ class ProfileView : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Username", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
+                username?.let {
+                    TextField(
+                        value = it,
+                        onValueChange = { username = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            textColor = Color.Black
+                        )
                     )
-                )
+                }
             }
 
 
@@ -246,6 +250,9 @@ class ProfileView : ComponentActivity() {
         FirebaseAuth.getInstance().signOut();
         val intent= Intent(this, LoginView::class.java)
         startActivity(intent)
+        SavedPreference.setEmail(this, "")
+        SavedPreference.setUsername(this, "")
+
         finish()
     }
 

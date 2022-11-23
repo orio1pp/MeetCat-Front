@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -72,9 +71,12 @@ fun EventListScreen(
             EventListScreenContent(viewModel = viewModel, eventList = eventList.data!!) { event ->
                 viewModel.setSelectedEvent(event)
             }
-            switchViewButtonmap(navToMap)
         }
     }
+
+    navToMap.switchViewButton(
+        icon = Icons.Filled.LocationOn,
+    )
 }
 
 @Composable

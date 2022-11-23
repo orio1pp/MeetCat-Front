@@ -2,6 +2,10 @@ package com.pes.meetcatui.feature_event.presentation
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -21,6 +25,7 @@ import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.math.roundToInt
 
 const val EventListScreenDestination = "EventList"
@@ -69,6 +74,31 @@ fun EventListScreen(
 }
 
 @Composable
+fun InfiniteListHandler(
+    listState: LazyListState,
+    buffer: Int = 2,
+    onLoadMore: () -> Unit
+) {
+    val loadMore = remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsNumber = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex > (totalItemsNumber - buffer)
+        }
+    }
+
+    LaunchedEffect(loadMore) {
+        snapshotFlow { loadMore.value }
+            .distinctUntilChanged()
+            .collect {
+                onLoadMore()
+            }
+    }
+}
+
+@Composable
 fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>, onEventClick: (event: Event) -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -84,6 +114,7 @@ fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>
                 eventList = eventList!!,
                 { }, //navtoEvent
                 onEventClick = onEventClick,
+                onLoadMore = { viewModel.loadMore() }
             )
             Row {
                 Text(text = "MENU SELECCIÓN DE MENU DE MENU")
@@ -129,7 +160,7 @@ fun EventView(
             EventData(
                 event.description,
                 event.endDate,
-                event.placeName ?: event.address
+                event.address ?: ""
             )
         }
         Row(
@@ -266,17 +297,20 @@ private fun EventListScreen(
     viewModel: EventListViewModel,
     eventList: List<Event>,
     navtoEvent: () -> Unit,
-    onEventClick: (event: Event) -> Unit
+    onEventClick: (event: Event) -> Unit,
+    onLoadMore: () -> Unit
 ) {
-    Column(
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState,
         modifier = Modifier
             .height(620.dp)
-            .verticalScroll(state = ScrollState(0))
+            //.verticalScroll(state = ScrollState(0))
     ) {
-        for (event in eventList) {
+        //for (event in eventList) {
 
-            val startDateComplete = TimeFormatter().strLocalDateTime_to_DateTime(event.startDate)
-
+            //val startDateComplete = TimeFormatter().strLocalDateTime_to_DateTime(event.startDate)
+        items(eventList) { event ->
             EventView(
                 event = event,
                 navtoEvent = navtoEvent,
@@ -284,5 +318,11 @@ private fun EventListScreen(
                 onEventClick = onEventClick
             )
         }
+
+
+        //}
+    }
+    InfiniteListHandler(listState = listState) {
+        onLoadMore()
     }
 }

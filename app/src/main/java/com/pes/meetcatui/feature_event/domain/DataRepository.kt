@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
     //fun getEvent(eventId: Int): Flow<Resource<Event>>
-    fun getEvents(): Flow<Resource<List<Event>>>
+    fun getEvents(pageNum:Int): Flow<Resource<EventPage>>
     //suspend fun downloadData()
 }
 

@@ -122,7 +122,7 @@ fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>
             EventList(
                 viewModel,
                 eventList = eventList!!,
-                { }, //navtoEvent
+                onEventClick= onEventClick, //navtoEvent
                 onLoadMore = { viewModel.loadMore() },
             )
             Row {

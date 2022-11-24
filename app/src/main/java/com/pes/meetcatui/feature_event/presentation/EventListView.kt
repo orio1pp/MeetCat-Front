@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.common.BackButton
+import com.pes.meetcatui.common.ContinuousSlider
 import com.pes.meetcatui.feature_event.TimeFormatter
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.Background
@@ -242,28 +243,6 @@ private fun EventData(desc: String?, date: String?, location: String) {
             color = LightGray,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-fun ContinuousSlider(start: Float, end: Float) {
-    val range = start..end
-    var sliderPosition by remember { mutableStateOf(start) }
-    Row {
-        Text(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
-            text = sliderPosition.roundToInt().toString(),
-            style = typo.body1,
-        )
-        Slider(
-            value = sliderPosition,
-            valueRange = range,
-            onValueChange = { sliderPosition = it },
-            colors = SliderDefaults.colors(
-                thumbColor = Highlight,
-                activeTrackColor = Highlight,
-            ),
         )
     }
 }

@@ -12,4 +12,8 @@
     <string name="msg_loc">La localització és important. Siusplau accepti els permisos.</string>
     <string name="loc_necessary">El permís de localització és necessari per que aquesta funcionalitat funcioni. Siusplau permet l\'accés.</string>
     <string name="permission">Demana el permís</string>
+    <string name="name">Nom</string>
+    <string name="subtitle">Subtítol</string>
+    <string name="place">Lloc</string>
+    <string name="address">Direcció</string>
 </resources>

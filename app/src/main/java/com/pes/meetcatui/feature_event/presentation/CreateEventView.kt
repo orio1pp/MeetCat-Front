@@ -1,12 +1,16 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
 
 const val CreateEventDestination = "CreateEvent"
@@ -21,13 +25,14 @@ address = "C. Jordi Girona 12",
 link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
 */
 
-val backgroundColor = Color(0xFFF5DDE0)
-val focusedLabelColor = Color(0xFF00FFFF)
-val unfocusedLabelColor = Color(0xFFED3419)
+val backgroundColor = Color(0xFFD0D0D0)
+val focusedLabelColor = Color(0xFF000000)
+val unfocusedLabelColor = Color(0xFF707070)
 
 @Composable
 fun CreateEventView(
-    viewModel: CreateEventViewModel
+    viewModel: CreateEventViewModel,
+    navToEvents: () -> Unit,
 ) {
     var name: String by remember { mutableStateOf("") }
     var subtitle: String by remember { mutableStateOf("") }
@@ -44,59 +49,59 @@ fun CreateEventView(
         color = Background,
     ) {
         Column(
-            Modifier.padding(vertical = 16.dp),
+            Modifier.padding(vertical = 16.dp)
+                .verticalScroll(state = ScrollState(0)),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Name"
+                var labelText = stringResource(R.string.name)
 
                 name = TextFieldLabeled(name, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Subtitle"
+                var labelText = stringResource(R.string.subtitle)
 
                 subtitle = TextFieldLabeled(subtitle, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Description"
+                var labelText = stringResource(R.string.description)
 
                 description = TextFieldLabeled(description, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Start date"
+                var labelText = stringResource(R.string.from)
 
                 startDate = TextFieldLabeled(startDate, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "End date"
+                var labelText = stringResource(R.string.to)
 
                 endDate = TextFieldLabeled(endDate, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Location"
+                var labelText = stringResource(R.string.location)
 
                 location = TextFieldLabeled(location, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Place"
+                var labelText = stringResource(R.string.place)
 
                 place = TextFieldLabeled(place, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Address"
+                var labelText = stringResource(R.string.address)
 
                 address = TextFieldLabeled(address, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = "Link"
+                var labelText = stringResource(R.string.link)
 
                 link = TextFieldLabeled(link, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
                 Button(
                     onClick = {
-                        println("hello")
-                        viewModel.createEvent(
+                        if (viewModel.createEvent(
                             name,
                             subtitle,
                             description,
@@ -106,11 +111,14 @@ fun CreateEventView(
                             place,
                             address,
                             link
-                        )
+                        ))
+                        {
+                            navToEvents();
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = backgroundColor,
-                        contentColor = unfocusedLabelColor
+                        contentColor = focusedLabelColor
                     )
                 ) {
                     Text("Create")

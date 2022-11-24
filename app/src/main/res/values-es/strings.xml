@@ -12,4 +12,8 @@
     <string name="msg_loc">La localización es importante para la aplicación. Porfavor acepte los permisos.</string>
     <string name="loc_necessary">El permiso de localización es necessario para esta funcionalidad. Porfavor permita el acceso.</string>
     <string name="permission">Pide el permiso.</string>
+    <string name="name">Nombre</string>
+    <string name="subtitle">Subtitulo</string>
+    <string name="place">Sitio</string>
+    <string name="address">Dirección</string>
 </resources>

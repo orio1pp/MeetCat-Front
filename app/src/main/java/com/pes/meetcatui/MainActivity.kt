@@ -59,7 +59,9 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
 
     NavHost(navController = navController, startDestination = CreateEventDestination) {
         composable(CreateEventDestination) {
-            CreateEventView(getViewModel())
+            CreateEventView(getViewModel(), navToEvents =  {
+                navController.navigate(EventListScreenDestination)
+            })
         }
         /*composable(EventScreenDestination) {
             EventScreen(viewmodel, navBack = {

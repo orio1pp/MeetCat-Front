@@ -53,12 +53,8 @@ class DataRepositoryImpl (
         try {
             val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
             println(eventSerial)
-            val apiResponse = meetcatApi.createEvent(eventSerial);
-            if (apiResponse.isSuccessful) {
-                return ("Api is successful")
-            } else {
-                return ("Api is unsuccessful")
-            }
+            meetcatApi.createEvent(eventSerial);
+            return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
         } catch (e: TimeoutException) {

@@ -8,4 +8,7 @@
     <string name="to">"To"</string>
     <string name="at">at </string>
     <string name="at_singular">at </string>
+    <string name="msg_loc">The location is important for this app. Please grant the permission</string>
+    <string name="loc_necessary">Location permission required for this feature to be available. Please grant the permission</string>
+    <string name="permission">Request permission</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
@@ -99,31 +100,70 @@ fun CreateEventView(
                 link = TextFieldLabeled(link, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                Button(
-                    onClick = {
-                        if (viewModel.createEvent(
-                            name,
-                            subtitle,
-                            description,
-                            startDate,
-                            endDate,
-                            location,
-                            place,
-                            address,
-                            link
-                        ))
-                        {
-                            navToEvents();
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = backgroundColor,
-                        contentColor = focusedLabelColor
+                CreateButton(
+                    viewModel,
+                    name,
+                    subtitle,
+                    description,
+                    startDate,
+                    endDate,
+                    location,
+                    place,
+                    address,
+                    link,
+                    navToEvents
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CreateButton(
+    viewModel: CreateEventViewModel,
+    name: String,
+    subtitle: String,
+    description: String,
+    startDate: String,
+    endDate: String,
+    location: String,
+    place: String,
+    address: String,
+    link: String,
+    navToEvents: () -> Unit
+) {
+    Column (horizontalAlignment = Alignment.CenterHorizontally) {
+        var showError: Boolean by remember { mutableStateOf(false) };
+        if (showError) {
+            Text(stringResource(R.string.createEventErrorFieldsEmpty),
+            color = ErrorRed)
+        }
+        Button(
+            onClick = {
+                if (viewModel.createEvent(
+                        name,
+                        subtitle,
+                        description,
+                        startDate,
+                        endDate,
+                        location,
+                        place,
+                        address,
+                        link
                     )
                 ) {
-                    Text("Create")
+                    navToEvents();
+                } else {
+                    showError = true
                 }
-            }
+            },
+            Modifier.padding(vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = backgroundColor,
+                contentColor = focusedLabelColor
+            )
+        ) {
+            Text("Create")
         }
     }
 }

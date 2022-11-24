@@ -16,4 +16,5 @@
     <string name="subtitle">Subtítol</string>
     <string name="place">Lloc</string>
     <string name="address">Direcció</string>
+    <string name="createEventErrorFieldsEmpty">Has deixat paràmetres sense omplir, siusplau ompliu tots els paràmetres</string>
 </resources>

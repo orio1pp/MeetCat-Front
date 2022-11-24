@@ -16,7 +16,7 @@ class EventListViewModel(
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvents(1).collect { resource ->
+            dataRepository.getEvents(0).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(

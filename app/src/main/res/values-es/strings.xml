@@ -16,4 +16,5 @@
     <string name="subtitle">Subtitulo</string>
     <string name="place">Sitio</string>
     <string name="address">Dirección</string>
+    <string name="createEventErrorFieldsEmpty">Hay parámetros sin rellenar, por favor rellene todos los parámetros</string>
 </resources>

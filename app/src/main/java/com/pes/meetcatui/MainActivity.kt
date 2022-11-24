@@ -63,10 +63,18 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
                 navController.navigate(EventListScreenDestination)
             })
         }
-        /*composable(EventScreenDestination) {
-            EventScreen(viewmodel, navBack = {
-                navController.navigate(EventListScreenDestination)
+        composable(MapScreenDestination) {
+            MapScreen(
+                viewModel = getViewModel(),
+                navToEventList = { navController.navigate(EventListScreenDestination) },
+                fusedLocationClient = fusedLocationClient
+            )
+        }
+        composable(EventListScreenDestination) {
+            EventListScreen(getViewModel(), navToMap = {
+                //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
+                navController.navigate(MapScreenDestination)
             })
-        }*/
+        }
     }
 }

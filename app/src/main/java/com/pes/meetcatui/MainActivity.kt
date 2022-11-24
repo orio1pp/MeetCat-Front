@@ -16,7 +16,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.pes.meetcatui.feature_event.presentation.*
-import org.koin.androidx.compose.viewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +56,7 @@ class MainActivity : ComponentActivity() {
 private fun App(fusedLocationClient: FusedLocationProviderClient) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = CreateEventDestination) {
+    NavHost(navController = navController, startDestination = MapScreenDestination) {
         composable(CreateEventDestination) {
             CreateEventView(getViewModel(), navToEvents =  {
                 navController.navigate(EventListScreenDestination)
@@ -74,6 +73,8 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
             EventListScreen(getViewModel(), navToMap = {
                 //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
                 navController.navigate(MapScreenDestination)
+            }, navToCreateEvent = {
+                navController.navigate(CreateEventDestination)
             })
         }
     }

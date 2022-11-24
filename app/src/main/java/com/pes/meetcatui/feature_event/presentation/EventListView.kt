@@ -1,6 +1,5 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,9 +8,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,14 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.ContinuousSlider
-import com.pes.meetcatui.feature_event.TimeFormatter
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.Background
-import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlin.math.roundToInt
 
 const val EventListScreenDestination = "EventList"
 
@@ -42,6 +38,7 @@ const val EventListScreenDestination = "EventList"
 fun EventListScreen(
     viewModel: EventListViewModel,
     navToMap: () -> Unit,
+    navToCreateEvent: () -> Unit,
 ) {
     val eventList by viewModel.eventList
 
@@ -74,15 +71,16 @@ fun EventListScreen(
                 viewModel.setIsSelected()
             }
         } else {
-            EventListScreenContent(viewModel = viewModel, eventList = eventList.data!!) { event ->
+            EventListScreenContent(
+                viewModel = viewModel,
+                eventList = eventList.data!!,
+                navToMap = navToMap,
+                navToCreateEvent = navToCreateEvent
+            ) { event ->
                 viewModel.setSelectedEvent(event)
             }
         }
     }
-
-    navToMap.switchViewButton(
-        icon = Icons.Filled.LocationOn,
-    )
 }
 
 @Composable
@@ -111,7 +109,7 @@ fun InfiniteListHandler(
 }
 
 @Composable
-fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>, onEventClick: (event: Event) -> Unit) {
+fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>, navToMap: () -> Unit, navToCreateEvent: () -> Unit, onEventClick: (event: Event) -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
@@ -121,15 +119,19 @@ fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>
         ) {
             FiltersSelection()
 
-            EventListScreen(
+            EventList(
                 viewModel,
                 eventList = eventList!!,
                 { }, //navtoEvent
-                onEventClick = onEventClick,
-                onLoadMore = { viewModel.loadMore() }
+                onLoadMore = { viewModel.loadMore() },
             )
             Row {
-                Text(text = "MENU SELECCIÓN DE MENU DE MENU")
+                navToMap.switchViewButton(
+                    icon = Icons.Filled.LocationOn,
+                )
+                navToCreateEvent.switchViewButton(
+                    icon = Icons.Filled.Create,
+                )
             }
         }
     }
@@ -148,7 +150,6 @@ fun EventDetailsScreen(
 @Composable
 fun EventView(
     event: Event,
-    navtoEvent: () -> Unit,
     viewModel: EventListViewModel,
     onEventClick: (event: Event) -> Unit,
 ) {
@@ -283,34 +284,25 @@ fun Test() {
 
 
 @Composable
-private fun EventListScreen(
+private fun EventList(
     viewModel: EventListViewModel,
     eventList: List<Event>,
-    navtoEvent: () -> Unit,
     onEventClick: (event: Event) -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
 ) {
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .height(620.dp)
-            //.verticalScroll(state = ScrollState(0))
+            .height(590.dp)
     ) {
-        //for (event in eventList) {
-
-            //val startDateComplete = TimeFormatter().strLocalDateTime_to_DateTime(event.startDate)
         items(eventList) { event ->
             EventView(
                 event = event,
-                navtoEvent = navtoEvent,
                 viewModel = viewModel,
                 onEventClick = onEventClick
             )
         }
-
-
-        //}
     }
     InfiniteListHandler(listState = listState) {
         onLoadMore()

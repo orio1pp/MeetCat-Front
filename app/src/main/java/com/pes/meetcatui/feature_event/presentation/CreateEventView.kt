@@ -4,6 +4,8 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,70 +51,75 @@ fun CreateEventView(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
-        Column(
-            Modifier.padding(vertical = 16.dp)
-                .verticalScroll(state = ScrollState(0)),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.name)
+        Row {
+            navToEvents.switchViewButton(icon = Icons.Filled.ArrowBack)
+            Column(
+                Modifier
+                    .padding(vertical = 16.dp)
+                    .verticalScroll(state = ScrollState(0)),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
 
-                name = TextFieldLabeled(name, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.subtitle)
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.name)
 
-                subtitle = TextFieldLabeled(subtitle, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.description)
+                    name = TextFieldLabeled(name, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.subtitle)
 
-                description = TextFieldLabeled(description, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.from)
+                    subtitle = TextFieldLabeled(subtitle, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.description)
 
-                startDate = TextFieldLabeled(startDate, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.to)
+                    description = TextFieldLabeled(description, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.from)
 
-                endDate = TextFieldLabeled(endDate, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.location)
+                    startDate = TextFieldLabeled(startDate, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.to)
 
-                location = TextFieldLabeled(location, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.place)
+                    endDate = TextFieldLabeled(endDate, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.location)
 
-                place = TextFieldLabeled(place, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.address)
+                    location = TextFieldLabeled(location, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.place)
 
-                address = TextFieldLabeled(address, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                var labelText = stringResource(R.string.link)
+                    place = TextFieldLabeled(place, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.address)
 
-                link = TextFieldLabeled(link, labelText)
-            }
-            Row(Modifier.padding(vertical = 8.dp)) {
-                CreateButton(
-                    viewModel,
-                    name,
-                    subtitle,
-                    description,
-                    startDate,
-                    endDate,
-                    location,
-                    place,
-                    address,
-                    link,
-                    navToEvents
-                )
+                    address = TextFieldLabeled(address, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    var labelText = stringResource(R.string.link)
+
+                    link = TextFieldLabeled(link, labelText)
+                }
+                Row(Modifier.padding(vertical = 8.dp)) {
+                    CreateButton(
+                        viewModel,
+                        name,
+                        subtitle,
+                        description,
+                        startDate,
+                        endDate,
+                        location,
+                        place,
+                        address,
+                        link,
+                        navToEvents
+                    )
+                }
             }
         }
     }

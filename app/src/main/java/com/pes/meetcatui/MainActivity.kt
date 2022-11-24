@@ -21,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.pes.meetcatui.feature_event.presentation.*
+import org.koin.androidx.compose.viewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -63,7 +64,7 @@ private fun App() {
 
     NavHost(navController = navController, startDestination = CreateEventDestination) {
         composable(CreateEventDestination) {
-            CreateEventView()
+            CreateEventView(getViewModel())
         }
         /*composable(EventScreenDestination) {
             EventScreen(viewmodel, navBack = {

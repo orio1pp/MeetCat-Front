@@ -2,7 +2,6 @@ package com.pes.meetcatui.feature_event.presentation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,66 +26,88 @@ val focusedLabelColor = Color(0xFF00FFFF)
 val unfocusedLabelColor = Color(0xFFED3419)
 
 @Composable
-fun CreateEventView () {
+fun CreateEventView(
+    viewModel: CreateEventViewModel
+) {
+    var name: String by remember { mutableStateOf("") }
+    var subtitle: String by remember { mutableStateOf("") }
+    var description: String by remember { mutableStateOf("") }
+    var startDate: String by remember { mutableStateOf("") }
+    var endDate: String by remember { mutableStateOf("") }
+    var location: String by remember { mutableStateOf("") }
+    var place: String by remember { mutableStateOf("") }
+    var address: String by remember { mutableStateOf("") }
+    var link: String by remember { mutableStateOf("") }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
-        Column (
+        Column(
             Modifier.padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Name"
 
-                TextFieldLabeled(previewText, labelText)
+                name = TextFieldLabeled(name, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Subtitle"
 
-                TextFieldLabeled(previewText, labelText)
+                subtitle = TextFieldLabeled(subtitle, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Description"
 
-                TextFieldLabeled(previewText, labelText)
+                description = TextFieldLabeled(description, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Start date"
 
-                TextFieldLabeled(previewText, labelText)
+                startDate = TextFieldLabeled(startDate, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "End date"
 
-                TextFieldLabeled(previewText, labelText)
+                endDate = TextFieldLabeled(endDate, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
+                var labelText = "Location"
+
+                location = TextFieldLabeled(location, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = "Place"
 
-                TextFieldLabeled(previewText, labelText)
+                place = TextFieldLabeled(place, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Address"
 
-                TextFieldLabeled(previewText, labelText)
+                address = TextFieldLabeled(address, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
-                var previewText = "";
                 var labelText = "Link"
 
-                TextFieldLabeled(previewText, labelText)
+                link = TextFieldLabeled(link, labelText)
             }
             Row(Modifier.padding(vertical = 8.dp)) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        println("hello")
+                        viewModel.createEvent(
+                            name,
+                            subtitle,
+                            description,
+                            startDate,
+                            endDate,
+                            location,
+                            place,
+                            address,
+                            link
+                        )
+                    },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = backgroundColor,
                         contentColor = unfocusedLabelColor
@@ -100,12 +121,12 @@ fun CreateEventView () {
 }
 
 @Composable
-private fun TextFieldLabeled(previewText: String, labelText: String) {
-    var eventDate: String by remember { mutableStateOf(previewText) }
+private fun TextFieldLabeled(previewText: String, labelText: String): String {
+    var text: String by remember { mutableStateOf(previewText) }
     TextField(
-        value = eventDate,
+        value = text,
         onValueChange = { newText ->
-            eventDate = newText
+            text = newText
         },
         textStyle = typo.h4,
         label = {
@@ -117,4 +138,5 @@ private fun TextFieldLabeled(previewText: String, labelText: String) {
             unfocusedLabelColor = unfocusedLabelColor
         ),
     )
+    return text;
 }

@@ -1,7 +1,7 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.feature_event.data.DataPreferences
+import com.pes.meetcatui.feature_user.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
@@ -14,9 +14,7 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 
 class DataRepositoryImpl (
-    appScope: CoroutineScope,
     private val meetcatApi: MeetCatApi,
-    private val dataPreferences: DataPreferences,
 ) : DataRepository {
     /*
     init {

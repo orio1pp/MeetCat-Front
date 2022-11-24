@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -36,8 +37,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pes.meetcatui.*
 import com.pes.meetcatui.R
+import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
+import com.pes.meetcatui.feature_user.domain.UserToken
+import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.ui.theme.*
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 
 class LoginView : ComponentActivity() {
@@ -45,8 +50,6 @@ class LoginView : ComponentActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     val Req_Code: Int = 123
     val firebaseAuth = FirebaseAuth.getInstance()
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +59,7 @@ class LoginView : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LoginScreen(getViewModel())
+                    LoginScreen()
                 }
             }
         }
@@ -71,9 +74,8 @@ class LoginView : ComponentActivity() {
     //@Preview
     @Composable
     fun LoginScreen(
-        viewModel: LoginViewModel,
+        //viewModel: LoginViewModel,
     ) {
-        //val viewModel = LoginViewModel(DataRepositoryUsersImpl)
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -175,7 +177,7 @@ class LoginView : ComponentActivity() {
                         ) {
                             CustomButton(
                                 text = "Login", username = username,
-                                password = password, viewModel = viewModel
+                                password = password//, viewModel = viewModel
                             )
                         }
                     }
@@ -188,7 +190,7 @@ class LoginView : ComponentActivity() {
                             ) {
                             CustomButtonGoogle(
                                 text = "Google Login", username = username,
-                                password = password, viewModel = viewModel
+                                password = password//, viewModel = viewModel
                             )
                         }
                     }
@@ -199,7 +201,7 @@ class LoginView : ComponentActivity() {
                                 .padding(horizontal = 48.dp)
                                 .padding(top = 8.dp)
                         ) {
-                            WarningText(text = viewModel.warning.value)
+                            WarningText(text = "a"/*viewModel.warning.value*/)
                         }
                     }
                 }
@@ -245,11 +247,11 @@ class LoginView : ComponentActivity() {
         text: String,
         username: String,
         password: String,
-        viewModel: LoginViewModel
+        //viewModel: LoginViewModel
     ) {
         Button(
             onClick = {
-                viewModel.login(username = username, password = password)
+                //viewModel.login(username = username, password = password)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Highlight,
@@ -272,7 +274,7 @@ class LoginView : ComponentActivity() {
         text: String,
         username: String,
         password: String,
-        viewModel: LoginViewModel
+        //viewModel: LoginViewModel
     ) {
         Button(
             onClick = {

@@ -1,14 +1,28 @@
 package com.pes.meetcatui.feature_user.domain
 
+import com.pes.meetcatui.feature_user.data.DataPreferences
 import com.pes.meetcatui.network.MeetCatApi
-import com.pes.meetcatui.network.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class DataRepositoryUsersImpl(private val meetCatApi: MeetCatApi) : DataRepositoryUsers {
+class DataRepositoryUsersImpl(
+    val appScope: CoroutineScope,
+    val meetCatApi: MeetCatApi,
+    val dataPreferences: DataPreferences,
+) : DataRepositoryUsers {
+    init {
+        appScope.launch {
+            dataPreferences.setToken(UserToken("a", "b"))
+            downloadData()
+        }
+    }
 
-    override suspend fun login(username : String, password : String): UserToken {
+    override suspend fun login(username: String, password: String): UserToken {
         try {
-            return transformToToken(meetCatApi.login(username, password))
+            val userToken = transformToToken(meetCatApi.login(username, password))
+            dataPreferences.setToken(userToken)
+            return userToken
         } catch (e: Exception) {
             println("Exception: " + e.message)
         }
@@ -16,8 +30,14 @@ class DataRepositoryUsersImpl(private val meetCatApi: MeetCatApi) : DataReposito
     }
 
     private fun transformToToken(token: Response<UserToken>): UserToken {
-        return UserToken(token.body()?.access_token ?: "",
-            token.body()?.refresh_token ?: "")
+        return UserToken(
+            token.body()?.access_token ?: "",
+            token.body()?.refresh_token ?: ""
+        )
     }
 
+    suspend fun downloadData() {
+        println(dataPreferences.getAccessToken())
+        println(dataPreferences.getRefreshToken())
+    }
 }

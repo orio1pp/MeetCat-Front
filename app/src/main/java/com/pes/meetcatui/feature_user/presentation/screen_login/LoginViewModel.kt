@@ -4,11 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
+import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.feature_user.domain.UserToken
 import kotlinx.coroutines.launch
 
-class LoginViewModel(val dataRepo: DataRepositoryUsersImpl) : ViewModel() {
+class LoginViewModel(
+    val dataRepo: DataRepositoryUsers
+) : ViewModel() {
     private val _warning = mutableStateOf("")
     val warning: State<String> = _warning
 
@@ -16,18 +18,20 @@ class LoginViewModel(val dataRepo: DataRepositoryUsersImpl) : ViewModel() {
         viewModelScope.launch {
             if (username.isEmpty() || password.isEmpty()) {
                 _warning.value = "El nom d'usuari o la contrassenya son buïts."
+            } else {
+                val token = authenticate(username = username, password = password)
+                if (token.access_token.isEmpty() || token.refresh_token.isEmpty()) {
+                    _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
+                } else {
+                    println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                }
             }
-            else if (!authenticate(username = username, password = password)) {
-                _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
-            }
-            else println("increible")
         }
     }
 
-    private suspend fun authenticate(username: String, password: String): Boolean {
+    private suspend fun authenticate(username: String, password: String): UserToken {
         val token: UserToken = dataRepo.login(username, password)
-        println(token)
-        return (token.access_token.isNotEmpty() && token.refresh_token.isNotEmpty())
+        return token
     }
 
 }

@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_user.presentation.screen_login.NormalLoginScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -37,7 +38,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    App(fusedLocationClient)
+                    //App(fusedLocationClient)
+                    NormalLoginScreen(viewModel = getViewModel())
 
                     /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)

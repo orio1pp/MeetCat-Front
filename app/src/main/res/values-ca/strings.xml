@@ -9,4 +9,12 @@
     <string name="from">"Del "</string>
     <string name="at">"a les "</string>
     <string name="at_singular">a l\'</string>
+    <string name="msg_loc">La localització és important. Siusplau accepti els permisos.</string>
+    <string name="loc_necessary">El permís de localització és necessari per que aquesta funcionalitat funcioni. Siusplau permet l\'accés.</string>
+    <string name="permission">Demana el permís</string>
+    <string name="name">Nom</string>
+    <string name="subtitle">Subtítol</string>
+    <string name="place">Lloc</string>
+    <string name="address">Direcció</string>
+    <string name="createEventErrorFieldsEmpty">Has deixat paràmetres sense omplir, siusplau ompliu tots els paràmetres</string>
 </resources>

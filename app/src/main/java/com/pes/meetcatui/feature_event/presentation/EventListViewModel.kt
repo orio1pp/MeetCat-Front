@@ -16,11 +16,11 @@ class EventListViewModel(
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvents().collect { resource ->
+            dataRepository.getEvents(1).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(
-                            data = resource.data
+                            data = resource.data?.events as MutableList<Event>
                         )
                     }
                     is Resource.Error -> {
@@ -55,23 +55,24 @@ class EventListViewModel(
     }
 
     fun loadMore() {
-        if (_eventList.value.data != null && _eventList.value.data!!.size != 0 && _eventList.value.page > 0) {
+        if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
             viewModelScope.launch {
-                dataRepository.getEvents(_eventList.value.page).collect { resource ->
+                dataRepository.getEvents(eventList.value.page).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
-                            _eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
-                            _eventList.value = EventListScreenState(
-                                data = _eventList.value.data,
-                                page = _eventList.value.page + 1
+                            eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
+                            eventList.value = EventListScreenState(
+                                data = eventList.value.data,
+                                page = eventList.value.page + 1
                             )
                         }
                         is Resource.Error -> {
-                            _eventList.value = EventListScreenState(
+                            eventList.value = EventListScreenState(
                                 hasError = true,
                                 errorMessage = resource.message
                             )
                         }
+                        else -> {}
                     }
                 }
             }

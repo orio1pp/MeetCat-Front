@@ -1,9 +1,8 @@
 package com.pes.meetcatui.feature_user.presentation.screen_login
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
@@ -76,8 +74,9 @@ class LoginView : ComponentActivity() {
     fun LoginScreen(
         //viewModel: LoginViewModel,
     ) {
+        val viewModel: LoginViewModel =
 
-        val viewModel = LoginViewModel()
+            androidx.lifecycle.viewmodel.compose.viewModel(factory = LoginViewModelFactory(this.applicationContext as Application))
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -279,7 +278,7 @@ class LoginView : ComponentActivity() {
     ) {
         Button(
             onClick = {
-                signInGoogle()
+                signInGoogle(viewModel)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
@@ -351,9 +350,9 @@ class LoginView : ComponentActivity() {
         )
     }
 
-    private fun signInGoogle() {
+    private fun signInGoogle(viewModel: LoginViewModel) {
 
-        val signInIntent = mGoogleSignInClient.signInIntent
+        val signInIntent = viewModel.getGoogleClient().signInIntent
         startActivityForResult(signInIntent, Req_Code)
     }
 

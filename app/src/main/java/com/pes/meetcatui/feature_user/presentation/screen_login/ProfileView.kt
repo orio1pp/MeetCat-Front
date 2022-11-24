@@ -1,5 +1,6 @@
 package com.pes.meetcatui
 
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -7,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,8 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,56 +27,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
-import org.koin.androidx.compose.getViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
-import com.pes.meetcatui.feature_event.presentation.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat.startActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModel
+import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModelFactory
+//import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.ui.theme.typo
-
-
-class ProfileView : ComponentActivity() {
-
-        // declare the GoogleSignInClient
-        lateinit var mGoogleSignInClient: GoogleSignInClient
-        // val auth is initialized by lazy
-        private val auth by lazy {
-            FirebaseAuth.getInstance()
-        }
-
-
-
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContent {
-                MeetCatUITheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        ProfileScreen()
-                    }
-                }
-
-            }
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("818069305025-5vhb5ef5ddlekrhrnqa866fkum6cjbdn.apps.googleusercontent.com")
-                .requestEmail()
-                .build()
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-        }
 
 
 
@@ -92,8 +54,10 @@ class ProfileView : ComponentActivity() {
             notification.value = ""
         }
 
-        var name by rememberSaveable { mutableStateOf("default name") }
-        var username by rememberSaveable { mutableStateOf("default username") }
+        val context = LocalContext.current
+
+        var name by rememberSaveable { mutableStateOf(SavedPreference.getEmail(context)) }
+        var username by rememberSaveable { mutableStateOf(SavedPreference.getUsername(context)) }
         var bio by rememberSaveable { mutableStateOf("default bio") }
 
 
@@ -127,14 +91,16 @@ class ProfileView : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Name", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
+                name?.let {
+                    TextField(
+                        value = it,
+                        onValueChange = { name = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            textColor = Color.Black
+                        )
                     )
-                )
+                }
             }
 
 
@@ -146,14 +112,16 @@ class ProfileView : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Username", modifier = Modifier.width(100.dp))
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
+                username?.let {
+                    TextField(
+                        value = it,
+                        onValueChange = { username = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            textColor = Color.Black
+                        )
                     )
-                )
+                }
             }
 
 
@@ -232,9 +200,15 @@ class ProfileView : ComponentActivity() {
     @Composable
     fun CustomButtonTancarSessio() {
         val text = "Sign out"
+        val context = LocalContext.current
+        val viewModel: LoginViewModel =
+
+            viewModel(factory = LoginViewModelFactory(context.applicationContext as Application))
+
         Button(
             onClick = {
-                tancarSessio()
+                viewModel.tancarSessio()
+                context.startActivity(Intent(context, LoginView::class.java))
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
@@ -251,13 +225,6 @@ class ProfileView : ComponentActivity() {
         }
     }
 
-    fun tancarSessio() {
-        mGoogleSignInClient.signOut();
-        FirebaseAuth.getInstance().signOut();
-        val intent= Intent(this, LoginView::class.java)
-        startActivity(intent)
-        finish()
-    }
 
     @Preview(showBackground = true)
     @Composable
@@ -266,4 +233,3 @@ class ProfileView : ComponentActivity() {
             ProfileScreen()
         }
     }
-}

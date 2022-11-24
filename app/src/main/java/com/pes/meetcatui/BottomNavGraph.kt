@@ -1,6 +1,9 @@
 package com.pes.meetcatui
 
+import android.app.ListActivity
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
@@ -22,7 +25,7 @@ fun BottomNavGraph(navController: NavHostController) {
             })
         }
         composable(BottomBarScreen.Profile.route) {
-            ProfileView()
+            ProfileScreen()
         }
     }
 }

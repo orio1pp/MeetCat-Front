@@ -57,7 +57,11 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = MapScreenDestination) {
-
+        composable(CreateEventDestination) {
+            CreateEventView(getViewModel(), navToEvents =  {
+                navController.navigate(EventListScreenDestination)
+            })
+        }
         composable(MapScreenDestination) {
             MapScreen(
                 viewModel = getViewModel(),
@@ -69,6 +73,8 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
             EventListScreen(getViewModel(), navToMap = {
                 //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
                 navController.navigate(MapScreenDestination)
+            }, navToCreateEvent = {
+                navController.navigate(CreateEventDestination)
             })
         }
     }

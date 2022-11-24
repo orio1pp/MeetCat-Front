@@ -11,4 +11,9 @@
     <string name="msg_loc">The location is important for this app. Please grant the permission</string>
     <string name="loc_necessary">Location permission required for this feature to be available. Please grant the permission</string>
     <string name="permission">Request permission</string>
+    <string name="name">Name</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="place">Place</string>
+    <string name="address">Address</string>
+    <string name="createEventErrorFieldsEmpty">You left empty fields, please fill all the values</string>
 </resources>

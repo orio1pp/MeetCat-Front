@@ -132,7 +132,7 @@ private fun EventDetailsContent(
     startDate: String,
     endDate: String?,
     placeName: String?,
-    address: String,
+    address: String?,
     link: String?,
 ) {
     MaterialTheme {
@@ -185,7 +185,7 @@ private fun EventDetailsContent(
                             if (checkSingularHour(startDate)) stringResource(R.string.at_singular) else stringResource(R.string.at),
                             if (checkSingularHour(endDate)) stringResource(R.string.at_singular) else stringResource(R.string.at)) else "",
                     placeName,
-                    address,
+                    address?:"",
                     link
                 )
             }

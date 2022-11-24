@@ -12,6 +12,6 @@ data class Event(
     val endDate: String?,
     val location: String?,
     val placeName: String?,
-    val address: String,
+    val address: String?,
     val link: String?,
 )

@@ -9,4 +9,7 @@
     <string name="from">"Del "</string>
     <string name="at">"a las "</string>
     <string name="at_singular">"a la "</string>
+    <string name="msg_loc">La localización es importante para la aplicación. Porfavor acepte los permisos.</string>
+    <string name="loc_necessary">El permiso de localización es necessario para esta funcionalidad. Porfavor permita el acceso.</string>
+    <string name="permission">Pide el permiso.</string>
 </resources>

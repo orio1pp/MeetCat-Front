@@ -8,6 +8,8 @@ import com.pes.meetcatui.feature_event.data.DATA_PREFERENCES_NAME
 import com.pes.meetcatui.feature_event.data.DataPreferences
 import com.pes.meetcatui.feature_event.data.DataPreferencesImpl
 import com.pes.meetcatui.feature_event.domain.*
+import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
+import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -28,4 +30,9 @@ val dataModule = module {
         )
     }
 
+    single<DataRepositoryUsers> {
+        DataRepositoryUsersImpl(
+            meetCatApi = get(),
+        )
+    }
 }

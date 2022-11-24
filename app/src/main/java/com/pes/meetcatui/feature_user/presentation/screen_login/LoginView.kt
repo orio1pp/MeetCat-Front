@@ -25,20 +25,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pes.meetcatui.*
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class LoginView : ComponentActivity() {
@@ -57,7 +56,7 @@ class LoginView : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LoginScreen()
+                    LoginScreen(getViewModel())
                 }
             }
         }
@@ -69,14 +68,12 @@ class LoginView : ComponentActivity() {
 
     }
 
-
-    @Preview
+    //@Preview
     @Composable
     fun LoginScreen(
-        //viewModel: LoginViewModel,
+        viewModel: LoginViewModel,
     ) {
-
-        val viewModel = LoginViewModel()
+        //val viewModel = LoginViewModel(DataRepositoryUsersImpl)
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -252,7 +249,7 @@ class LoginView : ComponentActivity() {
     ) {
         Button(
             onClick = {
-                viewModel.Login(username = username, password = password)
+                viewModel.login(username = username, password = password)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Highlight,

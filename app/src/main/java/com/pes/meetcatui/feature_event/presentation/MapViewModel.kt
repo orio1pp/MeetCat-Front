@@ -24,9 +24,12 @@ class MapViewModel(
     val events = mutableStateOf(EventListScreenState())
     val mapState = mutableStateOf(MapScreenState())
     var selectedEvent = mutableStateOf(Event(0,"",null,null,"",null,null,null,null,null))
+    val isSelected = mutableStateOf(false)
+
     private val locationRequest = LocationRequest
         .Builder(120000)
         .build()
+
     fun getLocationCallback() : LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -58,10 +61,16 @@ class MapViewModel(
         } else {
             events.value.data?.forEach { event ->
                 if (event.eventId == eventId) {
+                    isSelected.value = true
                     selectedEvent.value = event
                 }
             }
         }
+    }
+
+    fun deselectEvent(){
+        isSelected.value = false
+        selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
     }
 
     init {

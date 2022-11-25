@@ -3,11 +3,14 @@ package com.pes.meetcatui.feature_event.domain
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
+import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -17,21 +20,22 @@ class DataRepositoryImpl (
     private val meetcatApi: MeetCatApi,
     private val dataPreferences: DataPreferences,
 ) : DataRepository {
-
+    /*
     init {
         appScope.launch {
             downloadData()
         }
-    }
+    }*/
 
-    private val eventList = dataPreferences.getEventList()
+    //private val eventList = dataPreferences.getEventList()
 
-    override fun getEvent(eventId: Int): Flow<Resource<Event>> = flow {
+    override fun getEvents(pageNum:Int): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
-            val apiResponse = meetcatApi.getEventData(eventId)
+            val apiResponse = meetcatApi.getEvents(pageNum,20)
             if (apiResponse.isSuccessful) {
-                val result = buildEvent(apiResponse.body()!!)
+                val result = buildEventList(apiResponse.body()!!)
+
                 emit(Resource.Success(result))
             } else {
                 emit(Resource.Error("Api is unsuccessful"))
@@ -45,6 +49,22 @@ class DataRepositoryImpl (
         }
     }
 
+    override suspend fun createEvent( event: Event) : String {
+        try {
+            val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
+            println(eventSerial)
+            meetcatApi.createEvent(eventSerial);
+            return ("Api is successful")
+        } catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
+        }
+    }
+
+    /*
     override suspend fun downloadData() {
         val events = getEventsData()
 
@@ -57,9 +77,21 @@ class DataRepositoryImpl (
         } catch (e: Exception) {
             return emptyList()
         }
-    }
+    }*/
 
-    override fun getEventList(): Flow<List<Event>> = eventList
+    //override fun getEventList(): Flow<List<Event>> = eventList
+
+    private fun buildEventList(
+        eventsData: EventsData
+    ) : EventPage {
+        val eventList = mutableListOf<Event>()
+        for (event in eventsData.events)
+        {
+            eventList.add(buildEvent(event))
+        }
+        val eventPage = EventPage(eventList, eventsData.page!!)
+        return(eventPage)
+    }
 
     private fun buildEvent(
         eventData: EventDetailsData,
@@ -70,22 +102,11 @@ class DataRepositoryImpl (
         description = eventData.description,
         startDate = eventData.startDate,
         endDate = eventData.endDate,
-        locationName = eventData.locationName,
+        location = eventData.location,
+        placeName = eventData.placeName,
+        link = eventData.link,
         address = eventData.address,
-        link = eventData.link
     )
-
-    private fun buildEventList(
-        eventListData: List<EventDetailsData>
-    ) : List<Event> {
-        val result = mutableListOf<Event>()
-        for (event in eventListData)
-        {
-            result.add(buildEvent(event))
-        }
-        return(result)
-    }
-
 }
 
 

@@ -1,10 +1,7 @@
 package com.pes.meetcatui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomBarScreen (
@@ -12,10 +9,10 @@ sealed class BottomBarScreen (
     val title: String,
     val icon: ImageVector
 ) {
-    object Home: BottomBarScreen (
-        route = "home",
-        title = "Home",
-        icon = Icons.Default.Home
+    object Map: BottomBarScreen (
+        route = "map",
+        title = "Map",
+        icon = Icons.Default.LocationOn
     )
     object Profile: BottomBarScreen (
         route = "profile",
@@ -26,5 +23,10 @@ sealed class BottomBarScreen (
         route = "events",
         title = "Events",
         icon = Icons.Default.Menu
+    )
+    object CreateEvent: BottomBarScreen (
+        route = "create_events",
+        title = "CreateEvent",
+        icon = Icons.Default.Create
     )
 }

@@ -20,7 +20,8 @@ class EventListViewModel(
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(
-                            data = resource.data?.events as MutableList<Event>
+                            data = resource.data?.events as MutableList<Event>,
+                            page = 1
                         )
                     }
                     is Resource.Error -> {

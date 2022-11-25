@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
 
-const val CreateEventDestination = "CreateEvent"
 /*
 name = "MeetCat Release Party",
 subtitle = "Just a party",
@@ -120,7 +119,6 @@ fun CreateEventView(
             }
         }
     }
-    navToEvents.switchViewButton(icon = Icons.Filled.ArrowBack)
 }
 
 @Composable

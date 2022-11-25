@@ -3,8 +3,10 @@ package com.pes.meetcatui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -68,33 +70,30 @@ private fun App(fusedLocationClient: FusedLocationProviderClient) {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController)}
-    ) {
-        BottomNavGraph(navController = navController)
-    }
+        topBar = {
 
-    /*NavHost(navController = navController, startDestination = BottomBarScreen.Events.route) {
-        composable(BottomBarScreen.Events.route) {
-            EventListScreen(getViewModel(), navtoEvent = {
-                //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
-                navController.navigate(EventListScreenDestination)
-            })
+        },
+        bottomBar = {
+            BottomBar(navController = navController)
         }
-        composable(BottomBarScreen.Profile.route) {
-            ProfileView()
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            BottomNavGraph(navController = navController, fusedLocationClient)
         }
-    }*/
+    }
 }
 
 @Composable
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
-        BottomBarScreen.Events,
+        BottomBarScreen.Map,
+        BottomBarScreen.CreateEvent,
         BottomBarScreen.Profile,
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
 
     BottomNavigation() {
         screens.forEach { screen ->
@@ -105,4 +104,33 @@ fun BottomBar(navController: NavHostController) {
             )
         }
     }
+}
+
+@Composable
+fun RowScope.AddItem(
+    screen: BottomBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavHostController
+) {
+    BottomNavigationItem(
+        label = {
+            Text(text = screen.title)
+        },
+        icon = {
+            Icon(
+                imageVector = screen.icon,
+                contentDescription = "Navigation Icon"
+            )
+        },
+        selected = currentDestination?.hierarchy?.any {
+            it.route == screen.route
+        } == true,
+        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        onClick = {
+            navController.navigate(screen.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        }
+    )
 }

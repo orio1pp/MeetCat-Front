@@ -16,5 +16,7 @@
     <string name="subtitle">Subtítol</string>
     <string name="place">Lloc</string>
     <string name="address">Direcció</string>
-    <string name="createEventErrorFieldsEmpty">Has deixat paràmetres sense omplir, siusplau ompliu tots els paràmetres</string>
+    <string name="createEventErrorFieldsEmpty">Has deixat paràmetres sense omplir, si us plau ompliu tots els paràmetres</string>
+    <string name="createEventErrorDateIsNotDate">La data introduïda no és una data, si us plau, introduïu una data</string>
+    <string name="createEventErrorURLIsNotValid">La URL introduïda no és una URL vàlida, si us plau, introduïu una URL vàlida</string>
 </resources>

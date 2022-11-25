@@ -1,10 +1,15 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.webkit.URLUtil
+import androidx.compose.ui.res.stringResource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pes.meetcatui.R
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import java.util.*
 
 class CreateEventViewModel (
@@ -18,15 +23,11 @@ class CreateEventViewModel (
         startDate: String, endDate: String, location:String, place: String,
         address: String, link: String
     ) : Boolean {
-        if (name != "" && subtitle != "" && description != "" && startDate != "" && endDate != "" && location != "" && place != "" && address != "" && link != "")
-        {
-            viewModelScope.launch {
-                val event = Event(0, name, subtitle, description, startDate, endDate, location, place, address, link)
-                dataRepository.createEvent( event )
-            }
-            return true;
-        } else
-            return false;
+        viewModelScope.launch {
+            val event = Event(0, name, subtitle, description, startDate, endDate, location, place, address, link)
+            dataRepository.createEvent( event )
+        }
+        return true;
 
     }
 

@@ -1,5 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.webkit.URLUtil
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -11,10 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeParseException
 
 /*
 name = "MeetCat Release Party",
@@ -30,6 +33,30 @@ link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
 val backgroundColor = Color(0xFFD0D0D0)
 val focusedLabelColor = Color(0xFF000000)
 val unfocusedLabelColor = Color(0xFF707070)
+
+private fun checkInput(name: String, subtitle: String, description: String,
+                       startDate: String, endDate: String, location:String, place: String,
+                       address: String, link: String) : Int{
+    if (!(name != "" && subtitle != "" && description != "" && startDate != "" && endDate != "" && location != "" && place != "" && address != "" && link != ""))
+        return 1//stringResource(R.string.createEventErrorFieldsEmpty);
+    else if (!URLUtil.isValidUrl(link))
+        return 2//stringResource(R.string.createEventErrorURLIsNotValid);
+    val coords = location.split(',')
+    try {
+        coords[0].toDouble()
+        coords[1].toDouble()
+    } catch (e: java.lang.NumberFormatException)
+    {
+        return 4//stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+    }
+    try {
+        LocalDateTime.parse(startDate)
+        LocalDateTime.parse(endDate)
+        return 0
+    } catch (e: DateTimeParseException) {
+        return 3//stringResource(R.string.createEventErrorDateIsNotDate);
+    }
+}
 
 @Composable
 fun CreateEventView(
@@ -135,17 +162,43 @@ private fun CreateButton(
     link: String,
     navToEvents: () -> Unit
 ) {
+    var errorStringId: Int by remember { mutableStateOf(0) }
+    var errorString: String by remember { mutableStateOf("") }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        var showError: Boolean by remember { mutableStateOf(false) };
-        if (showError) {
+        if (errorStringId == 1)
+            errorString = stringResource(R.string.createEventErrorFieldsEmpty);
+        else if (errorStringId == 2)
+            errorString = stringResource(R.string.createEventErrorURLIsNotValid);
+        else if (errorStringId == 3)
+            errorString = stringResource(R.string.createEventErrorDateIsNotDate);
+        else if (errorStringId == 4)
+            errorString = stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+        else
+            errorString = "";
+
+
+        if (errorStringId != 0) {
             Text(
-                stringResource(R.string.createEventErrorFieldsEmpty),
-                color = ErrorRed,
+                errorString,
+                color = ErrorRed
             )
         }
         Button(
             onClick = {
-                if (viewModel.createEvent(
+                errorStringId = checkInput(
+                    name,
+                    subtitle,
+                    description,
+                    startDate,
+                    endDate,
+                    location,
+                    place,
+                    address,
+                    link
+                )
+                if (errorStringId == 0) {
+                    viewModel.createEvent(
                         name,
                         subtitle,
                         description,
@@ -156,10 +209,7 @@ private fun CreateButton(
                         address,
                         link
                     )
-                ) {
                     navToEvents();
-                } else {
-                    showError = true
                 }
             },
             Modifier.padding(vertical = 8.dp),
@@ -174,19 +224,23 @@ private fun CreateButton(
 }
 
 @Composable
-private fun TextFieldLabeled(previewText: String, labelText: String): String {
+private fun TextFieldLabeled(
+    previewText: String,
+    labelText: String,
+): String {
     var text: String by remember { mutableStateOf(previewText) }
+    var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
     TextField(
         value = text,
         onValueChange = { newText ->
-            text = newText
+            text = newText;
         },
         textStyle = typo.h4,
         label = {
             Text(labelText)
         },
         colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = backgroundColor,
+            backgroundColor = backgndColor,
             focusedLabelColor = focusedLabelColor,
             unfocusedLabelColor = unfocusedLabelColor
         ),

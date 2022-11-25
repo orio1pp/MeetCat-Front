@@ -6,5 +6,6 @@ import retrofit2.Response
 
 interface DataRepositoryUsers {
     //suspend fun createUser(user : UserData)
-    suspend fun login(username : String, password : String) : UserToken
+    suspend fun login(username : String, password : String) : Boolean
+    suspend fun getUser(username: String) : UserData?
 }

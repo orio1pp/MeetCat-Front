@@ -1,6 +1,7 @@
 package com.pes.meetcatui.network
 
 import com.pes.meetcatui.feature_user.domain.UserToken
+import org.json.JSONArray
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -16,4 +17,7 @@ interface MeetCatApi {
 
     @POST("login")
     suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>
+
+    @GET("users/name")
+    suspend fun getUser(@Query("username") username : String): Response<UserData>
 }

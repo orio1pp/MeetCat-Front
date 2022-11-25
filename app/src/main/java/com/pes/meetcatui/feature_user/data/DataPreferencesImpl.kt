@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_user.domain.UserToken
+import com.pes.meetcatui.network.RoleData
+import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
@@ -15,6 +17,7 @@ import kotlinx.serialization.json.Json
 private const val EVENT_LIST_KEY = "EVENT_LIST_KEY"
 private const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
 private const val REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY"
+private const val USER_KEY = "USER_KEY"
 
 class DataPreferencesImpl(
     private val dataStore: DataStore<Preferences>,
@@ -34,29 +37,26 @@ class DataPreferencesImpl(
         dataStore.setJson(REFRESH_TOKEN_KEY, token.refresh_token)
     }
 
-    /*
-    override fun getAccessToken(): String {
-        val access_token : Flow<String> = dataStore.getJsonOrDefault(ACCESS_TOKEN_KEY, "")
-        println("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
+    override fun getAccessToken(): Flow<String> = dataStore.getJsonOrDefault(ACCESS_TOKEN_KEY, "")
 
+    override fun getRefreshToken(): Flow<String> = dataStore.getJsonOrDefault(REFRESH_TOKEN_KEY, "")
 
-        var list : MutableList<String> = mutableListOf("")
-        println(access_token)
-        access_token.collect { list.add("$it"[0].toString()) }
-        println(list)
-
-
-        return access_token
+    override suspend fun setUser(user: UserData) {
+        dataStore.setJson(REFRESH_TOKEN_KEY, user)
     }
 
-
-    override suspend fun getRefreshToken(): String {
-        val refresh_token = dataStore.getJsonOrDefault(REFRESH_TOKEN_KEY, "")
-        println("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
-        return refresh_token
-    }*/
-    override fun getAccessToken(): Flow<String> = dataStore.getJsonOrDefault(ACCESS_TOKEN_KEY, "")
-    override fun getRefreshToken(): Flow<String> = dataStore.getJsonOrDefault(REFRESH_TOKEN_KEY, "")
+    override fun getUser(): Flow<UserData> {
+        return dataStore.getJsonOrDefault(
+            USER_KEY,
+            UserData(
+                id = null,
+                username = "",
+                password = "",
+                about = "",
+                roles = emptyList()
+                )
+        )
+    }
 
 }
 

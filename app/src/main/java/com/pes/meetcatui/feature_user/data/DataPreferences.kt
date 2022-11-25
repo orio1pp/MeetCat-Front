@@ -2,6 +2,7 @@ package com.pes.meetcatui.feature_user.data
 
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_user.domain.UserToken
+import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface DataPreferences {
@@ -11,6 +12,8 @@ interface DataPreferences {
     suspend fun setToken(token: UserToken)
     fun getAccessToken(): Flow<String>
     fun getRefreshToken(): Flow<String>
+    suspend fun setUser(user: UserData)
+    fun getUser(): Flow<UserData>
 }
 
 const val DATA_PREFERENCES_NAME = "DataPreferences"

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pes.meetcatui.feature_user.data.DataPreferences
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.feature_user.domain.UserToken
 import kotlinx.coroutines.launch
@@ -19,19 +20,18 @@ class LoginViewModel(
             if (username.isEmpty() || password.isEmpty()) {
                 _warning.value = "El nom d'usuari o la contrassenya son buïts."
             } else {
-                val token = authenticate(username = username, password = password)
-                if (token.access_token.isEmpty() || token.refresh_token.isEmpty()) {
+                val loggedIn = authenticate(username = username, password = password)
+                if (!loggedIn) {
                     _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
                 } else {
-                    println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
                 }
             }
         }
     }
 
-    private suspend fun authenticate(username: String, password: String): UserToken {
-        val token: UserToken = dataRepo.login(username, password)
-        return token
+    private suspend fun authenticate(username: String, password: String): Boolean {
+        return dataRepo.login(username, password)
     }
 
 }

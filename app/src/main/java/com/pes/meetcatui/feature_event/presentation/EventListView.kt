@@ -1,13 +1,12 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
@@ -15,9 +14,8 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -25,14 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.common.BackButton
-import com.pes.meetcatui.common.ContinuousSlider
+import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
-
-const val EventListScreenDestination = "EventList"
 
 @Composable
 fun EventListScreen(
@@ -42,96 +38,80 @@ fun EventListScreen(
 ) {
     val eventList by viewModel.eventList
 
-    if (eventList.isLoading) {
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Loading...",
-                style = typo.h2
-            )
+    if (eventList != null
+        && eventList.data != null
+        && !eventList.isLoading
+        && !eventList.hasError
+        && eventList.isDetailsSelected) {
+
+        EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
+            viewModel.setIsSelected()
         }
-    } else if (eventList.hasError) {
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Error!",
-                style = typo.h2,
-                color = Color(0xFFA00000)
-            )
-        }
-    } else if (eventList.data != null) {
-        if (eventList.isDetailsSelected) {
-            EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
-                viewModel.setIsSelected()
-            }
-        } else {
-            EventListScreenContent(
-                viewModel = viewModel,
-                eventList = eventList.data!!,
-                navToMap = navToMap,
-                navToCreateEvent = navToCreateEvent
-            ) { event ->
-                viewModel.setSelectedEvent(event)
-            }
+        BackHandler { viewModel.setIsSelected() }
+    } else {
+        EventListScreenContent(
+            viewModel = viewModel,
+            eventList = eventList,
+            navToMap = navToMap,
+            navToCreateEvent = navToCreateEvent
+        ) { event ->
+            viewModel.setSelectedEvent(event)
         }
     }
 }
 
 @Composable
-fun InfiniteListHandler(
-    listState: LazyListState,
-    buffer: Int = 2,
-    onLoadMore: () -> Unit
-) {
-    val loadMore = remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItemsNumber = layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
-
-            lastVisibleItemIndex > (totalItemsNumber - buffer)
-        }
-    }
-
-    LaunchedEffect(loadMore) {
-        snapshotFlow { loadMore.value }
-            .distinctUntilChanged()
-            .collect {
-                onLoadMore()
-            }
-    }
-}
-
-@Composable
-fun EventListScreenContent(viewModel: EventListViewModel, eventList: List<Event>, navToMap: () -> Unit, navToCreateEvent: () -> Unit, onEventClick: (event: Event) -> Unit) {
-    Surface(
+fun EventListScreenContent(
+    viewModel: EventListViewModel,
+    eventList: EventListScreenState,
+    navToMap: () -> Unit,
+    navToCreateEvent: () -> Unit,
+    onEventClick: (event: Event) -> Unit) {
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
-        color = Background,
+        floatingActionButton = {
+            navToMap.switchViewButton(
+                icon = Icons.Filled.LocationOn,
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            FiltersSelection()
-
-            EventList(
-                viewModel,
-                eventList = eventList!!,
-                { }, //navtoEvent
-                onLoadMore = { viewModel.loadMore() },
-            )
-            Row {
-                navToMap.switchViewButton(
-                    icon = Icons.Filled.LocationOn,
-                )
-                navToCreateEvent.switchViewButton(
-                    icon = Icons.Filled.Create,
-                )
+            filtersSelection()
+            if (eventList.isLoading) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Loading...",
+                        style = typo.h2
+                    )
+                }
+            } else if (eventList.hasError) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Error!",
+                        style = typo.h2,
+                        color = Color(0xFFA00000)
+                    )
+                }
+            } else if (eventList.data != null) {
+                if (!eventList.isDetailsSelected) {
+                    EventList(
+                        viewModel,
+                        eventList = eventList.data,
+                        onEventClick = onEventClick,
+                        onLoadMore = { viewModel.loadMore() },
+                    )
+                }
             }
         }
     }
@@ -143,7 +123,10 @@ fun EventDetailsScreen(
     onClick: () -> Unit
 )
 {
-    EventDetails(event = event)
+    Surface() {
+        EventDetails(event = event)
+    }
+
     BackButton(function = onClick)
 }
 
@@ -167,7 +150,7 @@ fun EventView(
         Row(
             modifier = Modifier.padding(vertical = 2.dp),
         ) {
-            NameButton(viewModel, event, onEventClick)
+            NameButton(event, onEventClick)
         }
         Row {
             EventData(
@@ -192,7 +175,7 @@ fun EventView(
 
 @Composable
 private fun NameButton(
-    viewModel: EventListViewModel, event: Event, onEventClick: (event: Event) -> Unit
+    event: Event, onEventClick: (event: Event) -> Unit
 ) {
     TextButton(
         onClick = { onEventClick(event) },
@@ -248,34 +231,6 @@ private fun EventData(desc: String?, date: String?, location: String) {
     }
 }
 
-@Composable
-fun FiltersSelection() {
-    Row {
-        Column(modifier = Modifier.width(96.dp)) {
-            Text(
-                modifier = Modifier.padding(vertical = 12.dp),
-                text = "Distància",
-                style = typo.body1,
-            )
-        }
-        Column {
-            ContinuousSlider(10f, 50f)
-        }
-    }
-    Row {
-        Column(modifier = Modifier.width(96.dp)) {
-            Text(
-                modifier = Modifier.padding(vertical = 12.dp),
-                text = "Data",
-                style = typo.body1,
-            )
-        }
-        Column {
-            ContinuousSlider(10f, 50f)
-        }
-    }
-}
-
 @Preview
 @Composable
 fun Test() {
@@ -293,8 +248,7 @@ private fun EventList(
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .height(590.dp)
+        modifier = Modifier.fillMaxHeight()
     ) {
         items(eventList) { event ->
             EventView(
@@ -310,22 +264,56 @@ private fun EventList(
 }
 
 @Composable
-fun switchViewButtonmap(function: () -> Unit = {}) {
-    IconButton(
-        onClick = function,
-        modifier = Modifier
-            .alpha(1.0f)
-            .padding(start = 16.dp, top = 16.dp)
-            .clip(CircleShape)
-            .border(1.dp, Color(0xFFA0A0A0), shape = CircleShape)
-            .background(color = Color(color = 0xFFF4F4F4)),
+fun InfiniteListHandler(
+    listState: LazyListState,
+    buffer: Int = 2,
+    onLoadMore: () -> Unit
+) {
+    val loadMore = remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsNumber = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
 
-        ) {
-        Icon(
-            imageVector = Icons.Filled.LocationOn,
-            contentDescription = null,
-            modifier = Modifier.size(32.dp),
-            tint = Color(0xFF0E0E0E),
-        )
+            lastVisibleItemIndex > (totalItemsNumber - buffer)
+        }
+    }
+
+    LaunchedEffect(loadMore) {
+        snapshotFlow { loadMore.value }
+            .distinctUntilChanged()
+            .collect {
+                onLoadMore()
+            }
+    }
+}
+
+@Composable
+fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+    val currentOnBack by rememberUpdatedState(onBack)
+
+    val backCallback = remember {
+        object : OnBackPressedCallback(enabled) {
+            override fun handleOnBackPressed() {
+                currentOnBack()
+            }
+        }
+    }
+
+    SideEffect {
+        backCallback.isEnabled = enabled
+    }
+
+    val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+        "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+    }.onBackPressedDispatcher
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner, backDispatcher) {
+        backDispatcher.addCallback(lifecycleOwner, backCallback)
+        onDispose {
+            backCallback.remove()
+        }
     }
 }

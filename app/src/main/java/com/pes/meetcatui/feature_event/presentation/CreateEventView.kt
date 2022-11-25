@@ -19,7 +19,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
-const val CreateEventDestination = "CreateEvent"
 /*
 name = "MeetCat Release Party",
 subtitle = "Just a party",
@@ -78,75 +77,72 @@ fun CreateEventView(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
-        Row {
-            navToEvents.switchViewButton(icon = Icons.Filled.ArrowBack)
-            Column(
-                Modifier
-                    .padding(vertical = 16.dp)
-                    .verticalScroll(state = ScrollState(0)),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+        Column(
+            Modifier
+                .padding(vertical = 16.dp)
+                .verticalScroll(state = ScrollState(0)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
 
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.name)
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.name)
 
-                    name = TextFieldLabeled(name, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.subtitle)
+                name = TextFieldLabeled(name, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.subtitle)
 
-                    subtitle = TextFieldLabeled(subtitle, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.description)
+                subtitle = TextFieldLabeled(subtitle, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.description)
 
-                    description = TextFieldLabeled(description, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.from)
+                description = TextFieldLabeled(description, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.from)
 
-                    startDate = TextFieldLabeled(startDate, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.to)
+                startDate = TextFieldLabeled(startDate, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.to)
 
-                    endDate = TextFieldLabeled(endDate, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.location)
+                endDate = TextFieldLabeled(endDate, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.location)
 
-                    location = TextFieldLabeled(location, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.place)
+                location = TextFieldLabeled(location, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.place)
 
-                    place = TextFieldLabeled(place, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.address)
+                place = TextFieldLabeled(place, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.address)
 
-                    address = TextFieldLabeled(address, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    var labelText = stringResource(R.string.link)
+                address = TextFieldLabeled(address, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                var labelText = stringResource(R.string.link)
 
-                    link = TextFieldLabeled(link, labelText)
-                }
-                Row(Modifier.padding(vertical = 8.dp)) {
-                    CreateButton(
-                        viewModel,
-                        name,
-                        subtitle,
-                        description,
-                        startDate,
-                        endDate,
-                        location,
-                        place,
-                        address,
-                        link,
-                        navToEvents
-                    )
-                }
+                link = TextFieldLabeled(link, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp)) {
+                CreateButton(
+                    viewModel,
+                    name,
+                    subtitle,
+                    description,
+                    startDate,
+                    endDate,
+                    location,
+                    place,
+                    address,
+                    link,
+                    navToEvents
+                )
             }
         }
     }

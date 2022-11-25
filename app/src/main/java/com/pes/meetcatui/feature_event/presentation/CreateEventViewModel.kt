@@ -18,8 +18,6 @@ class CreateEventViewModel (
 
     val dataRepository = dataRepository
 
-
-
     fun createEvent(
         name: String, subtitle: String, description: String,
         startDate: String, endDate: String, location:String, place: String,

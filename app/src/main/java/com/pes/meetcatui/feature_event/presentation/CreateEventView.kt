@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeParseException
 
 const val CreateEventDestination = "CreateEvent"
@@ -39,11 +40,19 @@ private fun checkInput(name: String, subtitle: String, description: String,
                        address: String, link: String) : Int{
     if (!(name != "" && subtitle != "" && description != "" && startDate != "" && endDate != "" && location != "" && place != "" && address != "" && link != ""))
         return 1//stringResource(R.string.createEventErrorFieldsEmpty);
-    else if (URLUtil.isValidUrl(link))
+    else if (!URLUtil.isValidUrl(link))
         return 2//stringResource(R.string.createEventErrorURLIsNotValid);
+    val coords = location.split(',')
     try {
-        LocalDate.parse(startDate)
-        LocalDate.parse(endDate)
+        coords[0].toDouble()
+        coords[1].toDouble()
+    } catch (e: java.lang.NumberFormatException)
+    {
+        return 4//stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+    }
+    try {
+        LocalDateTime.parse(startDate)
+        LocalDateTime.parse(endDate)
         return 0
     } catch (e: DateTimeParseException) {
         return 3//stringResource(R.string.createEventErrorDateIsNotDate);
@@ -157,18 +166,25 @@ private fun CreateButton(
     link: String,
     navToEvents: () -> Unit
 ) {
+    var errorStringId: Int by remember { mutableStateOf(0) }
+    var errorString: String by remember { mutableStateOf("") }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        var errorStringId: Int by remember { mutableStateOf(0)}
-        var errorString: String by remember { mutableStateOf("") }
-        when (errorStringId) {
-            1 -> errorString = stringResource(R.string.createEventErrorFieldsEmpty);
-            2 -> errorString = stringResource(R.string.createEventErrorURLIsNotValid);
-            3 -> errorString = stringResource(R.string.createEventErrorDateIsNotDate);
-            else -> errorString = "";
-        }
+        if (errorStringId == 1)
+            errorString = stringResource(R.string.createEventErrorFieldsEmpty);
+        else if (errorStringId == 2)
+            errorString = stringResource(R.string.createEventErrorURLIsNotValid);
+        else if (errorStringId == 3)
+            errorString = stringResource(R.string.createEventErrorDateIsNotDate);
+        else if (errorStringId == 4)
+            errorString = stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+        else
+            errorString = "";
+
+
         if (errorStringId != 0) {
             Text(
-                stringResource(R.string.createEventErrorFieldsEmpty),
+                errorString,
                 color = ErrorRed
             )
         }

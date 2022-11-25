@@ -53,9 +53,13 @@ class MapViewModel(
     }
 
     fun onEventSelectId(eventId: Long?){
-        events.value.data?.forEach { event ->
-            if (event.eventId == eventId){
-                selectedEvent.value = event
+        if (eventId == null) {
+            selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
+        } else {
+            events.value.data?.forEach { event ->
+                if (event.eventId == eventId) {
+                    selectedEvent.value = event
+                }
             }
         }
     }

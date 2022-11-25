@@ -26,6 +26,7 @@ import com.google.maps.android.compose.*
 
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.Background
+import com.pes.meetcatui.ui.theme.LightGray
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -102,7 +103,9 @@ fun displayMap(
 
     Column {
         Map(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             mapState,
             cameraPositionState,
             onEventClicked = {
@@ -113,7 +116,7 @@ fun displayMap(
             },
             events = events,
         )
-        AnimatedVisibility(visible = selectedEvent != null) {
+        AnimatedVisibility(visible = selectedEvent.eventId != 0.toLong()) {
             if (selectedEvent != null) {
                 EventDisplay(
                     modifier = Modifier
@@ -197,7 +200,7 @@ fun permissionNotGranted(permissionState: PermissionState) {
 
 @Composable
 fun EventDisplay(modifier: Modifier, event: Event) {
-    Text(event.name)
+    EventDetails(event = event)
 }
 
 

@@ -75,7 +75,7 @@ class MapViewModel(
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvents(0).collect { resource ->
+            dataRepository.getAllEvents().collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         events.value = EventListScreenState(

@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation
+package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,10 +15,8 @@ import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.commons.presentation.Navigation
-import com.pes.meetcatui.feature_chat.domain.DataRepository
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.Highlight

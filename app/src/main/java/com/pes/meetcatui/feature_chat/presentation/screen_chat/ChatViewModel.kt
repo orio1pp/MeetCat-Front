@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation
+package com.pes.meetcatui.feature_chat.presentation.screen_chat
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -10,7 +10,7 @@ import com.pes.meetcatui.feature_chat.domain.Message
 import java.time.Instant
 import java.util.*
 
-class ChatViewModel(dataRepository: DataRepository) : ViewModel(
+class ChatViewModel(dataRepository: DataRepository) : ViewModel (
 
 ) {
     val dataRepository = dataRepository

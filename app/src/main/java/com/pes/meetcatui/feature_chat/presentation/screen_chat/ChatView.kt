@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation
+package com.pes.meetcatui.feature_chat.presentation.screen_chat
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,9 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.commons.presentation.Navigation
+import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListViewModel
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Background_alt
 import com.pes.meetcatui.ui.theme.Highlight

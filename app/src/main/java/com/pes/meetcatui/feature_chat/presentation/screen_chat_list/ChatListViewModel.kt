@@ -1,10 +1,10 @@
-package com.pes.meetcatui.feature_chat.presentation
+package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_chat.domain.DataRepository
+import com.pes.meetcatui.feature_chat.presentation.screen_chat.ChatScreenState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn

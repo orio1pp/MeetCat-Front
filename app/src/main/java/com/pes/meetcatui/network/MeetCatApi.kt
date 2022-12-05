@@ -1,11 +1,14 @@
 package com.pes.meetcatui.network
 
+import com.pes.meetcatui.feature_user.domain.UserToken
+import org.json.JSONArray
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.*
 
 interface MeetCatApi {
     @GET("events/{eventId}")
@@ -16,5 +19,14 @@ interface MeetCatApi {
 
     @POST("events")
     suspend fun createEvent(@Body event: EventDetailsData)
-    
+
+
+    @POST("users")
+    suspend fun postUser(user : UserData): Response<UserData>
+
+    @POST("login")
+    suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>
+
+    @GET("users/name")
+    suspend fun getUser(@Query("username") username : String): Response<UserData>
 }

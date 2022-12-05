@@ -1,11 +1,14 @@
 package com.pes.meetcatui.feature_user.presentation.screen_login
 
+import android.R.color
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,20 +16,20 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -45,6 +48,8 @@ class LoginView : ComponentActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     val Req_Code: Int = 123
     val firebaseAuth = FirebaseAuth.getInstance()
+
+
 
 
 
@@ -104,81 +109,12 @@ class LoginView : ComponentActivity() {
                     }
                     item {
                         Row(
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
                                 .padding(horizontal = 48.dp)
                                 .padding(top = 16.dp),
                         ) {
-                            Subtitle(text = "Login")
-                        }
-                    }
-                    item {
-                        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                            OutlinedTextField(
-                                value = username,
-                                onValueChange = { newText ->
-                                    username = newText
-                                },
-                                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                                placeholder = { Text(text = "username") },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    focusedBorderColor = Highlight,
-                                    cursorColor = Highlight
-                                ),
-                                trailingIcon = {
-                                    Icon(
-                                        Icons.Default.Person,
-                                        contentDescription = "",
-                                        tint = Gray,
-                                    )
-                                },
-                                modifier = Modifier
-                                    .padding(horizontal = 48.dp, vertical = 8.dp)
-                                    .width(264.dp)
-                                    .background(color = Background_alt)
-                            )
-                            //SimpleTextField(placeholder = "username")
-                        }
-                    }
-                    item {
-                        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                            //SimpleTextField(placeholder = "password")
-                            OutlinedTextField(
-                                value = password,
-                                onValueChange = { newText ->
-                                    password = newText
-                                },
-                                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
-                                placeholder = { Text(text = "password") },
-                                visualTransformation = PasswordVisualTransformation(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    focusedBorderColor = Highlight,
-                                    cursorColor = Highlight
-                                ),
-                                trailingIcon = {
-                                    Icon(
-                                        Icons.Default.Lock,
-                                        contentDescription = "",
-                                        tint = Gray,
-                                    )
-                                },
-                                singleLine = true,
-                                modifier = Modifier
-                                    .padding(horizontal = 48.dp, vertical = 8.dp)
-                                    .width(264.dp)
-                                    .background(color = Background_alt)
-                            )
-                        }
-                    }
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(horizontal = 128.dp, vertical = 8.dp),
-                        ) {
-                            CustomButton(
-                                text = "Login", username = username,
-                                password = password, viewModel = viewModel
-                            )
+                            Subtitle(text = "Sign in with Google: ")
                         }
                     }
                     item {
@@ -189,8 +125,29 @@ class LoginView : ComponentActivity() {
 
                             ) {
                             CustomButtonGoogle(
-                                text = "Google Login", username = username,
-                                password = password, viewModel = viewModel
+                                text = "Login", viewModel = viewModel
+                            )
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 48.dp)
+                                .padding(top = 16.dp),
+                        ) {
+                            Subtitle(text = "Or Sign in with your email/username: ")
+                        }
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 128.dp, vertical = 8.dp),
+
+                            ) {
+                            CustomButton(
+                                text = "Login"
                             )
                         }
                     }
@@ -227,7 +184,7 @@ class LoginView : ComponentActivity() {
     ) {
         Text(
             text = text,
-            style = typo.h2,
+            style = typo.h3,
         )
     }
 
@@ -245,13 +202,11 @@ class LoginView : ComponentActivity() {
     @Composable
     fun CustomButton(
         text: String,
-        username: String,
-        password: String,
-        viewModel: LoginViewModel
     ) {
         Button(
             onClick = {
-                viewModel.Login(username = username, password = password)
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Highlight,
@@ -272,35 +227,38 @@ class LoginView : ComponentActivity() {
     @Composable
     fun CustomButtonGoogle(
         text: String,
-        username: String,
-        password: String,
         viewModel: LoginViewModel
     ) {
-        Button(
-            onClick = {
-                signInGoogle(viewModel)
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
-                contentColor = Color.White
-            ),
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(50)
-        )
-        {
-            Text(
-                text = text,
-                style = typo.body1
+
+            Button(
+                onClick = {
+                    signInGoogle(viewModel)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White,
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                contentPadding = PaddingValues(15.dp),
+                border = BorderStroke(1.dp, Color.Gray)
             )
-            Icon(
-                Icons.Default.MailOutline,
-                modifier = Modifier
-                    .size(18.dp),
-                contentDescription = "drawable icons",
-                tint = Color.Unspecified
-            )
-        }
+            {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .align(CenterVertically)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.google_logo),
+                        contentDescription = "",
+                        alignment = Alignment.TopStart,
+                        modifier = Modifier
+                            .scale(scaleX = 0.5f, scaleY = 0.5f)
+                    )
+                }
+            }
     }
+
 
     @Composable
     fun CustomImage(
@@ -384,6 +342,8 @@ class LoginView : ComponentActivity() {
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 SavedPreference.setEmail(this, account.email.toString())
+                Log.d("EMAIL = ", SavedPreference.EMAIL)
+                Log.d("GOOGLE EMAIL = ", account.email.toString())
                 SavedPreference.setUsername(this, account.displayName.toString())
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

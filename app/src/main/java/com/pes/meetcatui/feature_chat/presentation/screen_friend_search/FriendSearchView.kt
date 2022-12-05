@@ -24,9 +24,7 @@ import com.pes.meetcatui.ui.theme.typo
 
 @Composable
 fun FriendSearchScreen(
-    /*
-    viewModel: ChatListViewModel,
-    navtoChat: () -> Unit,*/
+    viewModel: FriendSearchViewModel
 ) {
 
     //val chatList by viewModel.chatList.collectAsState()

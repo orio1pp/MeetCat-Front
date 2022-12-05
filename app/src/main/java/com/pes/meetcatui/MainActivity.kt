@@ -25,7 +25,9 @@ import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchScreen
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
+import org.koin.androidx.compose.get
 
 
 class MainActivity : ComponentActivity() {
@@ -47,14 +49,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+                    FriendSearchScreen(viewModel = get())
+                    /*if (GoogleSignIn.getLastSignedInAccount(this) != null) {
                         Log.d("EMAIL = ", SavedPreference.EMAIL)
                         App(fusedLocationClient)
                     }
                     else {
                         Log.d("EMAIL = ", SavedPreference.EMAIL)
                         NormalLoginScreen(viewModel = getViewModel())
-                    }
+                    }*/
 
                     /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)

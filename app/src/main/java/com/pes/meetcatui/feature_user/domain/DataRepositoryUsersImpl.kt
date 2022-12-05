@@ -50,6 +50,11 @@ class DataRepositoryUsersImpl(
         )
     }
 
+    override suspend fun addFriend(username: String): UserData? {
+        val user = meetCatApi.addFriend(username).body()
+        return user
+    }
+
     suspend fun downloadData() {
         /*descarreguem dades que necessitem*/
     }

@@ -20,7 +20,6 @@ interface MeetCatApi {
     @POST("events")
     suspend fun createEvent(@Body event: EventDetailsData)
 
-
     @POST("users")
     suspend fun postUser(user : UserData): Response<UserData>
 
@@ -29,4 +28,7 @@ interface MeetCatApi {
 
     @GET("users/name")
     suspend fun getUser(@Query("username") username : String): Response<UserData>
+
+    @POST("friendship")
+    suspend fun addFriend(username: String): Response<UserData>
 }

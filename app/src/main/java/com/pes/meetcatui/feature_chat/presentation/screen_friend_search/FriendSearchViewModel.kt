@@ -42,4 +42,10 @@ class FriendSearchViewModel(
         }
     }
 
+    fun addFriend() {
+        viewModelScope.launch {
+            dataRepository.addFriend(_results.value[0].toString())
+        }
+    }
+
 }

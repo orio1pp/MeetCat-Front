@@ -46,14 +46,13 @@ fun FriendSearchScreen(
             item {
                 for (user in viewModel.results.value) {
                     Row {
-                        UserBox(name = user.username, about = user.about)
+                        UserBox(name = user.username, about = user.about, viewModel = viewModel)
                     }
                 }
             }
         }
         Row(
             modifier = Modifier
-                //.align(Alignment.CenterVertically)
                 .padding(horizontal = 48.dp)
                 .padding(top = 100.dp)
         ) {
@@ -86,13 +85,13 @@ fun SearchBar(
                 .height(80.dp)
                 .background(color = Background_alt, shape = RectangleShape)
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp),
+                .padding(bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .height(72.dp)
+                    .height(96.dp)
                     .fillMaxWidth(0.8f)
                     .border(1.dp, LightGray, CircleShape),
                 value = viewModel.searchValue,
@@ -111,7 +110,8 @@ fun SearchBar(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                )
+                ),
+                singleLine = true
             )
             IconButton(
                 modifier = Modifier
@@ -134,6 +134,7 @@ fun SearchBar(
 fun UserBox(
     name: String,
     about: String?,
+    viewModel: FriendSearchViewModel
 ) {
     Box(
         modifier = Modifier
@@ -142,30 +143,49 @@ fun UserBox(
             .background(color = Background, shape = RectangleShape)
             .padding(horizontal = 16.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp, top = 16.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .width(256.dp),
-                text = name,
-                style = typo.h4,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        if (about != null) {
+        Column() {
             Row(
-                modifier = Modifier.padding(16.dp, top = 44.dp),
+                modifier = Modifier.padding(16.dp, top = 16.dp),
             ) {
                 Text(
                     modifier = Modifier
                         .width(256.dp),
-                    text = about,
-                    color = LightGray,
-                    style = typo.body1,
+                    text = name,
+                    style = typo.h4,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
+                )
+            }
+            if (about != null) {
+                Row(
+                    modifier = Modifier.padding(16.dp, top = 44.dp),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .width(256.dp),
+                        text = about,
+                        color = LightGray,
+                        style = typo.body1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+        Column(
+            modifier = Modifier.padding(start = 276.dp)
+        ) {
+            IconButton(
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(top = 16.dp, start = 12.dp)
+                    .background(Highlight, CircleShape),
+                onClick = { viewModel.addFriend() }
+            ) {
+                Icon(
+                    Icons.Filled.Search,
+                    contentDescription = "",
+                    tint = Color.White
                 )
             }
         }

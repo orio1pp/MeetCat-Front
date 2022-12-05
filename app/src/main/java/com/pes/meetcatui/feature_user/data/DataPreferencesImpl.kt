@@ -42,19 +42,13 @@ class DataPreferencesImpl(
     override fun getRefreshToken(): Flow<String> = dataStore.getJsonOrDefault(REFRESH_TOKEN_KEY, "")
 
     override suspend fun setUser(user: UserData) {
-        dataStore.setJson(REFRESH_TOKEN_KEY, user)
+        dataStore.setJson(USER_KEY, user.username)
     }
 
-    override fun getUser(): Flow<UserData> {
+    override fun getUser(): Flow<String> {
         return dataStore.getJsonOrDefault(
             USER_KEY,
-            UserData(
-                id = null,
-                username = "",
-                password = "",
-                about = "",
-                roles = emptyList()
-                )
+            ""
         )
     }
 

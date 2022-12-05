@@ -23,6 +23,7 @@ class NormalLoginViewModel(
                 if (!loggedIn) {
                     _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
                 } else {
+                    _warning.value = ""
                     /* falta passar a la seg pantalla */
                 }
             }

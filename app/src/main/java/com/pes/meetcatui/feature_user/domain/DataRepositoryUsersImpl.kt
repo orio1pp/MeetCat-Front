@@ -26,12 +26,12 @@ class DataRepositoryUsersImpl(
     override suspend fun login(username: String, password: String): Boolean {
         try {
             val userToken = transformToToken(meetCatApi.login(username, password))
-            dataPreferences.setToken(userToken)
-            meetCatApi.getUser(username).body()?.let { dataPreferences.setUser(it) }
-            dataPreferences.getUser().collect {
-                println("$it")
+            if (userToken.access_token.isNotEmpty()) {
+                dataPreferences.setToken(userToken)
+                meetCatApi.getUser(username).body()?.let { dataPreferences.setUser(it) }
+                return true
             }
-            return true
+            return false
         } catch (e: Exception) {
             println("Exception: " + e.message)
         }

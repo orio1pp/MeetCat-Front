@@ -13,7 +13,7 @@ interface DataPreferences {
     fun getAccessToken(): Flow<String>
     fun getRefreshToken(): Flow<String>
     suspend fun setUser(user: UserData)
-    fun getUser(): Flow<UserData>
+    fun getUser(): Flow<String>
 }
 
 const val DATA_PREFERENCES_NAME = "DataPreferences"

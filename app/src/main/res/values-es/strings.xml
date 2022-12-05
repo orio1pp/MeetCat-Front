@@ -9,4 +9,15 @@
     <string name="from">"Del "</string>
     <string name="at">"a las "</string>
     <string name="at_singular">"a la "</string>
+    <string name="msg_loc">La localización es importante para la aplicación. Porfavor acepte los permisos.</string>
+    <string name="loc_necessary">El permiso de localización es necessario para esta funcionalidad. Porfavor permita el acceso.</string>
+    <string name="permission">Pide el permiso.</string>
+    <string name="name">Nombre</string>
+    <string name="subtitle">Subtitulo</string>
+    <string name="place">Sitio</string>
+    <string name="address">Dirección</string>
+    <string name="createEventErrorFieldsEmpty">Hay parámetros sin rellenar, por favor rellene todos los parámetros</string>
+    <string name="createEventErrorDateIsNotDate">La fecha introducida no es una fecha, introduzca una fecha</string>
+    <string name="createEventErrorURLIsNotValid">La URL introducida no és una URL válida, por favor, introducid una URL válida</string>
+    <string name="createEventErrorLocationIsNotCorrectFormat">La localización no esta en el formato correcto, por favor usad \"lat,lon\"</string>
 </resources>

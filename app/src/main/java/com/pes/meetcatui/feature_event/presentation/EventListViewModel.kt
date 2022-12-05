@@ -5,28 +5,78 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
+import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.launch
 
 class EventListViewModel(
-    dataRepository: DataRepository,
+    val dataRepository: DataRepository,
 ) : ViewModel() {
-    val dataRepository = dataRepository
 
-    var id = 1
-    val _event = mutableStateOf(EventScreenState())
+    val eventList = mutableStateOf(EventListScreenState())
 
-    val eventList = dataRepository.getEventList().mapLatest { events ->
-        events.asSequence().sortedBy { it.eventId }.toList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-
-    fun getEvent(id: Int) {
-        _event.value = EventScreenState(
-            data = eventList.value.get(id - 1),
-        )
-        println("break")
+    init {
+        viewModelScope.launch {
+            dataRepository.getEvents(0).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        eventList.value = EventListScreenState(
+                            data = resource.data?.events as MutableList<Event>,
+                            page = 1
+                        )
+                    }
+                    is Resource.Error -> {
+                        eventList.value = EventListScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        eventList.value = EventListScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
     }
 
+    fun setSelectedEvent(event: Event) {
+        eventList.value = EventListScreenState(
+            isDetailsSelected = true,
+            eventDetailsSelected = event,
+            data = eventList.value.data
+        )
+    }
+
+    fun setIsSelected() {
+        eventList.value = EventListScreenState(
+            isDetailsSelected = false,
+            data = eventList.value.data
+        )
+    }
+
+    fun loadMore() {
+        if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
+            viewModelScope.launch {
+                dataRepository.getEvents(eventList.value.page).collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
+                            eventList.value = EventListScreenState(
+                                data = eventList.value.data,
+                                page = eventList.value.page + 1
+                            )
+                        }
+                        is Resource.Error -> {
+                            eventList.value = EventListScreenState(
+                                hasError = true,
+                                errorMessage = resource.message
+                            )
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
 }

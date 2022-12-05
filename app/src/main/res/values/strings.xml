@@ -8,4 +8,15 @@
     <string name="to">"To"</string>
     <string name="at">at </string>
     <string name="at_singular">at </string>
+    <string name="msg_loc">The location is important for this app. Please grant the permission</string>
+    <string name="loc_necessary">Location permission required for this feature to be available. Please grant the permission</string>
+    <string name="permission">Request permission</string>
+    <string name="name">Name</string>
+    <string name="subtitle">Subtitle</string>
+    <string name="place">Place</string>
+    <string name="address">Address</string>
+    <string name="createEventErrorFieldsEmpty">You left empty fields, please fill all the values</string>
+    <string name="createEventErrorDateIsNotDate">The date you input isn\'t a date, please input a date</string>
+    <string name="createEventErrorURLIsNotValid">The URL is not a valid URL, please introduce a valid URL</string>
+    <string name="createEventErrorLocationIsNotCorrectFormat">The location is not following the right format, please input \"lat,lon\"</string>
 </resources>

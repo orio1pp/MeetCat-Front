@@ -1,6 +1,7 @@
 package com.pes.meetcatui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
@@ -45,8 +47,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //App(fusedLocationClient)
-                    NormalLoginScreen(viewModel = getViewModel())
+                    if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+                        Log.d("EMAIL = ", SavedPreference.EMAIL)
+                        App(fusedLocationClient)
+                    }
+                    else {
+                        Log.d("EMAIL = ", SavedPreference.EMAIL)
+                        NormalLoginScreen(viewModel = getViewModel())
+                    }
 
                     /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)

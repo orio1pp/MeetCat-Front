@@ -3,6 +3,7 @@ package com.pes.meetcatui.di
 import com.pes.meetcatui.feature_event.presentation.CreateEventViewModel
 import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import com.pes.meetcatui.feature_event.presentation.MapViewModel
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
 import org.koin.dsl.module
@@ -23,6 +24,11 @@ val appModule = module {
     viewModel {
         MapViewModel(
             dataRepository = get(),
+        )
+    }
+    viewModel {
+        NormalLoginViewModel(
+            dataRepo = get(),
         )
     }
 }

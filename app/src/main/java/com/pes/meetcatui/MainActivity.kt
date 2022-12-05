@@ -1,6 +1,7 @@
 package com.pes.meetcatui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -13,20 +14,18 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -48,7 +47,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    App(fusedLocationClient)
+                    if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+                        Log.d("EMAIL = ", SavedPreference.EMAIL)
+                        App(fusedLocationClient)
+                    }
+                    else {
+                        Log.d("EMAIL = ", SavedPreference.EMAIL)
+                        NormalLoginScreen(viewModel = getViewModel())
+                    }
 
                     /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)

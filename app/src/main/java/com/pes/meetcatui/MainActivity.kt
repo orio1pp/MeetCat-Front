@@ -3,20 +3,27 @@ package com.pes.meetcatui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.pes.meetcatui.feature_event.presentation.*
-import com.pes.meetcatui.feature_user.presentation.screen_login.NormalLoginScreen
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +57,9 @@ class MainActivity : ComponentActivity() {
                     }*/
                 }
             }
+
         }
+
     }
 }
 
@@ -58,20 +67,68 @@ class MainActivity : ComponentActivity() {
 private fun App(fusedLocationClient: FusedLocationProviderClient) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = MapScreenDestination) {
+    Scaffold(
+        topBar = {
 
-        composable(MapScreenDestination) {
-            MapScreen(
-                viewModel = getViewModel(),
-                navToEventList = { navController.navigate(EventListScreenDestination) },
-                fusedLocationClient = fusedLocationClient
-            )
+        },
+        bottomBar = {
+            BottomBar(navController = navController)
         }
-        composable(EventListScreenDestination) {
-            EventListScreen(getViewModel(), navToMap = {
-                //navega cap a ell mateix, el deixo per substituir-lo pel que toqui més endavant
-                navController.navigate(MapScreenDestination)
-            })
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            BottomNavGraph(navController = navController, fusedLocationClient)
         }
     }
+}
+
+@Composable
+fun BottomBar(navController: NavHostController) {
+    val screens = listOf(
+        BottomBarScreen.Map,
+        BottomBarScreen.CreateEvent,
+        BottomBarScreen.Profile,
+    )
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+
+    BottomNavigation() {
+        screens.forEach { screen ->
+            AddItem(
+                screen = screen,
+                currentDestination = currentDestination,
+                navController = navController
+            )
+        }
+    }
+}
+
+@Composable
+fun RowScope.AddItem(
+    screen: BottomBarScreen,
+    currentDestination: NavDestination?,
+    navController: NavHostController
+) {
+    BottomNavigationItem(
+        label = {
+            Text(text = screen.title)
+        },
+        icon = {
+            Icon(
+                imageVector = screen.icon,
+                contentDescription = "Navigation Icon"
+            )
+        },
+        selected = currentDestination?.hierarchy?.any {
+            it.route == screen.route
+        } == true,
+        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+        onClick = {
+            navController.navigate(screen.route) {
+                popUpTo(navController.graph.findStartDestination().id)
+                launchSingleTop = true
+            }
+        }
+    )
 }

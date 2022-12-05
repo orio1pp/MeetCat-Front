@@ -1,8 +1,8 @@
 package com.pes.meetcatui.feature_user.presentation.screen_login
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -37,12 +37,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pes.meetcatui.*
 import com.pes.meetcatui.R
-import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
-import com.pes.meetcatui.feature_user.domain.UserToken
-import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.ui.theme.*
-import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 
 
 class LoginView : ComponentActivity() {
@@ -50,6 +45,8 @@ class LoginView : ComponentActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     val Req_Code: Int = 123
     val firebaseAuth = FirebaseAuth.getInstance()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,11 +68,15 @@ class LoginView : ComponentActivity() {
 
     }
 
-    //@Preview
+
+    @Preview
     @Composable
     fun LoginScreen(
         //viewModel: LoginViewModel,
     ) {
+        val viewModel: LoginViewModel =
+
+            androidx.lifecycle.viewmodel.compose.viewModel(factory = LoginViewModelFactory(this.applicationContext as Application))
         Surface(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -103,8 +104,7 @@ class LoginView : ComponentActivity() {
                     }
                     item {
                         Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
                                 .padding(horizontal = 48.dp)
                                 .padding(top = 16.dp),
                         ) {
@@ -177,7 +177,7 @@ class LoginView : ComponentActivity() {
                         ) {
                             CustomButton(
                                 text = "Login", username = username,
-                                password = password//, viewModel = viewModel
+                                password = password, viewModel = viewModel
                             )
                         }
                     }
@@ -190,7 +190,7 @@ class LoginView : ComponentActivity() {
                             ) {
                             CustomButtonGoogle(
                                 text = "Google Login", username = username,
-                                password = password//, viewModel = viewModel
+                                password = password, viewModel = viewModel
                             )
                         }
                     }
@@ -201,7 +201,7 @@ class LoginView : ComponentActivity() {
                                 .padding(horizontal = 48.dp)
                                 .padding(top = 8.dp)
                         ) {
-                            WarningText(text = "a"/*viewModel.warning.value*/)
+                            WarningText(text = viewModel.warning.value)
                         }
                     }
                 }
@@ -247,11 +247,11 @@ class LoginView : ComponentActivity() {
         text: String,
         username: String,
         password: String,
-        //viewModel: LoginViewModel
+        viewModel: LoginViewModel
     ) {
         Button(
             onClick = {
-                //viewModel.login(username = username, password = password)
+                viewModel.Login(username = username, password = password)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Highlight,
@@ -274,11 +274,11 @@ class LoginView : ComponentActivity() {
         text: String,
         username: String,
         password: String,
-        //viewModel: LoginViewModel
+        viewModel: LoginViewModel
     ) {
         Button(
             onClick = {
-                signInGoogle()
+                signInGoogle(viewModel)
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
@@ -305,8 +305,6 @@ class LoginView : ComponentActivity() {
     @Composable
     fun CustomImage(
         image: Int
-        //51:79:f9:66:0d:b0:ef:6b:4b:7f:60:b1:3e:8f:ec:64:ca:0b:7e:32
-
     ) {
         Image(
             painter = painterResource(id = image),
@@ -352,9 +350,9 @@ class LoginView : ComponentActivity() {
         )
     }
 
-    private fun signInGoogle() {
+    private fun signInGoogle(viewModel: LoginViewModel) {
 
-        val signInIntent = mGoogleSignInClient.signInIntent
+        val signInIntent = viewModel.getGoogleClient().signInIntent
         startActivityForResult(signInIntent, Req_Code)
     }
 
@@ -387,25 +385,18 @@ class LoginView : ComponentActivity() {
             if (task.isSuccessful) {
                 SavedPreference.setEmail(this, account.email.toString())
                 SavedPreference.setUsername(this, account.displayName.toString())
-                Log.d("Email: ", account.email.toString())
-                Log.d("Account Name: ", account.displayName.toString())
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
         }
-
     }
 
     override fun onStart() {
         super.onStart()
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {
-            Log.d("Logged!","Logging in as previous logged account")
-            SavedPreference.getEmail(this)?.let { Log.d("Email: ", it) }
-            SavedPreference.getUsername(this)?.let { Log.d("Email: ", it) }
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
-
 }

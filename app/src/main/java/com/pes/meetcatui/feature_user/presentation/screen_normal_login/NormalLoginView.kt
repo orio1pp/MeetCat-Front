@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_user.presentation.screen_login
+package com.pes.meetcatui.feature_user.presentation.screen_normal_login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,7 +28,7 @@ import com.pes.meetcatui.ui.theme.typo
 
 @Composable
 fun NormalLoginScreen(
-    viewModel: LoginViewModel,
+    viewModel: NormalLoginViewModel,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -189,7 +188,7 @@ fun CustomButton(
     text: String,
     username: String,
     password: String,
-    viewModel: LoginViewModel
+    viewModel: NormalLoginViewModel
 ) {
     Button(
         onClick = {

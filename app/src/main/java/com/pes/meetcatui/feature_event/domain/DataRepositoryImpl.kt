@@ -8,7 +8,6 @@ import com.pes.meetcatui.network.MeetCatApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
@@ -42,6 +41,41 @@ class DataRepositoryImpl (
             emit(Resource.Error("Timeout Exception: ${e.message}"))
         } catch (e: HttpException) {
             emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override fun getAllEvents(): Flow<Resource<EventPage>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getEvents(0, null)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override suspend fun createEvent( event: Event) : String {
+        try {
+            val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
+            println(eventSerial)
+            meetcatApi.createEvent(eventSerial);
+            return ("Api is successful")
+        } catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
         }
     }
 

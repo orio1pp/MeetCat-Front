@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -39,5 +40,9 @@ fun BottomNavGraph(navController: NavHostController, fusedLocationClient: FusedL
                 fusedLocationClient = fusedLocationClient
             )
         }
+        composable(BottomBarScreen.Register.route) {
+            RegisterScreen(getViewModel())
+        }
+
     }
 }

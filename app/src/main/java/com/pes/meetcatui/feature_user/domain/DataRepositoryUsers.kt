@@ -8,4 +8,5 @@ interface DataRepositoryUsers {
     //suspend fun createUser(user : UserData)
     suspend fun login(username : String, password : String) : Boolean
     suspend fun getUser(username: String) : UserData?
+    suspend fun postUser(user: UserData) : Response<UserData>
 }

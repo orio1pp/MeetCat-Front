@@ -1,6 +1,5 @@
-package com.pes.meetcatui.feature_user.presentation.screen_normal_login
+package com.pes.meetcatui.feature_user.presentation.register_screen
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,9 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.MainActivity
 import com.pes.meetcatui.R
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import com.pes.meetcatui.ui.theme.Background_alt
 import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.Highlight
@@ -29,9 +29,8 @@ import com.pes.meetcatui.ui.theme.typo
 
 
 @Composable
-fun NormalLoginScreen(
-    viewModel: NormalLoginViewModel,
-    navToRegister: () -> Unit,
+fun RegisterScreen(
+    viewModel: RegisterViewModel,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +64,7 @@ fun NormalLoginScreen(
                             .padding(horizontal = 48.dp)
                             .padding(top = 16.dp),
                     ) {
-                        Subtitle(text = "Login")
+                        Subtitle(text = "Register")
                     }
                 }
                 item {
@@ -133,23 +132,9 @@ fun NormalLoginScreen(
                             .padding(horizontal = 128.dp, vertical = 8.dp),
                     ) {
                         CustomButton(
-                            text = "Login", username = username,
+                            text = "Register", username = username,
                             password = password, viewModel = viewModel
                         )
-
-                    }
-                }
-                item{
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 128.dp, vertical = 8.dp),
-                    ) {
-                        RegisterButton(
-                            text = "Register",
-                            navToRegister = { navToRegister() },
-                        )
-
                     }
                 }
                 item {
@@ -205,11 +190,11 @@ fun CustomButton(
     text: String,
     username: String,
     password: String,
-    viewModel: NormalLoginViewModel
+    viewModel: RegisterViewModel
 ) {
     Button(
         onClick = {
-            viewModel.login(username = username, password = password)
+            viewModel.register(username = username, password = password)
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Highlight,
@@ -256,31 +241,6 @@ fun CustomLogo(
 
     )
 }
-
-@Composable
-fun RegisterButton(
-    text: String,
-    navToRegister: () -> Unit,
-) {
-    Button(
-        onClick = {
-
-        },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Highlight,
-            contentColor = Color.White
-        ),
-        modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(50)
-    )
-    {
-        Text(
-            text = text,
-            style = typo.body1
-        )
-    }
-}
-
 
 @Composable
 fun SimpleTextField(

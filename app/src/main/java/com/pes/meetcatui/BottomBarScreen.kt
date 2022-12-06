@@ -29,4 +29,9 @@ sealed class BottomBarScreen (
         title = "CreateEvent",
         icon = Icons.Default.Create
     )
+    object Register: BottomBarScreen(
+        route = "register",
+        title = "register",
+        icon = Icons.Default.Create
+    )
 }

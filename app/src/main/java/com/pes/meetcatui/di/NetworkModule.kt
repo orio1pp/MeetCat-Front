@@ -10,9 +10,11 @@ import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.network.MeetCatApiInterceptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.component.getScopeId
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -40,6 +42,7 @@ val networkModule = module {
 
     single {
         OkHttpClient.Builder()
+            .addInterceptor(get<HttpLoggingInterceptor>())
             .addInterceptor(get<MeetCatApiInterceptor>())
             .callTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
             .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
@@ -48,14 +51,17 @@ val networkModule = module {
     }
 
     single {
-        /*HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
                 HttpLoggingInterceptor.Level.NONE
             }
-        }*/
-        MeetCatApiInterceptor.apply { }
+        }
+    }
+
+    single {
+        MeetCatApiInterceptor(get())
     }
 }
 

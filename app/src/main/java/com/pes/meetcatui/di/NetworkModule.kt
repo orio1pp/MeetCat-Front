@@ -43,7 +43,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<HttpLoggingInterceptor>())
-            .addInterceptor(get<MeetCatApiInterceptor>())
+            //.addInterceptor(get<MeetCatApiInterceptor>())
             .callTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
             .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)

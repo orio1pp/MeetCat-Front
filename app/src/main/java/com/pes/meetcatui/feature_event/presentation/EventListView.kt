@@ -1,31 +1,36 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
-import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.domain.Event
-import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -42,7 +47,8 @@ fun EventListScreen(
         && eventList.data != null
         && !eventList.isLoading
         && !eventList.hasError
-        && eventList.isDetailsSelected) {
+        && eventList.isDetailsSelected
+    ) {
 
         EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
             viewModel.setIsSelected()
@@ -66,7 +72,8 @@ fun EventListScreenContent(
     eventList: EventListScreenState,
     navToMap: () -> Unit,
     navToCreateEvent: () -> Unit,
-    onEventClick: (event: Event) -> Unit) {
+    onEventClick: (event: Event) -> Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -121,8 +128,7 @@ fun EventListScreenContent(
 fun EventDetailsScreen(
     event: Event,
     onClick: () -> Unit
-)
-{
+) {
     Surface() {
         EventDetails(event = event)
     }
@@ -159,6 +165,20 @@ fun EventView(
                 event.address ?: ""
             )
         }
+        Row {
+            CustomVoteButton(
+                vote = "like",
+                voteImage = R.drawable.upvote,
+                voteImageBlackAndWhite = R.drawable.upvote_bnw,
+                viewModel = viewModel
+            )
+            CustomVoteButton(
+                vote = "dislike",
+                voteImage = R.drawable.downvote,
+                voteImageBlackAndWhite = R.drawable.downvote_bnw,
+                viewModel = viewModel
+            )
+        }
         Row(
             Modifier
                 .padding(horizontal = 8.dp)
@@ -189,6 +209,62 @@ private fun NameButton(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+    }
+}
+
+@Composable
+fun CustomVoteButton(
+    vote: String,
+    voteImage: Int,
+    voteImageBlackAndWhite: Int,
+    viewModel: EventListViewModel,
+    hasVoted: String? = viewModel.checkVoted(),
+) {
+    var selected by remember { mutableStateOf(false) }
+    Button(
+        onClick = {
+            selected = !selected
+            if (!selected) {
+                Log.d("Selected before", " to not selected")
+            }
+            else {
+                Log.d("Not selected", " to selected")
+            }
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.White,
+            contentColor = Color.Black
+        ),
+        modifier = Modifier
+            //.fillMaxWidth()
+            .scale(scaleX = 1f, scaleY = 1f),
+         shape = RoundedCornerShape(28.dp),
+        // contentPadding = PaddingValues(15.dp),
+        // border = BorderStroke(1.dp, Color.Gray)
+    )
+    {
+        Card (
+            //shape = CircleShape,
+            modifier = Modifier
+                //.padding(8.dp)
+                .size(20.dp)
+        ) {
+            Image(
+                painter =  painterResource(
+                            id = if (selected) {
+                                voteImage
+                            }
+                            else {
+                                voteImageBlackAndWhite
+                            }
+                        ),
+                contentDescription = null,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .scale(scaleX = 1.2f, scaleY = 1.2f),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
 

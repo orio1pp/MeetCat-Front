@@ -14,6 +14,9 @@ class NormalLoginViewModel(
     private val _warning = mutableStateOf("")
     val warning: State<String> = _warning
 
+    private val _loggedIn = mutableStateOf(false)
+    val loggedIn: State<Boolean> = _loggedIn
+
     fun login(username: String, password: String) {
         viewModelScope.launch {
             if (username.isEmpty() || password.isEmpty()) {
@@ -24,7 +27,7 @@ class NormalLoginViewModel(
                     _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
                 } else {
                     _warning.value = ""
-                    /* falta passar a la seg pantalla */
+                    _loggedIn.value = true
                 }
             }
         }

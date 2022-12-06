@@ -1,6 +1,5 @@
 package com.pes.meetcatui.feature_user.presentation.screen_normal_login
 
-import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,18 +19,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.MainActivity
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.Background_alt
 import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
 
-
 @Composable
 fun NormalLoginScreen(
     viewModel: NormalLoginViewModel,
     navToRegister: () -> Unit,
+    navToApp: () -> Unit,
+    setVisible: (Boolean) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -136,7 +135,10 @@ fun NormalLoginScreen(
                             text = "Login", username = username,
                             password = password, viewModel = viewModel
                         )
-
+                        if (viewModel.loggedIn.value) {
+                            navToApp()
+                            setVisible(true)
+                        }
                     }
                 }
                 item{
@@ -147,7 +149,7 @@ fun NormalLoginScreen(
                     ) {
                         RegisterButton(
                             text = "Register",
-                            navToRegister = { navToRegister() },
+                            navToRegister = navToRegister,
                         )
 
                     }
@@ -264,7 +266,7 @@ fun RegisterButton(
 ) {
     Button(
         onClick = {
-
+            navToRegister()
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Highlight,

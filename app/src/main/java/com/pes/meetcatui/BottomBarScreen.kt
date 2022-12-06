@@ -31,7 +31,12 @@ sealed class BottomBarScreen (
     )
     object Register: BottomBarScreen(
         route = "register",
-        title = "register",
+        title = "Register",
+        icon = Icons.Default.Create
+    )
+    object Login: BottomBarScreen(
+        route = "login",
+        title = "Login",
         icon = Icons.Default.Create
     )
 }

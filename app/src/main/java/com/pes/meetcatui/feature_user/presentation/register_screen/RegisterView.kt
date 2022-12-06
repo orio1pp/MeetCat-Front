@@ -18,15 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
-import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import com.pes.meetcatui.ui.theme.Background_alt
 import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
-
 
 @Composable
 fun RegisterScreen(

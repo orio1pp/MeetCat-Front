@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,6 +33,7 @@ fun NormalLoginScreen(
     navToApp: () -> Unit,
     setVisible: (Boolean) -> Unit,
 ) {
+    val isLogged = rememberSaveable { (mutableStateOf(false)) }
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -135,9 +137,10 @@ fun NormalLoginScreen(
                             text = "Login", username = username,
                             password = password, viewModel = viewModel
                         )
-                        if (viewModel.loggedIn.value) {
+                        if (viewModel.loggedIn.value && !isLogged.value) {
                             navToApp()
                             setVisible(true)
+                            isLogged.value = true
                         }
                     }
                 }
@@ -212,13 +215,14 @@ fun CustomButton(
     Button(
         onClick = {
             viewModel.login(username = username, password = password)
+
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Highlight,
             contentColor = Color.White
         ),
         modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(50)
+        shape = RoundedCornerShape(50),
     )
     {
         Text(

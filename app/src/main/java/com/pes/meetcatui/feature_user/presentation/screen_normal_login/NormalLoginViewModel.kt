@@ -8,7 +8,7 @@ import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import kotlinx.coroutines.launch
 
 class NormalLoginViewModel(
-    val dataRepo: DataRepositoryUsers
+    val dataRepo: DataRepositoryUsers,
 ) : ViewModel() {
 
     private val _warning = mutableStateOf("")

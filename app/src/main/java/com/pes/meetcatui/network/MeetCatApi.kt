@@ -21,7 +21,7 @@ interface MeetCatApi {
     suspend fun createEvent(@Body event: EventDetailsData)
 
     @POST("users")
-    suspend fun postUser(user : UserData): Response<UserData>
+    suspend fun postUser(@Body user : UserData): Response<UserData>
 
     @POST("login")
     suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>

@@ -1,11 +1,9 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.feature_user.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -78,6 +76,27 @@ class DataRepositoryImpl (
             return ("Http Exception: ${e.message}")
         }
     }
+
+    override fun getNearestEvents(latitude: Double,longitude: Double,distance: Double): Flow<Resource<EventPage>> = flow{
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getNearestEvents(latitude, longitude, distance)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
 
     /*
     override suspend fun downloadData() {

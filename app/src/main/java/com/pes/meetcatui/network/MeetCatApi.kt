@@ -29,4 +29,7 @@ interface MeetCatApi {
 
     @GET("users/name")
     suspend fun getUser(@Query("username") username : String): Response<UserData>
+
+    @GET("events/nearest")
+    suspend fun getNearestEvents(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<EventsData>
 }

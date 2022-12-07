@@ -8,6 +8,7 @@ interface DataRepository {
     fun getEvents(pageNum:Int): Flow<Resource<EventPage>>
     fun getAllEvents(): Flow<Resource<EventPage>>
     suspend fun createEvent(event:Event): String
+    fun getNearestEvents(latitude: Double,longitude: Double,distance: Double): Flow<Resource<EventPage>>
     //suspend fun downloadData()
 }
 

@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 
 class EventListViewModel(
     val dataRepository: DataRepository,
+    var hasLiked: Boolean = false,
+    var hasDisLiked: Boolean = false
 ) : ViewModel() {
 
     val eventList = mutableStateOf(EventListScreenState())
@@ -75,6 +77,39 @@ class EventListViewModel(
                         }
                         else -> {}
                     }
+                }
+            }
+        }
+    }
+
+    fun likeEvent() {
+        hasLiked = true
+        hasDisLiked = false
+    }
+
+    fun dislikeEvent() {
+        hasDisLiked = true
+        hasLiked = false
+    }
+
+    fun handleVote(vote: String) {
+        when (vote) {
+            "like" -> {
+                if(hasLiked) {
+                    hasLiked = false
+                    hasDisLiked = false
+                }
+                else {
+                    likeEvent()
+                }
+            }
+            "dislike" -> {
+                if(hasDisLiked) {
+                    hasDisLiked = false
+                    hasLiked = false
+                }
+                else {
+                    dislikeEvent()
                 }
             }
         }

@@ -166,18 +166,7 @@ fun EventView(
             )
         }
         Row {
-            CustomVoteButton(
-                vote = "like",
-                voteImage = R.drawable.upvote,
-                voteImageBlackAndWhite = R.drawable.upvote_bnw,
-                viewModel = viewModel
-            )
-            CustomVoteButton(
-                vote = "dislike",
-                voteImage = R.drawable.downvote,
-                voteImageBlackAndWhite = R.drawable.downvote_bnw,
-                viewModel = viewModel
-            )
+            LikeButtons(viewModel = viewModel)
         }
         Row(
             Modifier
@@ -213,23 +202,26 @@ private fun NameButton(
 }
 
 @Composable
-fun CustomVoteButton(
-    vote: String,
-    voteImage: Int,
-    voteImageBlackAndWhite: Int,
+fun LikeButtons(
     viewModel: EventListViewModel,
-    hasVoted: String? = viewModel.checkVoted(),
 ) {
-    var selected by remember { mutableStateOf(false) }
+    var liked by remember {
+        mutableStateOf(
+            viewModel.hasLiked
+        )
+    }
+    var disliked by remember {
+        mutableStateOf(
+            viewModel.hasDisLiked
+        )
+    }
     Button(
         onClick = {
-            selected = !selected
-            if (!selected) {
-                Log.d("Selected before", " to not selected")
-            }
-            else {
-                Log.d("Not selected", " to selected")
-            }
+            viewModel.handleVote("like")
+            liked = viewModel.hasLiked
+            disliked = viewModel.hasDisLiked
+            Log.d("Liked: ", viewModel.hasLiked.toString())
+            Log.d("Disliked: ", viewModel.hasDisLiked.toString())
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,
@@ -238,26 +230,63 @@ fun CustomVoteButton(
         modifier = Modifier
             //.fillMaxWidth()
             .scale(scaleX = 1f, scaleY = 1f),
-         shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(28.dp),
         // contentPadding = PaddingValues(15.dp),
         // border = BorderStroke(1.dp, Color.Gray)
-    )
-    {
-        Card (
+    ) {
+        Card(
             //shape = CircleShape,
             modifier = Modifier
                 //.padding(8.dp)
                 .size(20.dp)
         ) {
             Image(
-                painter =  painterResource(
-                            id = if (selected) {
-                                voteImage
-                            }
-                            else {
-                                voteImageBlackAndWhite
-                            }
-                        ),
+                painter = painterResource(
+                    id = if (liked) {
+                        R.drawable.upvote
+                    } else {
+                        R.drawable.upvote_bnw
+                    }
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .scale(scaleX = 1.2f, scaleY = 1.2f),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+    Button(
+        onClick = {
+            viewModel.handleVote("dislike")
+            liked = viewModel.hasLiked
+            disliked = viewModel.hasDisLiked
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.White,
+            contentColor = Color.Black
+        ),
+        modifier = Modifier
+            //.fillMaxWidth()
+            .scale(scaleX = 1f, scaleY = 1f),
+        shape = RoundedCornerShape(28.dp),
+        // contentPadding = PaddingValues(15.dp),
+        // border = BorderStroke(1.dp, Color.Gray)
+    ) {
+        Card(
+            //shape = CircleShape,
+            modifier = Modifier
+                //.padding(8.dp)
+                .size(20.dp)
+        ) {
+            Image(
+                painter = painterResource(
+                    id = if (disliked) {
+                        R.drawable.downvote
+                    } else {
+                        R.drawable.downvote_bnw
+                    }
+                ),
                 contentDescription = null,
                 modifier = Modifier
                     .wrapContentSize()

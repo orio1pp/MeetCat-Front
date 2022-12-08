@@ -27,8 +27,8 @@ interface MeetCatApi {
     suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>
 
     @GET("users/name")
-    suspend fun getUser(@Query("username") username : String): Response<UserData>
+    suspend fun getUser(@Query("username") username : String, @Header("Authorization") accessToken : String): Response<UserData>
 
     @POST("friendship")
-    suspend fun addFriend(@Query("username") username: String): Response<FriendshipData>
+    suspend fun addFriend(@Query("username") username: String, @Header("Authorization") accessToken : String): Response<FriendshipData>
 }

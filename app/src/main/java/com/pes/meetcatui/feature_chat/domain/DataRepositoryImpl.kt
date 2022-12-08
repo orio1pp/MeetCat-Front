@@ -1,8 +1,6 @@
 package com.pes.meetcatui.feature_chat.domain
 
 import com.pes.meetcatui.feature_event.Resource /* canviar aixooooo*/
-import com.pes.meetcatui.feature_chat.data.DataPreferences
-import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.network.ChatApi
 import com.pes.meetcatui.network.ChatDetailsResponse
 import com.pes.meetcatui.network.EventDetailsData
@@ -17,7 +15,6 @@ import java.util.concurrent.TimeoutException
 class DataRepositoryImpl(
     appScope: CoroutineScope,
     private val chatApi: ChatApi,
-    private val dataPreferences: DataPreferences,
 ) : DataRepository {
 
     init {
@@ -26,7 +23,6 @@ class DataRepositoryImpl(
         }
     }
 
-    private val chatList = dataPreferences.getChatList()
 
     override fun getChat(chatId: Int): Flow<Resource<Chat>> = flow {
         try {
@@ -58,8 +54,6 @@ class DataRepositoryImpl(
             return emptyList()
         }
     }
-
-    override fun getChatList(): Flow<List<Chat>> = chatList
 
     private fun buildChat(
         chatData: ChatDetailsResponse,

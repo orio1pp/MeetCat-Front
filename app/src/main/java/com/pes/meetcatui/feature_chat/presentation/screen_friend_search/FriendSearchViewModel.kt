@@ -37,6 +37,9 @@ class FriendSearchViewModel(
             }
             else {
                 _results.value = emptyList()
+                /*var list: MutableList<UserData> = emptyList<UserData>().toMutableList()
+                list.add(UserData(2, "a", "dsa", emptyList(), "a"))
+                _results.value = list*/
                 _warning.value = "No hi ha usuaris amb aquest nom d'usuari"
             }
         }
@@ -48,4 +51,9 @@ class FriendSearchViewModel(
         }
     }
 
+    fun removeFriend() {
+        viewModelScope.launch {
+            dataRepository.addFriend(_results.value[0].username)
+        }
+    }
 }

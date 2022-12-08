@@ -40,12 +40,6 @@ class DataRepositoryUsersImpl(
     }
 
     override suspend fun getUser(username: String): UserData? {
-        dataPreferences.setToken(
-            UserToken(
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovLzEwLjQuNDEuNDk6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDUyMDg5OH0.NafkUhmXxzdQISDc8FarZ2330Ms0zSfedZhlrIvJ7Hg",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlzcyI6Imh0dHA6Ly8xMC40LjQxLjQ5OjgwODAvbG9naW4iLCJleHAiOjE2NzA1MjExNDh9.Z622pp9XOYiXkc4MwkbtvvUxKvhjd-AIrsyp_SPfeio"
-            )
-        )
         var accessToken: String = "Bearer "
         runBlocking(Dispatchers.IO) {
             accessToken += dataPreferences.getAccessToken().first()
@@ -62,12 +56,6 @@ class DataRepositoryUsersImpl(
     }
 
     override suspend fun addFriend(username: String): FriendshipData? {
-        dataPreferences.setToken(
-            UserToken(
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovLzEwLjQuNDEuNDk6ODA4MC9sb2dpbiIsImV4cCI6MTY3MDUyMDg5OH0.NafkUhmXxzdQISDc8FarZ2330Ms0zSfedZhlrIvJ7Hg",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlzcyI6Imh0dHA6Ly8xMC40LjQxLjQ5OjgwODAvbG9naW4iLCJleHAiOjE2NzA1MjExNDh9.Z622pp9XOYiXkc4MwkbtvvUxKvhjd-AIrsyp_SPfeio"
-            )
-        )
         var accessToken: String = "Bearer "
         runBlocking(Dispatchers.IO) {
             accessToken += dataPreferences.getAccessToken().first()
@@ -79,10 +67,16 @@ class DataRepositoryUsersImpl(
         } catch (e: Exception) {
             println(e.message)
         }
-        return FriendshipData("1", "2")
+        return null
     }
 
     suspend fun downloadData() {
         /*descarreguem dades que necessitem*/
+        dataPreferences.setToken(
+            UserToken(
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwNTM2NzgwfQ.lcHgftwdN-47qxVgsTsdZdoy4LTZ2RD5ySy0zclKTCI",
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlzcyI6Imh0dHA6Ly8xMC40LjQxLjQ5OjgwODAvbG9naW4iLCJleHAiOjE2NzA1MjExNDh9.Z622pp9XOYiXkc4MwkbtvvUxKvhjd-AIrsyp_SPfeio"
+            )
+        )
     }
 }

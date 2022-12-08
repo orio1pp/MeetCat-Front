@@ -9,6 +9,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -173,27 +176,57 @@ fun UserBox(
             }
         }
         Column(
-            modifier = Modifier.padding(start = 276.dp)
+            modifier = Modifier
+                .padding(start = 276.dp)
+                .padding(vertical = 24.dp)
+                .size(48.dp)
         ) {
-            IconButton(
-                modifier = Modifier
-                    .size(48.dp)
-                    .padding(top = 16.dp, start = 12.dp)
-                    .background(Highlight, CircleShape),
-                onClick = { viewModel.addFriend() }
-            ) {
-                Icon(
-                    Icons.Filled.Search,
-                    contentDescription = "",
-                    tint = Color.White
-                )
-            }
+            if (true) AddFriendButton(viewModel = viewModel)
+            else RemoveFriendButton(viewModel = viewModel)
         }
         Divider(
             startIndent = 0.dp,
             thickness = 1.dp,
             color = Gray,
             modifier = Modifier.align(Alignment.BottomCenter)
+        )
+    }
+}
+
+@Composable
+fun AddFriendButton(
+    viewModel: FriendSearchViewModel
+) {
+    IconButton(
+        modifier = Modifier
+            .size(32.dp)
+            .background(Highlight, RoundedCornerShape(15.dp)),
+        onClick = { viewModel.addFriend() }
+    ) {
+        Icon(
+            Icons.Filled.Add,
+            contentDescription = "",
+            tint = Color.White,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun RemoveFriendButton(
+    viewModel: FriendSearchViewModel
+) {
+    IconButton(
+        modifier = Modifier
+            .size(32.dp)
+            .background(ErrorRed, RoundedCornerShape(15.dp)),
+        onClick = { viewModel.removeFriend() }
+    ) {
+        Icon(
+            Icons.Filled.Delete,
+            contentDescription = "",
+            tint = Color.White,
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

@@ -42,6 +42,7 @@ val dataModule = module {
 
     single<Interceptor> {
         MeetCatApiInterceptor(
+            appScope = get(),
             dataPreferences = get()
         )
     }

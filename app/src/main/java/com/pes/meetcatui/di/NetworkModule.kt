@@ -61,7 +61,7 @@ val networkModule = module {
     }
 
     single {
-        MeetCatApiInterceptor(get())
+        MeetCatApiInterceptor(get(), get())
     }
 }
 

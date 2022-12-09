@@ -9,6 +9,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
@@ -23,6 +24,10 @@ class MapViewModel(
     val mapState = mutableStateOf(MapScreenState())
     var selectedEvent = mutableStateOf(Event(0,"",null,null,"",null,null,null,null,null))
     val isSelected = mutableStateOf(false)
+    var cameraPositionState = mutableStateOf(CameraPositionState())
+    val INITIAL_LATITUDE = 41.387423
+    val INITIAL_LONGITUDE = 2.169763
+    var distanceRadiKm = 1.5
 
     private val locationRequest = LocationRequest
         .Builder(120000)
@@ -71,10 +76,40 @@ class MapViewModel(
         selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
     }
 
+     fun refreshEventsByLocation() {
+
+       viewModelScope.launch {
+            dataRepository.getNearestEvents(
+                cameraPositionState.value.position.target.latitude,
+                cameraPositionState.value.position.target.longitude,
+                distanceRadiKm)
+                .collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            events.value = EventListScreenState(
+                                data = resource.data?.events as MutableList<Event>
+                            )
+                        }
+                        is Resource.Error -> {
+                            events.value = EventListScreenState(
+                                hasError = true,
+                                errorMessage = resource.message
+                            )
+                        }
+                        is Resource.Loading -> {
+                            events.value = EventListScreenState(
+                                isLoading = true
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
     init {
         viewModelScope.launch {
             println("Carregant events mapa")
-            dataRepository.getNearestEvents(41.3870154, 2.1700471, 1.0)
+            dataRepository.getNearestEvents(INITIAL_LATITUDE, INITIAL_LONGITUDE, distanceRadiKm)
                 .collect { resource ->
                 when (resource) {
                     is Resource.Success -> {

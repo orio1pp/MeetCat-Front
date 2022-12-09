@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_friend_search
 
-import android.graphics.drawable.shapes.Shape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,22 +9,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.commons.presentation.Navigation
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.WarningText
-import com.pes.meetcatui.network.UserData
 import com.pes.meetcatui.ui.theme.*
 
 @Composable
@@ -36,11 +31,19 @@ fun FriendSearchScreen(
         color = Background,
     ) {
         Row(
-            modifier = Modifier.fillMaxHeight(0.2F),
+            modifier = Modifier.height(80.dp),
             verticalAlignment = Alignment.Top,
         ) {
             SearchBar(viewModel)
         }
+        Row(
+            modifier = Modifier
+                .height(60.dp)
+                .padding(top = 80.dp),
+        ) {
+            ScreenSelector()
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -227,6 +230,78 @@ fun RemoveFriendButton(
             contentDescription = "",
             tint = Color.White,
             modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun ScreenSelector() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Background, shape = RectangleShape)
+            .padding(horizontal = 0.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(color = Background_alt, shape = RectangleShape)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                FriendNavigationButton("Chats", Icons.Filled.Email)
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                FriendNavigationButton("Search", Icons.Filled.Search)
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                FriendNavigationButton("Friends", Icons.Filled.Person)
+            }
+        }
+    }
+}
+
+@Composable
+fun FriendNavigationButton(
+    text: String,
+    icon: ImageVector
+) {
+    TextButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 6.dp)
+            .background(color = Background, shape = CircleShape)
+            .border(1.dp, Gray, CircleShape),
+        onClick = {  },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.White.copy(
+                alpha = 0F,
+            )
+        )
+    ) {
+        Icon(
+            icon,
+            contentDescription = "",
+            tint = Gray,
+            modifier = Modifier.size(24.dp)
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp),
+            text = text,
+            color = Color.Black,
+            style = typo.body1
         )
     }
 }

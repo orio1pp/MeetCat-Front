@@ -12,10 +12,10 @@ class ChatListViewModel(dataRepository: DataRepository) : ViewModel(
 ) {
     val dataRepository = dataRepository
     //val _chat = mutableStateOf(ChatScreenState())
-
+/*
     val chatList = dataRepository.getChatList().mapLatest { chats ->
         chats.asSequence().sortedBy { it.chatId }.toList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())*/
 
     fun getChat(id: Int) {
         /*_chat.value = ChatScreenState(

@@ -28,7 +28,7 @@ fun ChatListScreen(
     navtoChat: () -> Unit,
 ) {
 
-    val chatList by viewModel.chatList.collectAsState()
+    //val chatList by viewModel.chatList.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -38,13 +38,13 @@ fun ChatListScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
 
-            item {
+            /*item {
                 for (chat in chatList) {
                     Row {
                         Chat(sender = chat.username, lastMessage = chat.messages.get(chat.messages.size - 1).text)
                     }
                 }
-            }
+            }*/
         }
         Row (
             modifier = Modifier.fillMaxHeight(0.2F),

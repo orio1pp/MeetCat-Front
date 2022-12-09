@@ -1,22 +1,25 @@
 package com.pes.meetcatui
 
-import android.app.ListActivity
-import android.content.Intent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_event.presentation.CreateEventView
+import com.pes.meetcatui.feature_event.presentation.EventListScreen
+import com.pes.meetcatui.feature_event.presentation.MapScreen
+import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun BottomNavGraph(navController: NavHostController, fusedLocationClient: FusedLocationProviderClient) {
-
-    NavHost(navController = navController, startDestination = BottomBarScreen.Map.route) {
+fun BottomNavGraph(
+    navController: NavHostController,
+    initRoute: String,
+    fusedLocationClient: FusedLocationProviderClient,
+    setVisible: (Boolean) -> Unit,
+) {
+    NavHost(navController = navController, startDestination = initRoute) {
         composable(BottomBarScreen.Events.route) {
             EventListScreen(getViewModel(), navToMap = {
                 navController.navigate(BottomBarScreen.Map.route)
@@ -38,6 +41,17 @@ fun BottomNavGraph(navController: NavHostController, fusedLocationClient: FusedL
                 navToEventList = { navController.navigate(BottomBarScreen.Events.route) },
                 fusedLocationClient = fusedLocationClient
             )
+        }
+        composable(BottomBarScreen.Login.route) {
+            NormalLoginScreen(
+                viewModel = getViewModel(),
+                navToRegister = { navController.navigate(BottomBarScreen.Register.route) },
+                navToApp = { navController.navigate(BottomBarScreen.Map.route) },
+                setVisible = setVisible,
+            )
+        }
+        composable(BottomBarScreen.Register.route) {
+            RegisterScreen(getViewModel())
         }
     }
 }

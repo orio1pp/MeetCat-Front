@@ -49,15 +49,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    FriendSearchScreen(viewModel = get())
-                    /*if (GoogleSignIn.getLastSignedInAccount(this) != null) {
+                    if (GoogleSignIn.getLastSignedInAccount(this) != null) {
                         Log.d("EMAIL = ", SavedPreference.EMAIL)
                         App(fusedLocationClient)
                     }
                     else {
                         Log.d("EMAIL = ", SavedPreference.EMAIL)
                         NormalLoginScreen(viewModel = getViewModel())
-                    }*/
+                    }
 
                     /*Button(onClick = {mGoogleSignInClient.signOut().addOnCompleteListener {
                         val intent= Intent(this, LoginScreen::class.java)

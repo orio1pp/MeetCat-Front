@@ -24,10 +24,10 @@ class DataRepositoryImpl (
 
     //private val eventList = dataPreferences.getEventList()
 
-    override fun getEvents(pageNum:Int): Flow<Resource<EventPage>> = flow {
+    override fun getEvents(pageNum:Int, title:String?): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
-            val apiResponse = meetcatApi.getEvents(pageNum,20)
+            val apiResponse = meetcatApi.getEventsWithTitle(pageNum, 20, title)
             if (apiResponse.isSuccessful) {
                 val result = buildEventList(apiResponse.body()!!)
 

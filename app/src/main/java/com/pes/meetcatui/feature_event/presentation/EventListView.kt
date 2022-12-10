@@ -79,6 +79,10 @@ fun EventListScreenContent(
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
+            searchBar(
+                viewModel,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             filtersSelection()
             if (eventList.isLoading) {
                 Column(

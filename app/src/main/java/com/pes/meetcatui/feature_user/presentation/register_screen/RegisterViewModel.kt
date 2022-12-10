@@ -1,40 +1,35 @@
-package com.pes.meetcatui.feature_user.presentation.screen_normal_login
+package com.pes.meetcatui.feature_user.presentation.register_screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
+import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.launch
+import com.pes.meetcatui.network.MeetCatApi
 
-class NormalLoginViewModel(
-    val dataRepo: DataRepositoryUsers,
+class RegisterViewModel(
+    val dataRepository: DataRepositoryUsers
 ) : ViewModel() {
-
     private val _warning = mutableStateOf("")
     val warning: State<String> = _warning
 
-    private val _loggedIn = mutableStateOf(false)
-    val loggedIn: State<Boolean> = _loggedIn
 
-    fun login(username: String, password: String) {
+    fun register(username: String, password: String) {
         viewModelScope.launch {
             if (username.isEmpty() || password.isEmpty()) {
                 _warning.value = "El nom d'usuari o la contrassenya son buïts."
             } else {
-                val loggedIn = authenticate(username = username, password = password)
-                if (!loggedIn) {
-                    _warning.value = "El nom d'usuari o la contrassenya son incorrectes."
-                } else {
-                    _warning.value = ""
-                    _loggedIn.value = true
-                }
+                val user = UserData(null, username, password, emptyList(), null, null, null)
+                dataRepository.postUser(user)
             }
+            //navegar a login
         }
     }
 
     private suspend fun authenticate(username: String, password: String): Boolean {
-        return dataRepo.login(username, password)
+        return dataRepository.login(username, password)
     }
 
 }

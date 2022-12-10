@@ -1,9 +1,8 @@
 package com.pes.meetcatui.feature_chat.domain
 
-import com.pes.meetcatui.feature_event.Resource /* canviar aixooooo*/
+import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.network.ChatApi
 import com.pes.meetcatui.network.ChatDetailsResponse
-import com.pes.meetcatui.network.EventDetailsData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

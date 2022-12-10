@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_user.presentation.screen_normal_login
+package com.pes.meetcatui.feature_user.presentation.register_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -27,13 +26,9 @@ import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
 
 @Composable
-fun NormalLoginScreen(
-    viewModel: NormalLoginViewModel,
-    navToRegister: () -> Unit,
-    navToApp: () -> Unit,
-    setVisible: (Boolean) -> Unit,
+fun RegisterScreen(
+    viewModel: RegisterViewModel,
 ) {
-    val isLogged = rememberSaveable { (mutableStateOf(false)) }
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -66,7 +61,7 @@ fun NormalLoginScreen(
                             .padding(horizontal = 48.dp)
                             .padding(top = 16.dp),
                     ) {
-                        Subtitle(text = "Login")
+                        Subtitle(text = "Register")
                     }
                 }
                 item {
@@ -134,27 +129,9 @@ fun NormalLoginScreen(
                             .padding(horizontal = 128.dp, vertical = 8.dp),
                     ) {
                         CustomButton(
-                            text = "Login", username = username,
+                            text = "Register", username = username,
                             password = password, viewModel = viewModel
                         )
-                        if (viewModel.loggedIn.value && !isLogged.value) {
-                            navToApp()
-                            setVisible(true)
-                            isLogged.value = true
-                        }
-                    }
-                }
-                item{
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(horizontal = 128.dp, vertical = 8.dp),
-                    ) {
-                        RegisterButton(
-                            text = "Register",
-                            navToRegister = navToRegister,
-                        )
-
                     }
                 }
                 item {
@@ -210,19 +187,18 @@ fun CustomButton(
     text: String,
     username: String,
     password: String,
-    viewModel: NormalLoginViewModel
+    viewModel: RegisterViewModel
 ) {
     Button(
         onClick = {
-            viewModel.login(username = username, password = password)
-
+            viewModel.register(username = username, password = password)
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Highlight,
             contentColor = Color.White
         ),
         modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(50)
     )
     {
         Text(
@@ -262,31 +238,6 @@ fun CustomLogo(
 
     )
 }
-
-@Composable
-fun RegisterButton(
-    text: String,
-    navToRegister: () -> Unit,
-) {
-    Button(
-        onClick = {
-            navToRegister()
-        },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Highlight,
-            contentColor = Color.White
-        ),
-        modifier = Modifier.fillMaxSize(),
-        shape = RoundedCornerShape(50)
-    )
-    {
-        Text(
-            text = text,
-            style = typo.body1
-        )
-    }
-}
-
 
 @Composable
 fun SimpleTextField(

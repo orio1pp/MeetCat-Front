@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.pes.meetcatui.common.ScreenSelector
 import com.pes.meetcatui.commons.presentation.Navigation
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Gray
@@ -29,15 +30,22 @@ fun ChatListScreen(
 ) {
     viewModel.getChatsByUser()
     val chatList by viewModel.chatList
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+        Row(
+            modifier = Modifier
+                .height(80.dp)
         ) {
+            ScreenSelector()
+        }
 
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 80.dp),
+        ) {
             item {
                 for (chat in chatList) {
                     Row {
@@ -46,14 +54,32 @@ fun ChatListScreen(
                 }
             }
         }
+        Row(
+            modifier = Modifier.fillMaxHeight(0.2F),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            Navigation(section = "chat")
+        }
+    }
+}
+/*
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Background,
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+
+
+        }
         Row (
             modifier = Modifier.fillMaxHeight(0.2F),
             verticalAlignment = Bottom,
         ) {
             Navigation(section = "chat")
         }
-    }
-}
+    }*/
 
 @Composable
 fun Chat(

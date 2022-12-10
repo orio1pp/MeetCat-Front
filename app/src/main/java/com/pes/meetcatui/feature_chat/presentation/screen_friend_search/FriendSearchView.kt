@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.pes.meetcatui.common.ScreenSelector
 import com.pes.meetcatui.commons.presentation.Navigation
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.WarningText
 import com.pes.meetcatui.ui.theme.*
@@ -37,7 +38,7 @@ fun FriendSearchScreen(
         }
         Row(
             modifier = Modifier
-                .height(60.dp)
+                .height(80.dp)
                 .padding(top = 80.dp),
         ) {
             ScreenSelector()
@@ -46,7 +47,7 @@ fun FriendSearchScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 140.dp),
+                .padding(top = 160.dp),
         ) {
             item {
                 for (user in viewModel.results.value) {
@@ -235,78 +236,6 @@ fun RemoveFriendButton(
             contentDescription = "",
             tint = Color.White,
             modifier = Modifier.fillMaxSize()
-        )
-    }
-}
-
-@Composable
-fun ScreenSelector() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background, shape = RectangleShape)
-            .padding(horizontal = 0.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(color = Background_alt, shape = RectangleShape)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Chats", Icons.Filled.Email)
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Search", Icons.Filled.Search)
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Friends", Icons.Filled.Person)
-            }
-        }
-    }
-}
-
-@Composable
-fun FriendNavigationButton(
-    text: String,
-    icon: ImageVector
-) {
-    TextButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 6.dp)
-            .background(color = Background, shape = CircleShape)
-            .border(1.dp, Gray, CircleShape),
-        onClick = { },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.White.copy(
-                alpha = 0F,
-            )
-        )
-    ) {
-        Icon(
-            icon,
-            contentDescription = "",
-            tint = Gray,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp),
-            text = text,
-            color = Color.Black,
-            style = typo.body1
         )
     }
 }

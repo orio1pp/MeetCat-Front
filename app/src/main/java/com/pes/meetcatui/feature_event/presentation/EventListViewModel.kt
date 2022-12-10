@@ -13,10 +13,11 @@ class EventListViewModel(
 ) : ViewModel() {
 
     val eventList = mutableStateOf(EventListScreenState())
+    var titleSearch: String? = null
 
     init {
         viewModelScope.launch {
-            dataRepository.getEvents(0).collect { resource ->
+            dataRepository.getEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(
@@ -58,7 +59,7 @@ class EventListViewModel(
     fun loadMore() {
         if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
             viewModelScope.launch {
-                dataRepository.getEvents(eventList.value.page).collect { resource ->
+                dataRepository.getEvents(eventList.value.page, titleSearch).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
@@ -74,6 +75,33 @@ class EventListViewModel(
                             )
                         }
                         else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    fun search(text: String) {
+        titleSearch = text
+        viewModelScope.launch {
+            dataRepository.getEvents(0, titleSearch).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        eventList.value = EventListScreenState(
+                            data = resource.data?.events as MutableList<Event>,
+                            page = 1
+                        )
+                    }
+                    is Resource.Error -> {
+                        eventList.value = EventListScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        eventList.value = EventListScreenState(
+                            isLoading = true
+                        )
                     }
                 }
             }

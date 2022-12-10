@@ -2,7 +2,6 @@ package com.pes.meetcatui.feature_event.presentation
 
 
 import android.location.Location
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +11,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.Attendance
+import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.flow.collect

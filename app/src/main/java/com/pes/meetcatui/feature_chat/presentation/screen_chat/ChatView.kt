@@ -45,10 +45,10 @@ fun ChatScreen(
             item {
                 for (message in viewModel.messages.value) {
                     if (message.username.equals("oriol")) {
-                        MessageSent(date = message.date.toString(), text = message.text)
+                        MessageSent(date = message.date.toString(), text = message.text!!)
                     }
                     else {
-                        MessageReceived(date = message.date.toString(), text = message.text)
+                        MessageReceived(date = message.date.toString(), text = message.text!!)
                     }
                 }
             }

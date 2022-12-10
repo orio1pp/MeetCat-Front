@@ -1,5 +1,7 @@
 package com.pes.meetcatui.di
 
+import com.pes.meetcatui.feature_chat.presentation.screen_chat.ChatViewModel
+import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListViewModel
 import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchViewModel
 import com.pes.meetcatui.feature_event.presentation.CreateEventViewModel
 import com.pes.meetcatui.feature_event.presentation.EventListViewModel
@@ -34,6 +36,16 @@ val appModule = module {
     }
     viewModel {
         FriendSearchViewModel(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        ChatViewModel(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        ChatListViewModel(
             dataRepository = get(),
         )
     }

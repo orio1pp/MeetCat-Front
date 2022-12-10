@@ -20,4 +20,6 @@
     <string name="createEventErrorDateIsNotDate">La data introduïda no és una data, si us plau, introduïu una data</string>
     <string name="createEventErrorURLIsNotValid">La URL introduïda no és una URL vàlida, si us plau, introduïu una URL vàlida</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">La localització no està en el format correcte, si us plau utilitzeu \"lat,lon\"</string>
+    <string name="join">Apunta\'t</string>
+    <string name="leave">Marxa</string>
 </resources>

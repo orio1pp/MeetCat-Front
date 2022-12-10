@@ -19,4 +19,6 @@
     <string name="createEventErrorDateIsNotDate">The date you input isn\'t a date, please input a date</string>
     <string name="createEventErrorURLIsNotValid">The URL is not a valid URL, please introduce a valid URL</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">The location is not following the right format, please input \"lat,lon\"</string>
+    <string name="join">Join</string>
+    <string name="leave">Leave</string>
 </resources>

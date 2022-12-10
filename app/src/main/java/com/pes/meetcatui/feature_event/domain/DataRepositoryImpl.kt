@@ -1,11 +1,10 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.network.AttendanceData
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -64,11 +63,11 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun createEvent( event: Event) : String {
+    override suspend fun createEvent(event: Event) : String {
         try {
             val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
             println(eventSerial)
-            meetcatApi.createEvent(eventSerial);
+            meetcatApi.createEvent(eventSerial)
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
@@ -76,6 +75,56 @@ class DataRepositoryImpl (
             return ("Timeout Exception: ${e.message}")
         } catch (e: HttpException) {
             return ("Http Exception: ${e.message}")
+        }
+    }
+
+    override fun getAttendance(userId: Long, eventId: Long): Flow<Resource<Boolean>> = flow {
+        try {
+            emit(Resource.Loading())
+            val attendanceResponse = meetcatApi.getAttendance(userId, eventId)
+            if (attendanceResponse.isSuccessful) {
+                emit(Resource.Success(attendanceResponse.body()!!))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override suspend fun createAttendance(attendance: Attendance): Flow<Resource<Attendance>> = flow {
+        try {
+            emit(Resource.Loading())
+            val attendanceResponse = meetcatApi.createAttendance(buildAttendanceData(attendance))
+            if (attendanceResponse.isSuccessful) {
+                val newAttendance = buildAttendance(attendanceResponse.body()!!)
+                emit(Resource.Success(newAttendance))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override suspend fun deleteAttendance(userId: Long, eventId: Long): Flow<Resource<Attendance>> = flow {
+        try {
+            emit(Resource.Loading())
+            val attendanceResponse = meetcatApi.deleteAttendance(userId, eventId)
+            if (attendanceResponse.isSuccessful) {
+                val deletedAttendance = buildAttendance(attendanceResponse.body()!!)
+                emit(Resource.Success(deletedAttendance))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
         }
     }
 
@@ -121,6 +170,20 @@ class DataRepositoryImpl (
         placeName = eventData.placeName,
         link = eventData.link,
         address = eventData.address,
+    )
+
+    private fun buildAttendance(
+        attendanceData: AttendanceData,
+    ) = Attendance(
+        userId = attendanceData.userId,
+        eventId = attendanceData.eventId,
+    )
+
+    private fun buildAttendanceData(
+        attendance: Attendance,
+    ) = AttendanceData(
+        userId = attendance.userId,
+        eventId = attendance.eventId,
     )
 }
 

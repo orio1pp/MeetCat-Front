@@ -4,8 +4,11 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +31,9 @@ import com.pes.meetcatui.ui.theme.typo
 @Composable
 fun EventDetails(
     event: Event,
+    attendance: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: () -> Unit,
 ) {
     if (event != null) {
         EventDetailsContent(
@@ -39,6 +45,9 @@ fun EventDetails(
             placeName = event.placeName,
             address = event.address,
             link = event.link,
+            attendance = attendance,
+            onClickJoin = onClickJoin,
+            onClickLeave = onClickLeave,
         )
     }
 }
@@ -134,6 +143,9 @@ private fun EventDetailsContent(
     placeName: String?,
     address: String?,
     link: String?,
+    attendance: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: () -> Unit,
 ) {
     MaterialTheme {
         Column (
@@ -192,9 +204,19 @@ private fun EventDetailsContent(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SpaceDp()
                 Button(
-                    onClick = { },
+                    modifier = Modifier.width(120.dp),
+                    onClick = {
+                        if (attendance.isAttended)
+                            onClickLeave()
+                        else
+                            onClickJoin()
+                    },
+                    shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text("Join placeholder")
+                    Text(text = if (attendance.isAttended)
+                        stringResource(id = R.string.leave)
+                    else
+                        stringResource(id = R.string.join))
                 }
             }
         }
@@ -217,6 +239,9 @@ fun EventScreenPreview() {
         placeName = "FIB",
         address = "C. Jordi Girona 12",
         link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
+        attendance = EventAttendanceState(),
+        onClickJoin = {},
+        onClickLeave = {},
     )
     BackButton()
 }

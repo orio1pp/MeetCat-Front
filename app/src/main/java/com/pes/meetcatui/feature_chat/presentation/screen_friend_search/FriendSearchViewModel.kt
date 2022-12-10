@@ -6,22 +6,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pes.meetcatui.feature_chat.domain.DataRepository
-import com.pes.meetcatui.feature_chat.domain.Message
+import com.pes.meetcatui.feature_chat.domain.FriendshipHelper
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.network.UserData
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class FriendSearchViewModel(
     val dataRepository: DataRepositoryUsers
-    ) : ViewModel() {
+) : ViewModel() {
 
     var searchValue by mutableStateOf("")
 
-    private val _results = mutableStateOf(listOf<UserData>())
-    val results : State<List<UserData>> = _results
+    private val _results = mutableStateOf(listOf<FriendshipHelper>())
+    val results: State<List<FriendshipHelper>> = _results
 
     private val _warning = mutableStateOf("")
     val warning: State<String> = _warning
@@ -30,16 +27,20 @@ class FriendSearchViewModel(
         viewModelScope.launch {
             val user: UserData? = dataRepository.getUser(searchValue)
             if (user != null) {
+                val friends = dataRepository.getFriend()
                 _warning.value = ""
-                var list: MutableList<UserData> = emptyList<UserData>().toMutableList()
-                list.add(user)
+                var list: MutableList<FriendshipHelper> =
+                    emptyList<FriendshipHelper>().toMutableList()
+                var isFriend = false
+                if (friends != null) {
+                    for (fr in friends)
+                        if (fr.friendId.equals(user.username))
+                            isFriend = true
+                }
+                list.add(FriendshipHelper(user, isFriend))
                 _results.value = list
-            }
-            else {
+            } else {
                 _results.value = emptyList()
-                /*var list: MutableList<UserData> = emptyList<UserData>().toMutableList()
-                list.add(UserData(2, "a", "dsa", emptyList(), "a"))
-                _results.value = list*/
                 _warning.value = "No hi ha usuaris amb aquest nom d'usuari"
             }
         }
@@ -47,13 +48,13 @@ class FriendSearchViewModel(
 
     fun addFriend() {
         viewModelScope.launch {
-            dataRepository.addFriend(_results.value[0].username)
+            _results.value[0].user?.let { dataRepository.addFriend(it.username) }
         }
     }
 
     fun removeFriend() {
         viewModelScope.launch {
-            dataRepository.addFriend(_results.value[0].username)
+            _results.value[0].user?.let { dataRepository.removeFriend(it.username) }
         }
     }
 }

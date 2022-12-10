@@ -1,6 +1,5 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_friend_search
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -47,12 +46,19 @@ fun FriendSearchScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 80.dp),
+                .padding(top = 140.dp),
         ) {
             item {
                 for (user in viewModel.results.value) {
                     Row {
-                        UserBox(name = user.username, about = user.about, viewModel = viewModel)
+                        user.user?.let {
+                            UserBox(
+                                name = it.username,
+                                about = user.user.about,
+                                isFriend = user.isFriend,
+                                viewModel = viewModel
+                            )
+                        }
                     }
                 }
             }
@@ -60,7 +66,7 @@ fun FriendSearchScreen(
         Row(
             modifier = Modifier
                 .padding(horizontal = 48.dp)
-                .padding(top = 100.dp)
+                .padding(top = 140.dp)
         ) {
             WarningText(text = viewModel.warning.value)
         }
@@ -140,6 +146,7 @@ fun SearchBar(
 fun UserBox(
     name: String,
     about: String?,
+    isFriend: Boolean,
     viewModel: FriendSearchViewModel
 ) {
     Box(
@@ -162,29 +169,27 @@ fun UserBox(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            if (about != null) {
-                Row(
-                    modifier = Modifier.padding(16.dp, top = 44.dp),
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .width(256.dp),
-                        text = about,
-                        color = LightGray,
-                        style = typo.body1,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+            Row(
+                modifier = Modifier.padding(16.dp, top = 44.dp),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .width(256.dp),
+                    text = about!!,
+                    color = LightGray,
+                    style = typo.body1,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         Column(
             modifier = Modifier
                 .padding(start = 276.dp)
                 .padding(vertical = 24.dp)
-                .size(48.dp)
+                .size(32.dp)
         ) {
-            if (true) AddFriendButton(viewModel = viewModel)
+            if (!isFriend) AddFriendButton(viewModel = viewModel)
             else RemoveFriendButton(viewModel = viewModel)
         }
         Divider(
@@ -202,7 +207,7 @@ fun AddFriendButton(
 ) {
     IconButton(
         modifier = Modifier
-            .size(32.dp)
+            .size(20.dp)
             .background(Highlight, RoundedCornerShape(15.dp)),
         onClick = { viewModel.addFriend() }
     ) {
@@ -249,7 +254,7 @@ fun ScreenSelector() {
                 .height(60.dp)
                 .background(color = Background_alt, shape = RectangleShape)
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp),
+                .padding(bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -282,7 +287,7 @@ fun FriendNavigationButton(
             .padding(horizontal = 6.dp)
             .background(color = Background, shape = CircleShape)
             .border(1.dp, Gray, CircleShape),
-        onClick = {  },
+        onClick = { },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White.copy(
                 alpha = 0F,

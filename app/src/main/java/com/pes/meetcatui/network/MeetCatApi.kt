@@ -1,7 +1,9 @@
 package com.pes.meetcatui.network
 
 import com.pes.meetcatui.feature_user.domain.UserToken
-import org.json.JSONArray
+import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.Friendships.GetFriendshipsData
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,5 +32,11 @@ interface MeetCatApi {
     suspend fun getUser(@Query("username") username : String, @Header("Authorization") accessToken : String): Response<UserData>
 
     @POST("friendship")
-    suspend fun addFriend(@Query("username") username: String, @Header("Authorization") accessToken : String): Response<FriendshipData>
+    suspend fun addFriend(@Body friendship: FriendshipData, @Header("Authorization") accessToken : String): Response<FriendshipData>
+
+    @GET("friendship")
+    suspend fun getFriend(@Query("page") page: Int?, @Query("size") size: Int?, @Header("Authorization") accessToken : String): Response<List<FriendshipData>>?
+
+    @DELETE("friendship")
+    suspend fun removeFriend(@Query("friendId") friendId: String, @Header("Authorization") accessToken : String): Response<FriendshipData>
 }

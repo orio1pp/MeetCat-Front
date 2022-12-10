@@ -25,15 +25,11 @@ interface MeetCatApi {
     @POST("events")
     suspend fun createEvent(@Body event: EventDetailsData)
 
-
     @POST("users")
     suspend fun postUser(@Body user : UserData): Response<UserData>
 
     @POST("login")
     suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>
-
-    @GET("users/name")
-    suspend fun getUser(@Query("username") username : String): Response<UserData>
 
     @GET("attendance")
     suspend fun getAttendance(@Query("userId") userId: Long, @Query("eventId") eventId: Long): Response<Boolean>
@@ -43,6 +39,8 @@ interface MeetCatApi {
 
     @DELETE("attendance")
     suspend fun deleteAttendance(@Query("userId") userId: Long, @Query("eventId") eventId: Long): Response<AttendanceData>
+
+    @GET("users/name")
     suspend fun getUser(@Query("username") username : String, @Header("Authorization") accessToken : String): Response<UserData>
 
     @POST("friendship")

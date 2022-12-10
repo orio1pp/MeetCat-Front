@@ -3,7 +3,6 @@ package com.pes.meetcatui.feature_event.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.Attendance
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository

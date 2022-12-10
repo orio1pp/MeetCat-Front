@@ -29,4 +29,12 @@ interface MeetCatApi {
 
     @GET("users/name")
     suspend fun getUser(@Query("username") username : String): Response<UserData>
+
+    @POST("events/{eventId}/like")
+    suspend fun likeEvent(eventId: Long)
+
+    @POST("events/{eventId}/dislike")
+    suspend fun dislikeEvent(eventId: Long)
+
+
 }

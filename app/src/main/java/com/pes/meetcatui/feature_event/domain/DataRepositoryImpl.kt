@@ -64,6 +64,15 @@ class DataRepositoryImpl (
         }
     }
 
+    override suspend fun likeEvent(eventId: Long){
+        TODO("Not yet implemented")
+        meetcatApi.likeEvent(eventId);
+    }
+
+    override suspend fun dislikeEvent(eventId: Long){
+        meetcatApi.dislikeEvent(eventId);
+    }
+
     override suspend fun createEvent( event: Event) : String {
         try {
             val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)

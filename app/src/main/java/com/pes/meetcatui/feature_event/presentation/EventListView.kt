@@ -220,8 +220,6 @@ fun LikeButtons(
             viewModel.handleVote("like")
             liked = viewModel.hasLiked
             disliked = viewModel.hasDisLiked
-            Log.d("Liked: ", viewModel.hasLiked.toString())
-            Log.d("Disliked: ", viewModel.hasDisLiked.toString())
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,

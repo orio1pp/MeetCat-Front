@@ -10,6 +10,8 @@ import com.pes.meetcatui.feature_user.data.DataPreferencesImpl
 import com.pes.meetcatui.feature_event.domain.*
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
+import com.pes.meetcatui.network.MeetCatApiInterceptor
+import okhttp3.Interceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -35,6 +37,13 @@ val dataModule = module {
             appScope = get(),
             meetCatApi = get(),
             dataPreferences = get(),
+        )
+    }
+
+    single<Interceptor> {
+        MeetCatApiInterceptor(
+            appScope = get(),
+            dataPreferences = get()
         )
     }
 }

@@ -2,7 +2,7 @@ package com.pes.meetcatui.feature_user.domain
 
 import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.UserData
-
+import retrofit2.Response
 
 interface DataRepositoryUsers {
     //suspend fun createUser(user : UserData)

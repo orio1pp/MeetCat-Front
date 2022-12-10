@@ -1,7 +1,6 @@
 package com.pes.meetcatui.feature_chat.domain
 
-import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.common.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {

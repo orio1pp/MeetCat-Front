@@ -107,7 +107,6 @@ class DataRepositoryUsersImpl(
 
     suspend fun downloadData() {
         val token = meetCatApi.login("a@gmail.com", "a").body()
-        println(token)
         dataPreferences.setToken(token!!)
     }
 }

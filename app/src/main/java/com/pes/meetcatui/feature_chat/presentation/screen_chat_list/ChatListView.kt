@@ -25,10 +25,10 @@ import com.pes.meetcatui.ui.theme.typo
 @Composable
 fun ChatListScreen(
     viewModel: ChatListViewModel,
-    navtoChat: () -> Unit,
+    //navtoChat: () -> Unit,
 ) {
-
-    //val chatList by viewModel.chatList.collectAsState()
+    viewModel.getChatsByUser()
+    val chatList by viewModel.chatList
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -38,13 +38,13 @@ fun ChatListScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
 
-            /*item {
+            item {
                 for (chat in chatList) {
                     Row {
-                        Chat(sender = chat.username, lastMessage = chat.messages.get(chat.messages.size - 1).text)
+                        chat.friend?.let { Chat(sender = it/*, lastMessage = chat.messages.get(chat.messages.size - 1).text*/) }
                     }
                 }
-            }*/
+            }
         }
         Row (
             modifier = Modifier.fillMaxHeight(0.2F),
@@ -58,7 +58,7 @@ fun ChatListScreen(
 @Composable
 fun Chat(
     sender: String,
-    lastMessage: String,
+    //lastMessage: String,
 ) {
     Box(
         modifier = Modifier

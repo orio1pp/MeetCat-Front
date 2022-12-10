@@ -1,21 +1,23 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_chat.domain.DataRepositoryChats
+import com.pes.meetcatui.network.chat.GetChatData
+import kotlinx.coroutines.launch
 
-class ChatListViewModel(dataRepository: DataRepositoryChats) : ViewModel(
+class ChatListViewModel(
+    val dataRepository: DataRepositoryChats
+) : ViewModel() {
 
-) {
-    //val _chat = mutableStateOf(ChatScreenState())
-/*
-    val chatList = dataRepository.getChatList().mapLatest { chats ->
-        chats.asSequence().sortedBy { it.chatId }.toList()
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())*/
+    private val _chatList = mutableStateOf(listOf<GetChatData>())
+    val chatList: State<List<GetChatData>> = _chatList
 
-    fun getChat(id: Int) {
-        /*_chat.value = ChatScreenState(
-            data = chatList.value.get(id - 1),
-        )*/
-        println("break")
+    fun getChatsByUser() {
+        viewModelScope.launch {
+            _chatList.value = dataRepository.getChatByUser()!!
+        }
     }
 }

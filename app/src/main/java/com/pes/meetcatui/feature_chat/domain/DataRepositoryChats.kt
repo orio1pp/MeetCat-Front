@@ -6,5 +6,5 @@ import com.pes.meetcatui.network.chat.GetChatData
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepositoryChats {
-    fun getChatByUser(): Flow<GetChatData>
+    suspend fun getChatByUser(): List<GetChatData>?
 }

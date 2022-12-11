@@ -51,7 +51,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ChatListScreen(viewModel = get())
+                    //ChatListScreen(viewModel = get())
+                    FriendSearchScreen(viewModel = get())
                     /*if (GoogleSignIn.getLastSignedInAccount(this) != null) {
                         Log.d("EMAIL = ", SavedPreference.EMAIL)
                         App(fusedLocationClient)

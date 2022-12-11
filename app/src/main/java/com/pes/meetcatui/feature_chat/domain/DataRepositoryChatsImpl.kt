@@ -21,7 +21,7 @@ class DataRepositoryChatsImpl(
         }
     }
 
-    override suspend fun getChatByUser(): List<GetChatData>? {
+    override suspend fun getChatByUser(page: Int): List<GetChatData>? {
         var accessToken = "Bearer "
         //appScope.launch {
         //withContext(Dispatchers.IO) {

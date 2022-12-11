@@ -1,10 +1,7 @@
 package com.pes.meetcatui.feature_chat.domain
 
-import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.network.chat.ChatData
 import com.pes.meetcatui.network.chat.GetChatData
-import kotlinx.coroutines.flow.Flow
 
 interface DataRepositoryChats {
-    suspend fun getChatByUser(): List<GetChatData>?
+    suspend fun getChatByUser(page: Int): List<GetChatData>?
 }

@@ -28,9 +28,8 @@ import com.pes.meetcatui.ui.theme.typo
 
 @Composable
 fun ChatScreen(
-    viewModel: ChatViewModel,
+    viewModel: ChatListViewModel,
 ) {
-    //val viewModel = ChatViewModel(get())
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -41,8 +40,8 @@ fun ChatScreen(
             item {
                 ChatHeader(username = "Oriol")
             }
-            //viewModel.init()
-            item {
+
+            item {/*
                 for (message in viewModel.messages.value) {
                     if (message.username.equals("oriol")) {
                         MessageSent(date = message.date.toString(), text = message.text!!)
@@ -50,7 +49,7 @@ fun ChatScreen(
                     else {
                         MessageReceived(date = message.date.toString(), text = message.text!!)
                     }
-                }
+                }*/
             }
         }
         Row (
@@ -74,7 +73,7 @@ fun ChatScreen(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Texting(
-    viewModel: ChatViewModel
+    viewModel: ChatListViewModel
 ) {
     Box(
         modifier = Modifier
@@ -110,7 +109,7 @@ fun Texting(
             IconButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { viewModel.newMessage(text.value.toString()) },
+                onClick = { /*viewModel.newMessage(text.value.toString())*/ },
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Send,

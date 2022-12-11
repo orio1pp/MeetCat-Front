@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchScreen
 import com.pes.meetcatui.feature_event.presentation.*
 import org.koin.androidx.compose.getViewModel
 
@@ -37,6 +38,12 @@ fun BottomNavGraph(navController: NavHostController, fusedLocationClient: FusedL
                 viewModel = getViewModel(),
                 navToEventList = { navController.navigate(BottomBarScreen.Events.route) },
                 fusedLocationClient = fusedLocationClient
+            )
+        }
+        composable(BottomBarScreen.UserSearch.route) {
+            FriendSearchScreen(
+                viewModel = getViewModel(),
+                //fusedLocationClient = fusedLocationClient
             )
         }
     }

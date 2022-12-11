@@ -75,7 +75,7 @@ fun FriendSearchScreen(
             modifier = Modifier.fillMaxHeight(0.2F),
             verticalAlignment = Alignment.Bottom,
         ) {
-            Navigation(section = "chat")
+            //Navigation(section = "chat")
         }
     }
 }

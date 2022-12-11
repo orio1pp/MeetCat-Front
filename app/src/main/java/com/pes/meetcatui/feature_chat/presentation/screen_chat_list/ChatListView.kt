@@ -46,12 +46,12 @@ fun ChatListScreen(
                 .fillMaxSize()
                 .padding(top = 80.dp),
         ) {
-            item {
-                for (chat in chatList) {
+            item {/*
+                for (chat in chatList.data!!) {
                     Row {
                         chat.friend?.let { Chat(sender = it/*, lastMessage = chat.messages.get(chat.messages.size - 1).text*/) }
                     }
-                }
+                }*/
             }
         }
         Row(

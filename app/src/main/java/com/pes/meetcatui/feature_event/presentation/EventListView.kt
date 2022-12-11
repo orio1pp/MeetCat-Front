@@ -50,10 +50,10 @@ fun EventListScreen(
             onClick = { viewModel.setIsSelected() },
             attendanceState = attendance,
             onClickJoin = {
-                viewModel.addAttendance(849, eventList.eventDetailsSelected!!.eventId)
+                viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
             },
             onClickLeave = {
-                viewModel.deleteAttendance(849, eventList.eventDetailsSelected!!.eventId)
+                viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
         )
         BackHandler { viewModel.setIsSelected() }

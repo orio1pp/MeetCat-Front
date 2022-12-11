@@ -21,4 +21,5 @@
     <string name="createEventErrorLocationIsNotCorrectFormat">The location is not following the right format, please input \"lat,lon\"</string>
     <string name="join">Join</string>
     <string name="leave">Leave</string>
+    <string name="atendees">Attendees</string>
 </resources>

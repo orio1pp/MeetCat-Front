@@ -3,7 +3,6 @@ package com.pes.meetcatui.feature_event.presentation
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pes.meetcatui.feature_event.domain.Attendance
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
@@ -110,9 +109,9 @@ class EventListViewModel(
         }
     }
 
-    fun isAttended(userId: Long, eventId: Long) {
+    fun isAttended(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.getAttendance(userId, eventId).collect { resource ->
+            dataRepository.getAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(
@@ -135,13 +134,9 @@ class EventListViewModel(
         }
     }
 
-    fun addAttendance(userId: Long, eventId: Long) {
-        val newAttendance = Attendance(
-            userId = userId,
-            eventId = eventId,
-        )
+    fun addAttendance(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.createAttendance(newAttendance).collect { resource ->
+            dataRepository.createAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(
@@ -164,9 +159,9 @@ class EventListViewModel(
         }
     }
 
-    fun deleteAttendance(userId: Long, eventId: Long) {
+    fun deleteAttendance(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.deleteAttendance(userId, eventId).collect { resource ->
+            dataRepository.deleteAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(

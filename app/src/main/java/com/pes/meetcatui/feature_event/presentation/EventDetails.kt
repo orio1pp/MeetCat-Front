@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +46,7 @@ fun EventDetails(
             placeName = event.placeName,
             address = event.address,
             link = event.link,
+            attendeesCount = event.attendeesCount,
             attendance = attendance,
             onClickJoin = onClickJoin,
             onClickLeave = onClickLeave,
@@ -143,10 +145,12 @@ private fun EventDetailsContent(
     placeName: String?,
     address: String?,
     link: String?,
+    attendeesCount: Int,
     attendance: EventAttendanceState,
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
 ) {
+    val attendeesCountState = remember { mutableStateOf(attendeesCount) }
     MaterialTheme {
         Column (
             modifier = Modifier
@@ -164,6 +168,11 @@ private fun EventDetailsContent(
                 Text(
                     text = subtitle ?: "",
                     style = typo.h3,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    text = stringResource(R.string.atendees) + ": ${attendeesCountState.value}",
+                    style = typo.h4,
                     color = MaterialTheme.colors.secondary
                 )
                 SpaceDp()
@@ -206,10 +215,14 @@ private fun EventDetailsContent(
                 Button(
                     modifier = Modifier.width(120.dp),
                     onClick = {
-                        if (attendance.isAttended)
+                        if (attendance.isAttended) {
                             onClickLeave()
-                        else
+                            --attendeesCountState.value
+                        }
+                        else {
                             onClickJoin()
+                            ++attendeesCountState.value
+                        }
                     },
                     shape = RoundedCornerShape(32.dp)
                 ) {
@@ -242,6 +255,7 @@ fun EventScreenPreview() {
         attendance = EventAttendanceState(),
         onClickJoin = {},
         onClickLeave = {},
+        attendeesCount = 11,
     )
     BackButton()
 }

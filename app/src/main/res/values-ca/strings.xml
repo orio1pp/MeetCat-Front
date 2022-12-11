@@ -22,4 +22,5 @@
     <string name="createEventErrorLocationIsNotCorrectFormat">La localització no està en el format correcte, si us plau utilitzeu \"lat,lon\"</string>
     <string name="join">Apunta\'t</string>
     <string name="leave">Marxa</string>
+    <string name="atendees">Assistents</string>
 </resources>

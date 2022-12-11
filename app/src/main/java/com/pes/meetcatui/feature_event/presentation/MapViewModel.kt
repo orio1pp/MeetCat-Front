@@ -10,9 +10,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
 import com.pes.meetcatui.common.Resource
-import com.pes.meetcatui.feature_event.domain.Attendance
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 
@@ -22,9 +22,10 @@ class MapViewModel(
 
     val events = mutableStateOf(EventListScreenState())
     val mapState = mutableStateOf(MapScreenState())
-    var selectedEvent = mutableStateOf(Event(0,"",null,null,"",null,null,null,null,null))
+    var selectedEvent = mutableStateOf(Event(0,"",null,null,"",null,null,null,null,null, 0))
     val isSelected = mutableStateOf(false)
     val attendance = mutableStateOf(EventAttendanceState())
+    val user = mutableStateOf("")
 
     private val locationRequest = LocationRequest
         .Builder(120000)
@@ -57,7 +58,7 @@ class MapViewModel(
 
     fun onEventSelectId(eventId: Long?){
         if (eventId == null) {
-            selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
+            selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null, 0)
         } else {
             events.value.data?.forEach { event ->
                 if (event.eventId == eventId) {
@@ -70,7 +71,7 @@ class MapViewModel(
 
     fun deselectEvent(){
         isSelected.value = false
-        selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
+        selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null, 0)
     }
 
     init {
@@ -98,9 +99,9 @@ class MapViewModel(
         }
     }
 
-    fun isAttended(userId: Long, eventId: Long) {
+    fun isAttended(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.getAttendance(userId, eventId).collect { resource ->
+            dataRepository.getAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(
@@ -123,13 +124,9 @@ class MapViewModel(
         }
     }
 
-    fun addAttendance(userId: Long, eventId: Long) {
-        val newAttendance = Attendance(
-            userId = userId,
-            eventId = eventId,
-        )
+    fun addAttendance(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.createAttendance(newAttendance).collect { resource ->
+            dataRepository.createAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(
@@ -152,9 +149,9 @@ class MapViewModel(
         }
     }
 
-    fun deleteAttendance(userId: Long, eventId: Long) {
+    fun deleteAttendance(eventId: Long) {
         viewModelScope.launch {
-            dataRepository.deleteAttendance(userId, eventId).collect { resource ->
+            dataRepository.deleteAttendance(eventId).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         attendance.value = EventAttendanceState(

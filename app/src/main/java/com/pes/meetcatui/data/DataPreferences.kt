@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_user.data
+package com.pes.meetcatui.data
 
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_user.domain.UserToken

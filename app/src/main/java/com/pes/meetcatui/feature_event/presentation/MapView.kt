@@ -96,10 +96,10 @@ fun MapScreen(
                         },
                         attendance = attendance,
                         onClickJoin = {
-                            viewModel.addAttendance(849, it)
+                            viewModel.addAttendance(it)
                         },
                         onClickUnjoin = {
-                            viewModel.deleteAttendance(849, it)
+                            viewModel.deleteAttendance(it)
                         },
                     )
                 } else {
@@ -154,7 +154,7 @@ fun displayMap(
             mapState,
             cameraPositionState,
             onEventClicked = {
-                viewModel.isAttended(849, it.eventId)
+                viewModel.isAttended(it.eventId)
                 viewModel.onEventSelectId(it.eventId)
             },
             onOutsideClicked = {

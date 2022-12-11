@@ -32,13 +32,13 @@ interface MeetCatApi {
     suspend fun login(@Query("username") username : String, @Query("password") password : String): Response<UserToken>
 
     @GET("attendance")
-    suspend fun getAttendance(@Query("userId") userId: Long, @Query("eventId") eventId: Long): Response<Boolean>
+    suspend fun getAttendance(@Query("eventId") eventId: Long, @Header("Authorization") accessToken: String): Response<Boolean>
 
     @POST("attendance")
-    suspend fun createAttendance(@Body attendance: AttendanceData): Response<AttendanceData>
+    suspend fun createAttendance(@Body attendance: AttendanceData, @Header("Authorization") accessToken: String): Response<AttendanceData>
 
     @DELETE("attendance")
-    suspend fun deleteAttendance(@Query("userId") userId: Long, @Query("eventId") eventId: Long): Response<AttendanceData>
+    suspend fun deleteAttendance(@Query("eventId") eventId: Long, @Header("Authorization") accessToken: String): Response<AttendanceData>
 
     @GET("users/name")
     suspend fun getUser(@Query("username") username : String, @Header("Authorization") accessToken : String): Response<UserData>

@@ -8,9 +8,10 @@ interface DataRepository {
     fun getEvents(pageNum:Int, title:String?): Flow<Resource<EventPage>>
     fun getAllEvents(): Flow<Resource<EventPage>>
     suspend fun createEvent(event:Event): String
-    fun getAttendance(userId: Long, eventId: Long): Flow<Resource<Boolean>>
-    suspend fun createAttendance(attendance: Attendance): Flow<Resource<Attendance>>
-    suspend fun deleteAttendance(userId: Long, eventId: Long): Flow<Resource<Attendance>>
+    fun getAttendance(eventId: Long): Flow<Resource<Boolean>>
+    suspend fun createAttendance(eventId: Long): Flow<Resource<Long>>
+    suspend fun deleteAttendance(eventId: Long): Flow<Resource<Long>>
+    suspend fun getUser(): Flow<String>
     //suspend fun downloadData()
 }
 

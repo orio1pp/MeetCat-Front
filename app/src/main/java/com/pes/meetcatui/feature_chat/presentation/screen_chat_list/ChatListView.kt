@@ -3,24 +3,23 @@ package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.common.ScreenSelector
 import com.pes.meetcatui.commons.presentation.Navigation
+import com.pes.meetcatui.feature_chat.presentation.screen_chat.ChatScreen
+import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Gray
-import com.pes.meetcatui.ui.theme.Highlight
 import com.pes.meetcatui.ui.theme.typo
 
 @Composable
@@ -29,7 +28,7 @@ fun ChatListScreen(
     navToChats: () -> Unit,
     navToUserSearch: () -> Unit,
 ) {
-    viewModel.getChatsByUser()
+
     val chatList by viewModel.chatList
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -47,12 +46,35 @@ fun ChatListScreen(
                 .fillMaxSize()
                 .padding(top = 80.dp),
         ) {
-            item {/*
-                for (chat in chatList.data!!) {
-                    Row {
-                        chat.friend?.let { Chat(sender = it/*, lastMessage = chat.messages.get(chat.messages.size - 1).text*/) }
+            if (chatList != null
+                && chatList.data != null
+                && !chatList.hasError
+                && chatList.isChatSelected
+            ) {
+                item {
+                    ChatScreen(
+                        viewModel = viewModel
+                    )
+                }
+                viewModel.setIsSelected()
+            } else {
+                item {
+                    if (chatList.data != null) {
+                        for (chat in chatList.data!!) {
+                            chat.friend?.let {
+                                Chat(
+                                    sender = it,
+                                    viewModel = viewModel,
+                                    chat = chat
+                                ) { chat: GetChatData ->
+                                    viewModel.setSelectedChat(chat)
+                                }
+                                /*lastMessage = chat.messages.get(chat.messages.size - 1).text*/
+
+                            }
+                        }
                     }
-                }*/
+                }
             }
         }
         Row(
@@ -67,42 +89,47 @@ fun ChatListScreen(
 @Composable
 fun Chat(
     sender: String,
-    //lastMessage: String,
+    viewModel: ChatListViewModel,
+    chat: GetChatData,
+    onChatClick: (GetChatData) -> Unit,
+//lastMessage: String,
 ) {
-    Box(
+    Scaffold(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
             .background(color = Background, shape = RectangleShape)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
+
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp, top = 24.dp),
-        ) {
-            Text(
-                modifier = Modifier
-                    .width(256.dp)
-                ,
-                text = sender,
-                style = typo.h4,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier.padding(16.dp, top = 24.dp),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .width(256.dp),
+                    text = sender,
+                    style = typo.h4,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                /*
+                IF THERE IS AN UNSEEN MESSAGE DISPLAY THIS (CURRENTLY NOT POSSIBLE)
+                Box(
+                    modifier = Modifier
+                        .padding(top = 8.dp, start = 16.dp)
+                        .size(12.dp)
+                        .background(color = Highlight, shape = CircleShape)
+                )*/
+            }
+            Divider(
+                startIndent = 0.dp,
+                thickness = 1.dp,
+                color = Gray,
+                modifier = Modifier.align(Alignment.BottomCenter)
             )
-            /*
-            IF THERE IS AN UNSEEN MESSAGE DISPLAY THIS (CURRENTLY NOT POSSIBLE)
-            Box(
-                modifier = Modifier
-                    .padding(top = 8.dp, start = 16.dp)
-                    .size(12.dp)
-                    .background(color = Highlight, shape = CircleShape)
-            )*/
         }
-        Divider(
-            startIndent = 0.dp,
-            thickness = 1.dp,
-            color = Gray,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
 }
 

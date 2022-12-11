@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.commons.presentation.Navigation
+import com.pes.meetcatui.feature_chat.domain.Chat
 import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListViewModel
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Background_alt
@@ -28,7 +29,7 @@ import com.pes.meetcatui.ui.theme.typo
 
 @Composable
 fun ChatScreen(
-    viewModel: ChatListViewModel,
+    viewModel: ChatListViewModel
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -70,7 +71,6 @@ fun ChatScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Texting(
     viewModel: ChatListViewModel

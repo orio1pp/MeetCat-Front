@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_chat.domain.Chat
 import com.pes.meetcatui.feature_chat.domain.DataRepositoryChats
-import com.pes.meetcatui.feature_event.domain.Event
-import com.pes.meetcatui.feature_event.presentation.EventListScreenState
+import com.pes.meetcatui.network.chat.GetChatData
 import kotlinx.coroutines.launch
 
 class ChatListViewModel(
@@ -19,45 +18,37 @@ class ChatListViewModel(
         viewModelScope.launch {
             val allChats = dataRepository.getChatByUser(0)?.toMutableList()
             if (allChats != null) {
+                println(allChats)
                 chatList.value = ChatListScreenState(
                     data = allChats,
-                    errorMessage = "Couldn't get chats"
+                    page = 1
                 )
             }
             else {
                 chatList.value = ChatListScreenState(
                     hasError = true,
-                    page = 1
+                    errorMessage = "Couldn't get chats"
                 )
             }
         }
     }
 
-    fun setSelectedChat(chat: Chat) {
+    fun setSelectedChat(chat: GetChatData) {
         chatList.value = ChatListScreenState(
             isChatSelected = true,
-            chatSelected = chat,
+            chatSelected = getChat(),
             data = chatList.value.data
         )
     }
 
     fun setIsSelected() {
-        /*eventList.value = EventListScreenState(
-            isDetailsSelected = false,
-            data = eventList.value.data
-        )*/
+        chatList.value = ChatListScreenState(
+            isChatSelected = false,
+            data = chatList.value.data
+        )
     }
 
-    fun getChatsByUser() {
-        viewModelScope.launch {
-            //chatList.value.data = dataRepository.getChatByUser()!!
-        }
-
-        /*
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                getChatsByUser()
-            }
-        }, 10)*/
+    fun getChat() : Chat {
+        return Chat(chatId = 2, friend = "b@gmail.com", messageList = emptyList())
     }
 }

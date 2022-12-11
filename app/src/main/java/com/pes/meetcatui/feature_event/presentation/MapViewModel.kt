@@ -2,6 +2,7 @@ package com.pes.meetcatui.feature_event.presentation
 
 
 import android.location.Location
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
@@ -26,6 +28,10 @@ class MapViewModel(
     val isSelected = mutableStateOf(false)
     val attendance = mutableStateOf(EventAttendanceState())
     val user = mutableStateOf("")
+    var cameraPositionState = mutableStateOf(CameraPositionState())
+    val INITIAL_LATITUDE = 41.387423
+    val INITIAL_LONGITUDE = 2.169763
+    var distanceRadiKm = 1.0
 
     private val locationRequest = LocationRequest
         .Builder(120000)
@@ -74,9 +80,40 @@ class MapViewModel(
         selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null, 0)
     }
 
+     fun refreshEventsByLocation(distance: Int) {
+
+       viewModelScope.launch {
+            dataRepository.getNearestEvents(
+                cameraPositionState.value.position.target.latitude,
+                cameraPositionState.value.position.target.longitude,
+                distance.toDouble())
+                .collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            events.value = EventListScreenState(
+                                data = resource.data?.events as MutableList<Event>
+                            )
+                        }
+                        is Resource.Error -> {
+                            events.value = EventListScreenState(
+                                hasError = true,
+                                errorMessage = resource.message
+                            )
+                        }
+                        is Resource.Loading -> {
+                            events.value = EventListScreenState(
+                                isLoading = true
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
     init {
         viewModelScope.launch {
-            dataRepository.getAllEvents().collect { resource ->
+            dataRepository.getNearestEvents(INITIAL_LATITUDE, INITIAL_LONGITUDE, distanceRadiKm)
+                .collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         events.value = EventListScreenState(

@@ -6,13 +6,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.common.ContinuousSlider
 import com.pes.meetcatui.ui.theme.typo
 
 @Composable
-fun filtersSelection() {
+fun filtersSelection(
+    distanceFilter: MutableState<Int>
+) {
     Row {
         Column(modifier = Modifier.width(96.dp)) {
             Text(
@@ -22,7 +26,7 @@ fun filtersSelection() {
             )
         }
         Column {
-            ContinuousSlider(10f, 50f)
+            ContinuousSlider(1f, 50f, distanceFilter)
         }
     }
     Row {
@@ -34,7 +38,7 @@ fun filtersSelection() {
             )
         }
         Column {
-            ContinuousSlider(10f, 50f)
+            ContinuousSlider(10f, 50f, mutableStateOf(1))
         }
     }
 }

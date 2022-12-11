@@ -92,7 +92,7 @@ fun EventListScreenContent(
                 viewModel,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            filtersSelection()
+            filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
                 Column(
                     modifier = Modifier.fillMaxSize(),

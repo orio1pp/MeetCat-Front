@@ -11,13 +11,17 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -46,7 +50,7 @@ private const val INITIAL_ZOOM = 16f
 fun MapScreen(
     viewModel: MapViewModel,
     navToEventList: () -> Unit,
-    fusedLocationClient: FusedLocationProviderClient,
+    fusedLocationClient: FusedLocationProviderClient
 ) {
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -54,17 +58,38 @@ fun MapScreen(
     val selectedEvent by viewModel.selectedEvent
 
     val isSelected by viewModel.isSelected
+    val distanceFilter = remember { mutableStateOf(1)}
 
     val attendance by viewModel.attendance
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            if (!isSelected) {
-                navToEventList.switchViewButton(
-                    icon = Icons.Filled.List,
-                )
+            Column() {
+                if (!isSelected) {
+                    FloatingActionButton(
+                        onClick = { viewModel.refreshEventsByLocation(distanceFilter.value) },
+                        modifier = Modifier
+                            .alpha(1.0f)
+                            .padding(top = 16.dp, end = 304.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Color(0xFF838383), shape = CircleShape),
+                        backgroundColor = Color(0xFFBEBEBE),
+                        elevation = FloatingActionButtonDefaults.elevation(2.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                            tint = Color(0xFF5A5A5A),
+                        )
+                    }
+                    navToEventList.switchViewButton(
+                        icon = Icons.Filled.List,
+                    )
+                }
             }
+
         },
         floatingActionButtonPosition = FabPosition.End,
     ) {
@@ -73,7 +98,7 @@ fun MapScreen(
         ) {
             if (!isSelected) {
                 Column(Modifier.padding(horizontal = 16.dp)) {
-                    filtersSelection()
+                    filtersSelection(distanceFilter = distanceFilter)
                 }
             }
 
@@ -128,7 +153,7 @@ fun displayMap(
 
     var cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
-            LatLng(INITIAL_LATITUDE, INITIAL_LONGITUDE),
+            LatLng(viewModel.INITIAL_LATITUDE, viewModel.INITIAL_LONGITUDE),
             INITIAL_ZOOM,
         )
     }
@@ -162,6 +187,7 @@ fun displayMap(
                 onEventSelectedId(null)
             },
             events = events,
+            viewModel = viewModel
         )
 
         AnimatedVisibility(visible = selectedEvent.eventId != 0.toLong()) {
@@ -190,7 +216,8 @@ private fun Map(
     cameraPositionState: CameraPositionState,
     onOutsideClicked: () -> Unit,
     events: EventListScreenState,
-    onEventClicked: (Event) -> Unit
+    onEventClicked: (Event) -> Unit,
+    viewModel: MapViewModel
 ) {
     var cameraPositionState1 = cameraPositionState
     if (mapState.lastLocation != null) {
@@ -203,8 +230,10 @@ private fun Map(
     val scope = rememberCoroutineScope()
 
     Box(modifier = modifier) {
+        viewModel.cameraPositionState = mutableStateOf(cameraPositionState1)
+
         GoogleMap(
-            cameraPositionState = cameraPositionState1,
+            cameraPositionState = viewModel.cameraPositionState.value,
             onMapClick = { onOutsideClicked() },
         ) {
             if (events.data != null) {

@@ -29,9 +29,14 @@ sealed class BottomBarScreen (
         title = "CreateEvent",
         icon = Icons.Default.Create
     )
-    object UserSearch: BottomBarScreen (
-        route = "user_search",
-        title = "UserSearch",
-        icon = Icons.Default.MailOutline
+    object Register: BottomBarScreen(
+        route = "register",
+        title = "Register",
+        icon = Icons.Default.Create
+    )
+    object Login: BottomBarScreen(
+        route = "login",
+        title = "Login",
+        icon = Icons.Default.Create
     )
 }

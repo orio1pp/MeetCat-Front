@@ -53,6 +53,11 @@ class DataRepositoryUsersImpl(
         return user
     }
 
+    override suspend fun postUser(user: UserData) : Response<UserData>{
+        val user = meetCatApi.postUser(user)
+        return user
+    }
+
     private fun transformToToken(token: Response<UserToken>): UserToken {
         return UserToken(
             token.body()?.access_token ?: "",

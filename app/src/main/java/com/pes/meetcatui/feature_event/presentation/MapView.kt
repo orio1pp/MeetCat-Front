@@ -121,18 +121,18 @@ fun displayMap(
         )
     }
 
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            if (location != null)
-                viewModel.setPosition(location)
-        }
-
     fusedLocationClient
         .requestLocationUpdates(
             viewModel.getLocationRequest(),
             viewModel.getLocationCallback(),
             Looper.getMainLooper()
         )
+
+    fusedLocationClient.lastLocation
+        .addOnSuccessListener { location: Location? ->
+            if (location != null)
+                viewModel.setPosition(location)
+        }
 
     Column {
         Map(

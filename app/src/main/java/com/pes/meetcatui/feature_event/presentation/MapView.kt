@@ -60,6 +60,8 @@ fun MapScreen(
     val isSelected by viewModel.isSelected
     val distanceFilter = remember { mutableStateOf(1)}
 
+    val attendance by viewModel.attendance
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -116,7 +118,14 @@ fun MapScreen(
                         },
                         deselectEvent = {
                             viewModel.deselectEvent()
-                        }
+                        },
+                        attendance = attendance,
+                        onClickJoin = {
+                            viewModel.addAttendance(it)
+                        },
+                        onClickUnjoin = {
+                            viewModel.deleteAttendance(it)
+                        },
                     )
                 } else {
                     permissionNotGranted(permissionState)
@@ -134,6 +143,9 @@ fun displayMap(
     onEventSelectedId: (Long?) -> Unit,
     events: EventListScreenState,
     deselectEvent: () -> Unit,
+    attendance: EventAttendanceState,
+    onClickJoin: (Long) -> Unit,
+    onClickUnjoin: (Long) -> Unit,
 ) {
     val mapState by viewModel.mapState
 
@@ -167,6 +179,7 @@ fun displayMap(
             mapState,
             cameraPositionState,
             onEventClicked = {
+                viewModel.isAttended(it.eventId)
                 viewModel.onEventSelectId(it.eventId)
             },
             onOutsideClicked = {
@@ -187,6 +200,9 @@ fun displayMap(
                         .padding(16.dp),
                     event = selectedEvent,
                     navBack = deselectEvent,
+                    attendance = attendance,
+                    onClickJoin = { onClickJoin(selectedEvent.eventId) },
+                    onClickUnjoin = { onClickUnjoin(selectedEvent.eventId) },
                 )
             }
         }
@@ -303,8 +319,20 @@ private fun TimedLayout() {
 }
 
 @Composable
-fun EventDisplay(modifier: Modifier, event: Event, navBack: () -> Unit) {
-    EventDetails(event = event)
+fun EventDisplay(
+    modifier: Modifier,
+    event: Event,
+    navBack: () -> Unit,
+    attendance: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickUnjoin: () -> Unit,
+) {
+    EventDetails(
+        event = event,
+        attendance = attendance,
+        onClickJoin = onClickJoin,
+        onClickLeave = onClickUnjoin,
+    )
     BackHandlerMap() {
         navBack()
     }

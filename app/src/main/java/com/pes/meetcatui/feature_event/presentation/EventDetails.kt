@@ -4,8 +4,12 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +32,9 @@ import com.pes.meetcatui.ui.theme.typo
 @Composable
 fun EventDetails(
     event: Event,
+    attendance: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: () -> Unit,
 ) {
     if (event != null) {
         EventDetailsContent(
@@ -39,6 +46,10 @@ fun EventDetails(
             placeName = event.placeName,
             address = event.address,
             link = event.link,
+            attendeesCount = event.attendeesCount,
+            attendance = attendance,
+            onClickJoin = onClickJoin,
+            onClickLeave = onClickLeave,
         )
     }
 }
@@ -134,7 +145,12 @@ private fun EventDetailsContent(
     placeName: String?,
     address: String?,
     link: String?,
+    attendeesCount: Int,
+    attendance: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: () -> Unit,
 ) {
+    val attendeesCountState = remember { mutableStateOf(attendeesCount) }
     MaterialTheme {
         Column (
             modifier = Modifier
@@ -152,6 +168,11 @@ private fun EventDetailsContent(
                 Text(
                     text = subtitle ?: "",
                     style = typo.h3,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    text = stringResource(R.string.atendees) + ": ${attendeesCountState.value}",
+                    style = typo.h4,
                     color = MaterialTheme.colors.secondary
                 )
                 SpaceDp()
@@ -192,9 +213,23 @@ private fun EventDetailsContent(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SpaceDp()
                 Button(
-                    onClick = { },
+                    modifier = Modifier.width(120.dp),
+                    onClick = {
+                        if (attendance.isAttended) {
+                            onClickLeave()
+                            --attendeesCountState.value
+                        }
+                        else {
+                            onClickJoin()
+                            ++attendeesCountState.value
+                        }
+                    },
+                    shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text("Join placeholder")
+                    Text(text = if (attendance.isAttended)
+                        stringResource(id = R.string.leave)
+                    else
+                        stringResource(id = R.string.join))
                 }
             }
         }
@@ -217,6 +252,10 @@ fun EventScreenPreview() {
         placeName = "FIB",
         address = "C. Jordi Girona 12",
         link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
+        attendance = EventAttendanceState(),
+        onClickJoin = {},
+        onClickLeave = {},
+        attendeesCount = 11,
     )
     BackButton()
 }

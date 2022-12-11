@@ -37,6 +37,7 @@ fun EventListScreen(
     navToCreateEvent: () -> Unit,
 ) {
     val eventList by viewModel.eventList
+    val attendance by viewModel.attendance
 
     if (eventList != null
         && eventList.data != null
@@ -44,9 +45,17 @@ fun EventListScreen(
         && !eventList.hasError
         && eventList.isDetailsSelected) {
 
-        EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
-            viewModel.setIsSelected()
-        }
+        EventDetailsScreen(
+            event = eventList.eventDetailsSelected!!,
+            onClick = { viewModel.setIsSelected() },
+            attendanceState = attendance,
+            onClickJoin = {
+                viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+            onClickLeave = {
+                viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+        )
         BackHandler { viewModel.setIsSelected() }
     } else {
         EventListScreenContent(
@@ -79,6 +88,10 @@ fun EventListScreenContent(
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
+            searchBar(
+                viewModel,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
                 Column(
@@ -120,11 +133,14 @@ fun EventListScreenContent(
 @Composable
 fun EventDetailsScreen(
     event: Event,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    attendanceState: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: ()-> Unit,
 )
 {
     Surface() {
-        EventDetails(event = event)
+        EventDetails(event = event, attendanceState, onClickJoin, onClickLeave)
     }
 
     BackButton(function = onClick)

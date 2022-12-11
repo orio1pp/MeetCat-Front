@@ -17,7 +17,7 @@ class DataRepositoryChatsImpl(
 
     init {
         appScope.launch {
-            downloadData()
+            //downloadData()
         }
     }
 

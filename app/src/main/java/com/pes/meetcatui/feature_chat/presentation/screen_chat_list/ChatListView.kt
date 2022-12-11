@@ -62,24 +62,6 @@ fun ChatListScreen(
         }
     }
 }
-/*
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Background,
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-
-
-        }
-        Row (
-            modifier = Modifier.fillMaxHeight(0.2F),
-            verticalAlignment = Bottom,
-        ) {
-            Navigation(section = "chat")
-        }
-    }*/
 
 @Composable
 fun Chat(
@@ -105,12 +87,14 @@ fun Chat(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            /*
+            IF THERE IS AN UNSEEN MESSAGE DISPLAY THIS (CURRENTLY NOT POSSIBLE)
             Box(
                 modifier = Modifier
                     .padding(top = 8.dp, start = 16.dp)
                     .size(12.dp)
                     .background(color = Highlight, shape = CircleShape)
-            )
+            )*/
         }
         Divider(
             startIndent = 0.dp,

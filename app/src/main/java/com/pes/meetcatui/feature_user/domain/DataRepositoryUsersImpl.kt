@@ -23,7 +23,7 @@ class DataRepositoryUsersImpl(
 ) : DataRepositoryUsers {
     init {
         appScope.launch {
-            downloadData()
+            //downloadData()
         }
     }
 

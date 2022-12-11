@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_chat.domain.DataRepositoryChats
 import com.pes.meetcatui.network.chat.GetChatData
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ChatListViewModel(
     val dataRepository: DataRepositoryChats
@@ -19,5 +20,11 @@ class ChatListViewModel(
         viewModelScope.launch {
             _chatList.value = dataRepository.getChatByUser()!!
         }
+
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                getChatsByUser()
+            }
+        }, 10)
     }
 }

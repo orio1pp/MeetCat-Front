@@ -47,4 +47,7 @@ interface MeetCatApi {
 
     @GET("chat/username")
     suspend fun getChatByUser(@Header("Authorization") accessToken : String): Response<List<GetChatData>>
+
+    @GET("chat")
+    suspend fun getChatByFriendship(@Query("friendshipId") friendshipId: Long, @Header("Authorization") accessToken : String): Response<List<GetChatData>>
 }

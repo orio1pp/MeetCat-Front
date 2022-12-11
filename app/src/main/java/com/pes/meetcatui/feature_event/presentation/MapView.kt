@@ -58,6 +58,7 @@ fun MapScreen(
     val selectedEvent by viewModel.selectedEvent
 
     val isSelected by viewModel.isSelected
+    val distanceFilter = remember { mutableStateOf(1)}
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +66,7 @@ fun MapScreen(
             Column() {
                 if (!isSelected) {
                     FloatingActionButton(
-                        onClick = { viewModel.refreshEventsByLocation() },
+                        onClick = { viewModel.refreshEventsByLocation(distanceFilter.value) },
                         modifier = Modifier
                             .alpha(1.0f)
                             .padding(top = 16.dp, end = 304.dp)
@@ -95,7 +96,7 @@ fun MapScreen(
         ) {
             if (!isSelected) {
                 Column(Modifier.padding(horizontal = 16.dp)) {
-                    filtersSelection()
+                    filtersSelection(distanceFilter = distanceFilter)
                 }
             }
 

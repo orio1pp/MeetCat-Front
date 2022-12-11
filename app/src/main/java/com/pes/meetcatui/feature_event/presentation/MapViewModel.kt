@@ -76,13 +76,13 @@ class MapViewModel(
         selectedEvent.value = Event(0,"",null,null,"",null,null,null,null,null)
     }
 
-     fun refreshEventsByLocation() {
+     fun refreshEventsByLocation(distance: Int) {
 
        viewModelScope.launch {
             dataRepository.getNearestEvents(
                 cameraPositionState.value.position.target.latitude,
                 cameraPositionState.value.position.target.longitude,
-                distanceRadiKm)
+                distance.toDouble())
                 .collect { resource ->
                     when (resource) {
                         is Resource.Success -> {

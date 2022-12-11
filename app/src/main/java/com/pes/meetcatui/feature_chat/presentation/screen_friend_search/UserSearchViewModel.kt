@@ -11,7 +11,7 @@ import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.launch
 
-class FriendSearchViewModel(
+class UserSearchViewModel(
     val dataRepository: DataRepositoryUsers
 ) : ViewModel() {
 

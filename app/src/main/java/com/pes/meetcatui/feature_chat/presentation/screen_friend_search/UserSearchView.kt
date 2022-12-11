@@ -14,17 +14,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.common.ScreenSelector
-import com.pes.meetcatui.commons.presentation.Navigation
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.WarningText
 import com.pes.meetcatui.ui.theme.*
 
 @Composable
-fun FriendSearchScreen(
-    viewModel: FriendSearchViewModel
+fun UserSearchScreen(
+    viewModel: UserSearchViewModel,
+    navToChats: () -> Unit,
+    navToUserSearch: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -41,7 +41,7 @@ fun FriendSearchScreen(
                 .height(80.dp)
                 .padding(top = 80.dp),
         ) {
-            ScreenSelector()
+            ScreenSelector(navToChats, navToUserSearch, navToChats)
         }
 
         LazyColumn(
@@ -82,7 +82,7 @@ fun FriendSearchScreen(
 
 @Composable
 fun SearchBar(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     Column(
         modifier = Modifier
@@ -148,7 +148,7 @@ fun UserBox(
     name: String,
     about: String?,
     isFriend: Boolean,
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     Box(
         modifier = Modifier
@@ -204,7 +204,7 @@ fun UserBox(
 
 @Composable
 fun AddFriendButton(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     IconButton(
         modifier = Modifier
@@ -223,7 +223,7 @@ fun AddFriendButton(
 
 @Composable
 fun RemoveFriendButton(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     IconButton(
         modifier = Modifier

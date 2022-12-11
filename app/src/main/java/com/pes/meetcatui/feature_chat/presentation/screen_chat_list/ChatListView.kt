@@ -26,7 +26,8 @@ import com.pes.meetcatui.ui.theme.typo
 @Composable
 fun ChatListScreen(
     viewModel: ChatListViewModel,
-    //navtoChat: () -> Unit,
+    navToChats: () -> Unit,
+    navToUserSearch: () -> Unit,
 ) {
     viewModel.getChatsByUser()
     val chatList by viewModel.chatList
@@ -38,7 +39,7 @@ fun ChatListScreen(
             modifier = Modifier
                 .height(80.dp)
         ) {
-            ScreenSelector()
+            ScreenSelector(navToChats, navToUserSearch, navToChats)
         }
 
         LazyColumn(

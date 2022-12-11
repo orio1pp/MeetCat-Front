@@ -26,9 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchScreen
-import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
-import org.koin.androidx.compose.get
 
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 
@@ -129,6 +126,7 @@ fun BottomBar(
     val screens = listOf(
         BottomBarScreen.Map,
         BottomBarScreen.CreateEvent,
+        BottomBarScreen.Chats,
         BottomBarScreen.Profile,
     )
 

@@ -25,7 +25,11 @@ import com.pes.meetcatui.ui.theme.Gray
 import com.pes.meetcatui.ui.theme.typo
 
 @Composable
-fun ScreenSelector() {
+fun ScreenSelector(
+    navTo1: () -> Unit,
+    navTo2: () -> Unit,
+    navTo3: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,17 +48,17 @@ fun ScreenSelector() {
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                FriendNavigationButton("Chats", Icons.Filled.Email)
+                FriendNavigationButton("Chats", Icons.Filled.Email, navTo1)
             }
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                FriendNavigationButton("Search", Icons.Filled.Search)
+                FriendNavigationButton("Search", Icons.Filled.Search, navTo2)
             }
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                FriendNavigationButton("Friends", Icons.Filled.Person)
+                FriendNavigationButton("Friends", Icons.Filled.Person, navTo3)
             }
         }
     }
@@ -63,7 +67,8 @@ fun ScreenSelector() {
 @Composable
 fun FriendNavigationButton(
     text: String,
-    icon: ImageVector
+    icon: ImageVector,
+    navTo : () -> Unit
 ) {
     TextButton(
         modifier = Modifier
@@ -71,7 +76,7 @@ fun FriendNavigationButton(
             .padding(horizontal = 6.dp)
             .background(color = Background, shape = CircleShape)
             .border(1.dp, Gray, CircleShape),
-        onClick = { },
+        onClick = { navTo() },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White.copy(
                 alpha = 0F,

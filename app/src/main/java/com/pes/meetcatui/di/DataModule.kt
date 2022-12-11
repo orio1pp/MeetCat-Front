@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.pes.meetcatui.feature_user.data.DATA_PREFERENCES_NAME
-import com.pes.meetcatui.feature_user.data.DataPreferences
-import com.pes.meetcatui.feature_user.data.DataPreferencesImpl
+import com.pes.meetcatui.data.DATA_PREFERENCES_NAME
+import com.pes.meetcatui.data.DataPreferences
+import com.pes.meetcatui.data.DataPreferencesImpl
 import com.pes.meetcatui.feature_event.domain.*
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsersImpl
@@ -23,6 +23,7 @@ val dataModule = module {
     single<DataRepository> {
         DataRepositoryImpl(
             meetcatApi = get(),
+            dataPreferences = get(),
         )
     }
 

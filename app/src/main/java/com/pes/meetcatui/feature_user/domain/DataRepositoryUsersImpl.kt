@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_user.domain
 
-import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.data.DataPreferences
 import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.Friendships.GetFriendshipsData
 import com.pes.meetcatui.network.MeetCatApi
@@ -23,7 +23,7 @@ class DataRepositoryUsersImpl(
 ) : DataRepositoryUsers {
     init {
         appScope.launch {
-            downloadData()
+            //downloadData()
         }
     }
 

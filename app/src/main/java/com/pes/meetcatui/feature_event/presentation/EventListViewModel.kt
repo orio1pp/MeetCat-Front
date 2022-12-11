@@ -14,6 +14,7 @@ class EventListViewModel(
 
     val eventList = mutableStateOf(EventListScreenState())
     var titleSearch: String? = null
+    val attendance = mutableStateOf(EventAttendanceState())
 
     init {
         viewModelScope.launch {
@@ -100,6 +101,81 @@ class EventListViewModel(
                     }
                     is Resource.Loading -> {
                         eventList.value = EventListScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun isAttended(eventId: Long) {
+        viewModelScope.launch {
+            dataRepository.getAttendance(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        attendance.value = EventAttendanceState(
+                            isAttended = resource.data!!,
+                        )
+                    }
+                    is Resource.Error -> {
+                        attendance.value = EventAttendanceState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        attendance.value = EventAttendanceState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun addAttendance(eventId: Long) {
+        viewModelScope.launch {
+            dataRepository.createAttendance(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        attendance.value = EventAttendanceState(
+                            isAttended = true,
+                        )
+                    }
+                    is Resource.Error -> {
+                        attendance.value = EventAttendanceState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        attendance.value = EventAttendanceState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun deleteAttendance(eventId: Long) {
+        viewModelScope.launch {
+            dataRepository.deleteAttendance(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        attendance.value = EventAttendanceState(
+                            isAttended = false,
+                        )
+                    }
+                    is Resource.Error -> {
+                        attendance.value = EventAttendanceState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        attendance.value = EventAttendanceState(
                             isLoading = true
                         )
                     }

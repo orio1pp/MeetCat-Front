@@ -2,8 +2,6 @@ package com.pes.meetcatui.network
 
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
-import com.pes.meetcatui.network.Friendships.GetFriendshipsData
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,6 +13,9 @@ import retrofit2.http.*
 interface MeetCatApi {
     @GET("events/{eventId}")
     suspend fun getEventData(@Path("eventId") eventId: Int): Response<EventDetailsData>
+
+    @PUT("events/{eventId}/report")
+    suspend fun reportEvent(@Path("eventId") eventId: Long)
 
     @GET("events")
     suspend fun getEvents(@Query("page") page: Int?, @Query("size") size:Int?): Response<EventsData>

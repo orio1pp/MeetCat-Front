@@ -9,6 +9,7 @@ interface DataRepository {
     fun getAllEvents(): Flow<Resource<EventPage>>
     fun getReportedEvents(pageNum: Int, title:String?) : Flow<Resource<EventPage>>
     suspend fun createEvent(event:Event): String
+    suspend fun reportEvent(event: Event): String
     //suspend fun downloadData()
 }
 

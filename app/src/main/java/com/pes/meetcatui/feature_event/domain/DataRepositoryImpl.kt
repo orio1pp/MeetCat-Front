@@ -1,11 +1,9 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.feature_event.Resource
-import com.pes.meetcatui.feature_user.data.DataPreferences
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
@@ -89,6 +87,21 @@ class DataRepositoryImpl (
             val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
             println(eventSerial)
             meetcatApi.createEvent(eventSerial);
+            return ("Api is successful")
+        } catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
+        }
+    }
+
+    override suspend fun reportEvent(event: Event): String {
+        try {
+            val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
+            println(eventSerial)
+            meetcatApi.reportEvent(event.eventId);
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")

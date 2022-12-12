@@ -20,12 +20,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.domain.Event
@@ -48,7 +50,7 @@ fun EventListScreen(
         && !eventList.hasError
         && eventList.isDetailsSelected) {
 
-        EventDetailsScreen(event = eventList.eventDetailsSelected!!) {
+        EventDetailsScreen(event = eventList.eventDetailsSelected!!, reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)}) {
             viewModel.setIsSelected()
         }
         BackHandler { viewModel.setIsSelected() }
@@ -128,15 +130,45 @@ fun EventListScreenContent(
 @Composable
 fun EventDetailsScreen(
     event: Event,
-    onClick: () -> Unit
+    reportEvent: (Event) -> Unit,
+    goBack: () -> Unit,
 )
 {
-    Surface() {
-        EventDetails(event = event)
+    val openDialog = remember { mutableStateOf(false)  }
+
+    Column {
+        Row {
+            BackButton(function = goBack)
+            Spacer(modifier = Modifier.width(235.dp))
+            ReportButton(function = {
+                openDialog.value = true
+             })
+        }
+        Surface() {
+            EventDetails(event = event)
+        }
     }
 
-    BackButton(function = onClick)
-    ReportButton(function = onClick)
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.areYouSureToReportMsg))
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        reportEvent(event)
+                        openDialog.value = false
+                    }) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+        )
+    }
+
 }
 
 @Composable

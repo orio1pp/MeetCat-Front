@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedEventsListScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable

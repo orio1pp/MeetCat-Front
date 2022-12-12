@@ -10,7 +10,7 @@ import com.pes.meetcatui.feature_event.presentation.EventListScreenState
 import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import kotlinx.coroutines.launch
 
-class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel() {
+class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel(dataRepository) {
     init {
         viewModelScope.launch {
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
@@ -37,22 +37,7 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
         }
     }
 
-    fun setSelectedEvent(event: Event) {
-        eventList.value = EventListScreenState(
-            isDetailsSelected = true,
-            eventDetailsSelected = event,
-            data = eventList.value.data
-        )
-    }
-
-    fun setIsSelected() {
-        eventList.value = EventListScreenState(
-            isDetailsSelected = false,
-            data = eventList.value.data
-        )
-    }
-
-    fun loadMore() {
+    override fun loadMore() {
         if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
             viewModelScope.launch {
                 dataRepository.getReportedEvents(eventList.value.page, titleSearch).collect { resource ->
@@ -77,7 +62,7 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
         }
     }
 
-    fun search(text: String) {
+    override fun search(text: String) {
         titleSearch = text
         viewModelScope.launch {
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->

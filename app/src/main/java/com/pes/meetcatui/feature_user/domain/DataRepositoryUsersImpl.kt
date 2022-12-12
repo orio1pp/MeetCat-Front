@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_user.domain
 
-import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.data.DataPreferences
 import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.Friendships.GetFriendshipsData
 import com.pes.meetcatui.network.MeetCatApi
@@ -23,7 +23,7 @@ class DataRepositoryUsersImpl(
 ) : DataRepositoryUsers {
     init {
         appScope.launch {
-            downloadData()
+            //downloadData()
         }
     }
 
@@ -50,6 +50,11 @@ class DataRepositoryUsersImpl(
             accessToken += dataPreferences.getAccessToken().first()
         }
         val user = meetCatApi.getUser(username, accessToken).body()
+        return user
+    }
+
+    override suspend fun postUser(user: UserData) : Response<UserData>{
+        val user = meetCatApi.postUser(user)
         return user
     }
 

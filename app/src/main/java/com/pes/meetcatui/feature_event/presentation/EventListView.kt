@@ -43,6 +43,7 @@ fun EventListScreen(
     navToCreateEvent: () -> Unit,
 ) {
     val eventList by viewModel.eventList
+    val attendance by viewModel.attendance
 
     if (eventList != null
         && eventList.data != null
@@ -50,9 +51,18 @@ fun EventListScreen(
         && !eventList.hasError
         && eventList.isDetailsSelected) {
 
-        EventDetailsScreen(event = eventList.eventDetailsSelected!!, reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)}) {
-            viewModel.setIsSelected()
-        }
+        EventDetailsScreen(
+            event = eventList.eventDetailsSelected!!,
+            onClick = { viewModel.setIsSelected() },
+            attendanceState = attendance,
+            onClickJoin = {
+                viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+            onClickLeave = {
+                viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)}),
+        )
         BackHandler { viewModel.setIsSelected() }
     } else {
         EventListScreenContent(
@@ -89,7 +99,7 @@ fun EventListScreenContent(
                 viewModel,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            filtersSelection()
+            filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -130,15 +140,17 @@ fun EventListScreenContent(
 @Composable
 fun EventDetailsScreen(
     event: Event,
+    onClick: () -> Unit,
+    attendanceState: EventAttendanceState,
+    onClickJoin: () -> Unit,
+    onClickLeave: ()-> Unit,
     reportEvent: (Event) -> Unit,
-    goBack: () -> Unit,
 )
 {
     val openDialog = remember { mutableStateOf(false)  }
 
     Column {
         Row {
-            BackButton(function = goBack)
             Spacer(modifier = Modifier.width(235.dp))
             ReportButton(function = {
                 openDialog.value = true

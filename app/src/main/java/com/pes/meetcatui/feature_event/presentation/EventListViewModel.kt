@@ -82,35 +82,27 @@ class EventListViewModel(
         }
     }
 
-    fun likeEvent() {
+    fun likeEvent(eventId: Long): Boolean {
+        viewModelScope.launch { dataRepository.likeEvent(eventId) }
         hasLiked = true
         hasDisLiked = false
+        return true
     }
 
-    fun dislikeEvent() {
+    fun dislikeEvent(eventId: Long): Boolean {
+        viewModelScope.launch { dataRepository.dislikeEvent(eventId) }
         hasDisLiked = true
         hasLiked = false
+        return true
     }
 
-    fun handleVote(vote: String) {
+    fun handleVote(vote: String, eventId: Long) {
         when (vote) {
             "like" -> {
-                if(hasLiked) {
-                    hasLiked = false
-                    hasDisLiked = false
-                }
-                else {
-                    likeEvent()
-                }
+                likeEvent(eventId)
             }
             "dislike" -> {
-                if(hasDisLiked) {
-                    hasDisLiked = false
-                    hasLiked = false
-                }
-                else {
-                    dislikeEvent()
-                }
+                dislikeEvent(eventId)
             }
         }
     }

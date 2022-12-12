@@ -1,6 +1,5 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
@@ -9,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -166,7 +164,7 @@ fun EventView(
             )
         }
         Row {
-            LikeButtons(viewModel = viewModel)
+            LikeButtons(viewModel = viewModel, eventId = event.eventId)
         }
         Row(
             Modifier
@@ -204,6 +202,7 @@ private fun NameButton(
 @Composable
 fun LikeButtons(
     viewModel: EventListViewModel,
+    eventId: Long,
 ) {
     var liked by remember {
         mutableStateOf(
@@ -217,7 +216,7 @@ fun LikeButtons(
     }
     Button(
         onClick = {
-            viewModel.handleVote("like")
+            viewModel.handleVote("like", eventId)
             liked = viewModel.hasLiked
             disliked = viewModel.hasDisLiked
         },
@@ -256,7 +255,7 @@ fun LikeButtons(
     }
     Button(
         onClick = {
-            viewModel.handleVote("dislike")
+            viewModel.handleVote("dislike", eventId)
             liked = viewModel.hasLiked
             disliked = viewModel.hasDisLiked
         },

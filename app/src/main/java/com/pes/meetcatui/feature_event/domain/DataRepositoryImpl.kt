@@ -64,13 +64,32 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun likeEvent(eventId: Long){
-        TODO("Not yet implemented")
-        meetcatApi.likeEvent(eventId);
+    override suspend fun likeEvent(eventId: Long) : String{
+        try {
+            meetcatApi.likeEvent(eventId)
+            return ("Api is successful")
+        }
+        catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
+        }
     }
 
-    override suspend fun dislikeEvent(eventId: Long){
-        meetcatApi.dislikeEvent(eventId);
+    override suspend fun dislikeEvent(eventId: Long) : String{
+        try {
+            meetcatApi.dislikeEvent(eventId)
+            return ("Api is successful")
+        }
+        catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
+        }
     }
 
     override suspend fun createEvent( event: Event) : String {

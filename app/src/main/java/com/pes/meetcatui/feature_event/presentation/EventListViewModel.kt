@@ -184,6 +184,9 @@ open class EventListViewModel(
                     }
                 }
             }
+        }
+    }
+
     fun reportEvent(event: Event) {
         viewModelScope.launch {
             dataRepository.reportEvent(event)

@@ -61,7 +61,7 @@ fun EventListScreen(
             onClickLeave = {
                 viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
-            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)}),
+            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
         BackHandler { viewModel.setIsSelected() }
     } else {
@@ -151,13 +151,14 @@ fun EventDetailsScreen(
 
     Column {
         Row {
+            BackButton(function = onClick)
             Spacer(modifier = Modifier.width(235.dp))
             ReportButton(function = {
                 openDialog.value = true
              })
         }
         Surface() {
-            EventDetails(event = event)
+            EventDetails(event = event, attendance = attendanceState, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
         }
     }
 

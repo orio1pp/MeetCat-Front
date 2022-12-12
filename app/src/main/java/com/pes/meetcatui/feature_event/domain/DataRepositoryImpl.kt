@@ -4,7 +4,6 @@ import com.pes.meetcatui.data.DataPreferences
 import com.pes.meetcatui.network.*
 import kotlinx.coroutines.Dispatchers
 
-import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
@@ -191,8 +190,6 @@ class DataRepositoryImpl (
 
     override suspend fun reportEvent(event: Event): String {
         try {
-            val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)
-            println(eventSerial)
             meetcatApi.reportEvent(event.eventId);
             return ("Api is successful")
         } catch (e: IOException) {

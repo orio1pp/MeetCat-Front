@@ -13,6 +13,7 @@ fun ReportedEventsListScreen(
     navToCreateEvent: () -> Unit,
 ) {
     val eventList by viewModel.eventList
+    val attendance by viewModel.attendance
 
     if (eventList != null
         && eventList.data != null
@@ -20,9 +21,18 @@ fun ReportedEventsListScreen(
         && !eventList.hasError
         && eventList.isDetailsSelected) {
 
-        EventDetailsScreen(event = eventList.eventDetailsSelected!!, reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)}) {
-            viewModel.setIsSelected()
-        }
+        EventDetailsScreen(
+            event = eventList.eventDetailsSelected!!,
+            onClick = { viewModel.setIsSelected() },
+            attendanceState = attendance,
+            onClickJoin = {
+                viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+            onClickLeave = {
+                viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
+            },
+            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
+        )
         BackHandler { viewModel.setIsSelected() }
     } else {
         EventListScreenContent(

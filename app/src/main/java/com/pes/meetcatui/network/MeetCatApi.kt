@@ -22,6 +22,9 @@ interface MeetCatApi {
     @GET("events")
     suspend fun getEventsWithTitle(@Query("page") page: Int?, @Query("size") size:Int?, @Query("title") title:String?): Response<EventsData>
 
+    @GET("events/reported")
+    suspend fun getReportedEventsWithTitle(@Query("page") page: Int?, @Query("size") size:Int?, @Query("title") title:String?): Response<EventsData>
+
     @POST("events")
     suspend fun createEvent(@Body event: EventDetailsData)
 

@@ -64,6 +64,26 @@ class DataRepositoryImpl (
         }
     }
 
+    override fun getReportedEvents(pageNum: Int, title:String?) : Flow<Resource<EventPage>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getReportedEventsWithTitle(pageNum, 20, title)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
     override suspend fun createEvent( event: Event) : String {
         try {
             val eventSerial = EventDetailsData(event.eventId, event.name, event.subtitle, event.description, event.startDate, event.endDate, event.link, event.placeName, event.location, event.address)

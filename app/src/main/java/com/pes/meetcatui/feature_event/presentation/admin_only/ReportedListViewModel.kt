@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_event.presentation
+package com.pes.meetcatui.feature_event.presentation.admin_only
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -6,18 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_event.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.presentation.EventListScreenState
+import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import kotlinx.coroutines.launch
 
-open class EventListViewModel(
-    open val dataRepository: DataRepository,
-) : ViewModel() {
-
-    val eventList = mutableStateOf(EventListScreenState())
-    var titleSearch: String? = null
-
+class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel() {
     init {
         viewModelScope.launch {
-            dataRepository.getEvents(0, titleSearch).collect { resource ->
+            dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(
@@ -56,10 +52,10 @@ open class EventListViewModel(
         )
     }
 
-    open fun loadMore() {
+    fun loadMore() {
         if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
             viewModelScope.launch {
-                dataRepository.getEvents(eventList.value.page, titleSearch).collect { resource ->
+                dataRepository.getReportedEvents(eventList.value.page, titleSearch).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
@@ -81,10 +77,10 @@ open class EventListViewModel(
         }
     }
 
-    open fun search(text: String) {
+    fun search(text: String) {
         titleSearch = text
         viewModelScope.launch {
-            dataRepository.getEvents(0, titleSearch).collect { resource ->
+            dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         eventList.value = EventListScreenState(

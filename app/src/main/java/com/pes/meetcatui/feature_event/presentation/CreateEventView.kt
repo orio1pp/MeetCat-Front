@@ -3,12 +3,16 @@ package com.pes.meetcatui.feature_event.presentation
 import android.content.Context
 import android.webkit.URLUtil
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -62,62 +66,62 @@ fun CreateEventView(
     ) {
         Column(
             Modifier
-                .padding(vertical = 16.dp)
+                .padding(vertical = 16.dp, horizontal = 35.dp)
                 .verticalScroll(state = ScrollState(0)),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.name)
 
                 name = TextFieldLabeled(name, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.subtitle)
 
                 subtitle = TextFieldLabeled(subtitle, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.description)
 
                 description = TextFieldLabeled(description, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 60.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.from)
 
                 TextFieldDate(context, startDate, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.at)
 
                 TextFieldTime(context, startTime, labelText)
             }
-            Row(Modifier.padding(start = 60.dp, top = 8.dp, bottom = 8.dp, end = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.to)
 
                 TextFieldDate(context, endDate, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.at)
 
                 TextFieldTime(context, endTime, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.location)
 
                 location = TextFieldLabeled(location, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.place)
 
                 place = TextFieldLabeled(place, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.address)
 
                 address = TextFieldLabeled(address, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+            Row(Modifier.padding(vertical = 8.dp)) {
                 var labelText = stringResource(R.string.link)
 
                 link = TextFieldLabeled(link, labelText)
@@ -167,6 +171,8 @@ private fun CreateButton(
             errorString = stringResource(R.string.createEventInitDateGreaterThanEnd);
         else if (errorStringId == 4)
             errorString = stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+        else if (errorStringId == 5)
+            errorString = stringResource(R.string.createEventInitDateIsPast);
         else
             errorString = "";
 
@@ -205,7 +211,7 @@ private fun CreateButton(
                     navToEvents();
                 }
             },
-            Modifier.padding(vertical = 8.dp),
+            Modifier.height(70.dp).padding(vertical = 8.dp).clip(RoundedCornerShape(30.dp)),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = backgroundColor,
                 contentColor = focusedLabelColor
@@ -224,6 +230,7 @@ private fun TextFieldLabeled(
     var text: String by remember { mutableStateOf(previewText) }
     var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
     TextField(
+        modifier = Modifier.width(320.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
         value = text,
         onValueChange = { newText ->
             text = newText;
@@ -250,12 +257,11 @@ private fun TextFieldDate(
 
     var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
 
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(end = 100.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         TextField(
+            modifier = Modifier.width(262.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
             value = "${date.value.dayOfMonth}/${date.value.monthValue}/${date.value.year}",
             onValueChange = {},
             textStyle = typo.h4,
@@ -267,11 +273,11 @@ private fun TextFieldDate(
                 focusedLabelColor = focusedLabelColor,
                 unfocusedLabelColor = unfocusedLabelColor
             ),
-            modifier = Modifier.fillMaxWidth(),
             enabled = false,
         )
+
+        DatePickerButton(date = date, context = context)
     }
-    DatePickerButton(date = date, context = context)
 }
 
 @Composable
@@ -282,23 +288,26 @@ private fun TextFieldTime(
 ) {
 
     var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
-
-    TextField(
-        value = "${time.value.hour}:${time.value.minute}",
-        onValueChange = {},
-        textStyle = typo.h4,
-        label = {
-            Text(labelText)
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = backgndColor,
-            focusedLabelColor = focusedLabelColor,
-            unfocusedLabelColor = unfocusedLabelColor
-        ),
-        modifier = Modifier.width(120.dp),
-        enabled = false,
-    )
-    TimePickerButton(time = time, context = context)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextField(
+            modifier = Modifier.width(262.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
+            value = "${time.value.hour}:${time.value.minute}",
+            onValueChange = {},
+            textStyle = typo.h4,
+            label = {
+                Text(labelText)
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = backgndColor,
+                focusedLabelColor = focusedLabelColor,
+                unfocusedLabelColor = unfocusedLabelColor
+            ),
+            enabled = false,
+        )
+        TimePickerButton(time = time, context = context)
+    }
 }
 
 private fun checkInput(name: String, subtitle: String, description: String,
@@ -318,6 +327,7 @@ private fun checkInput(name: String, subtitle: String, description: String,
     }
     if (startDate >= endDate)
         return 3
-    else
-        return 0
+    if (startDate < LocalDateTime.now())
+        return 5
+    return 0
 }

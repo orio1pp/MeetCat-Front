@@ -12,9 +12,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import com.pes.meetcatui.R
 import java.time.LocalTime
 import java.util.*
 
@@ -35,16 +47,23 @@ fun TimePickerButton(
     )
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        Modifier.padding(horizontal = 5.dp)
     ) {
         IconButton(
-            onClick = { mTimePickerDialog.show() }
+            onClick = {
+                mTimePickerDialog.show()
+            },
+            modifier = Modifier
+                .alpha(1.0f)
+                .clip(CircleShape)
+                .border(2.dp, Color(0xFFBEBEBE), shape = CircleShape)
+                .background(Color(0xFFBEBEBE))
         ) {
             Icon(
-                imageVector = Icons.Filled.ShoppingCart,
+                imageVector = ImageVector.vectorResource(R.drawable.outline_schedule_24),
+                tint = Color.Black,
                 contentDescription = null,
+                modifier = Modifier.size(35.dp),
             )
         }
     }

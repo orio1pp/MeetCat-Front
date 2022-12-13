@@ -24,4 +24,5 @@
     <string name="atendees">Attendees</string>
     <string name="areYouSureToReportMsg">Are you sure you wanna report this event?</string>
     <string name="confirm">Confirm</string>
+    <string name="createEventInitDateIsPast">You can\'t start an event before today</string>
 </resources>

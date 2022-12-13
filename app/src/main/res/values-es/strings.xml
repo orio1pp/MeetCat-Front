@@ -25,4 +25,5 @@
     <string name="atendees">Asistentes</string>
     <string name="areYouSureToReportMsg">Seguro que quiere reportar este evento?</string>
     <string name="confirm">Confirmar</string>
+    <string name="createEventInitDateIsPast">No puedes empezar un evento antes de hoy</string>
 </resources>

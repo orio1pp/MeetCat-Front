@@ -56,9 +56,7 @@ fun DatePickerButton(
     )
 
     Column(
-        modifier = Modifier.width(80.dp).padding(end = 40.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start,
+        Modifier.padding(horizontal = 5.dp)
     ) {
         IconButton(
             onClick = {
@@ -66,16 +64,15 @@ fun DatePickerButton(
             },
             modifier = Modifier
                 .alpha(1.0f)
-                //.padding(start = 16.dp, top = 16.dp)
                 .clip(CircleShape)
-                .border(2.dp, Color(0xFF838383), shape = CircleShape)
-                .background(Color(0xFFBEBEBE)),
+                .border(2.dp, Color(0xFFBEBEBE), shape = CircleShape)
+                .background(Color(0xFFBEBEBE))
         ) {
             Icon(
                 imageVector = Icons.Filled.DateRange,
                 tint = Color.Black,
                 contentDescription = null,
-                modifier = Modifier.zIndex(2f)
+                modifier = Modifier.size(35.dp),
             )
         }
     }

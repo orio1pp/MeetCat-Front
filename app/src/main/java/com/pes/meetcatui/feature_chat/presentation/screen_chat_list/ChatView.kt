@@ -1,10 +1,14 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_chat
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Send
@@ -19,6 +23,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListViewModel
+import com.pes.meetcatui.network.chat.MessageData
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Background_alt
 import com.pes.meetcatui.ui.theme.Highlight
@@ -29,23 +34,20 @@ fun ChatScreen(
     viewModel: ChatListViewModel
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
     ) {
         ChatHeader(username = "Oriol")
-        for (message in viewModel.chatList.value.chatSelected?.messageList!!) {
-            if (message.username.equals(/*viewModel.chatList.value.chatSelected!!.user*/"a@gmail.com")) {
-                MessageSent(date = message.date.toString(), text = message.text!!)
-            } else {
-                MessageReceived(date = message.date.toString(), text = message.text!!)
-            }
+
+        AllMessages(viewModel = viewModel)
+
+        Row(
+            modifier = Modifier
+                .height(64.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Texting(viewModel = viewModel)
         }
-    }
-    Row(
-        modifier = Modifier
-            .height(64.dp),
-        verticalAlignment = Alignment.Bottom
-    ) {
-        Texting(viewModel = viewModel)
     }
 }
 
@@ -97,6 +99,34 @@ fun Texting(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun AllMessages(
+    viewModel: ChatListViewModel
+) {
+    Column(
+        //modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        viewModel.chatList.value.chatSelected?.messageList?.let {
+            for (message in viewModel.chatList.value.chatSelected?.messageList!!) {
+                MessageX(message = message)
+            }
+        }
+    }
+}
+
+
+@Composable
+fun MessageX(
+    message: MessageData
+) {
+    if (message.username.equals(/*viewModel.chatList.value.chatSelected!!.user*/ "a@gmail.com")
+    ) {
+        MessageSent(date = message.date.toString(), text = message.text!!)
+    } else {
+        MessageReceived(date = message.date.toString(), text = message.text!!)
     }
 }
 

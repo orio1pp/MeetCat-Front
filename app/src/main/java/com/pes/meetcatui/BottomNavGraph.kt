@@ -10,6 +10,8 @@ import com.pes.meetcatui.feature_event.presentation.EventListScreen
 import com.pes.meetcatui.feature_event.presentation.MapScreen
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
+import com.pes.meetcatui.feature_event.presentation.*
+import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedEventsListScreen
 import org.koin.androidx.compose.getViewModel
 
 @Composable

@@ -22,4 +22,6 @@
     <string name="join">Join</string>
     <string name="leave">Leave</string>
     <string name="atendees">Attendees</string>
+    <string name="areYouSureToReportMsg">Are you sure you wanna report this event?</string>
+    <string name="confirm">Confirm</string>
 </resources>

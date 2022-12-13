@@ -16,7 +16,7 @@
     <string name="place">Place</string>
     <string name="address">Address</string>
     <string name="createEventErrorFieldsEmpty">You left empty fields, please fill all the values</string>
-    <string name="createEventErrorDateIsNotDate">The date you input isn\'t a date, please input a date</string>
+    <string name="createEventInitDateGreaterThanEnd">Event can\'t start after it ends.</string>
     <string name="createEventErrorURLIsNotValid">The URL is not a valid URL, please introduce a valid URL</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">The location is not following the right format, please input \"lat,lon\"</string>
     <string name="join">Join</string>
@@ -24,4 +24,5 @@
     <string name="atendees">Attendees</string>
     <string name="areYouSureToReportMsg">Are you sure you wanna report this event?</string>
     <string name="confirm">Confirm</string>
+    <string name="createEventInitDateIsPast">You can\'t start an event before today</string>
 </resources>

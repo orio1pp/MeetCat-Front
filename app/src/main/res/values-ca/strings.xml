@@ -23,4 +23,6 @@
     <string name="join">Apunta\'t</string>
     <string name="leave">Marxa</string>
     <string name="atendees">Assistents</string>
+    <string name="areYouSureToReportMsg">Segur que vol reportar aquest event?</string>
+    <string name="confirm">Confirmar</string>
 </resources>

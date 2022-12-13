@@ -2,26 +2,32 @@ package com.pes.meetcatui.feature_event.presentation
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.domain.Event
@@ -55,6 +61,7 @@ fun EventListScreen(
             onClickLeave = {
                 viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
+            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
         BackHandler { viewModel.setIsSelected() }
     } else {
@@ -137,13 +144,65 @@ fun EventDetailsScreen(
     attendanceState: EventAttendanceState,
     onClickJoin: () -> Unit,
     onClickLeave: ()-> Unit,
+    reportEvent: (Event) -> Unit,
 )
 {
-    Surface() {
-        EventDetails(event = event, attendanceState, onClickJoin, onClickLeave)
+    val openDialog = remember { mutableStateOf(false)  }
+
+    Column {
+        Row {
+            BackButton(function = onClick)
+            Spacer(modifier = Modifier.width(235.dp))
+            ReportButton(function = {
+                openDialog.value = true
+             })
+        }
+        Surface() {
+            EventDetails(event = event, attendance = attendanceState, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
+        }
     }
 
-    BackButton(function = onClick)
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                openDialog.value = false
+            },
+            title = {
+                Text(text = stringResource(R.string.areYouSureToReportMsg))
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        reportEvent(event)
+                        openDialog.value = false
+                    }) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+        )
+    }
+
+}
+
+@Composable
+fun ReportButton(function: () -> Unit = {}) {
+    FloatingActionButton(
+        onClick = function,
+        modifier = Modifier
+            .alpha(1.0f)
+            .padding(start = 16.dp, top = 16.dp)
+            .clip(CircleShape)
+            .border(2.dp, Color(0xFF838383), shape = CircleShape),
+        backgroundColor = Color(0xFFBEBEBE),
+        elevation = FloatingActionButtonDefaults.elevation(2.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Warning,
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+            tint = Color(0xFF5A5A5A),
+        )
+    }
 }
 
 @Composable

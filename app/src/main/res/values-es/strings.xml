@@ -17,7 +17,7 @@
     <string name="place">Sitio</string>
     <string name="address">Dirección</string>
     <string name="createEventErrorFieldsEmpty">Hay parámetros sin rellenar, por favor rellene todos los parámetros</string>
-    <string name="createEventErrorDateIsNotDate">La fecha introducida no es una fecha, introduzca una fecha</string>
+    <string name="createEventInitDateGreaterThanEnd">La fecha introducida no es una fecha, introduzca una fecha</string>
     <string name="createEventErrorURLIsNotValid">La URL introducida no és una URL válida, por favor, introducid una URL válida</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">La localización no esta en el formato correcto, por favor usad \"lat,lon\"</string>
     <string name="join">Apúntate</string>

@@ -1,23 +1,23 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.content.Context
 import android.webkit.URLUtil
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
 import com.pes.meetcatui.ui.theme.*
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeParseException
+import java.time.LocalTime
 
 /*
 name = "MeetCat Release Party",
@@ -34,30 +34,6 @@ val backgroundColor = Color(0xFFD0D0D0)
 val focusedLabelColor = Color(0xFF000000)
 val unfocusedLabelColor = Color(0xFF707070)
 
-private fun checkInput(name: String, subtitle: String, description: String,
-                       startDate: String, endDate: String, location:String, place: String,
-                       address: String, link: String) : Int{
-    if (!(name != "" && subtitle != "" && description != "" && startDate != "" && endDate != "" && location != "" && place != "" && address != "" && link != ""))
-        return 1//stringResource(R.string.createEventErrorFieldsEmpty);
-    else if (!URLUtil.isValidUrl(link))
-        return 2//stringResource(R.string.createEventErrorURLIsNotValid);
-    val coords = location.split(',')
-    try {
-        coords[0].toDouble()
-        coords[1].toDouble()
-    } catch (e: java.lang.NumberFormatException)
-    {
-        return 4//stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
-    }
-    try {
-        LocalDateTime.parse(startDate)
-        LocalDateTime.parse(endDate)
-        return 0
-    } catch (e: DateTimeParseException) {
-        return 3//stringResource(R.string.createEventErrorDateIsNotDate);
-    }
-}
-
 @Composable
 fun CreateEventView(
     viewModel: CreateEventViewModel,
@@ -66,16 +42,23 @@ fun CreateEventView(
     var name: String by remember { mutableStateOf("") }
     var subtitle: String by remember { mutableStateOf("") }
     var description: String by remember { mutableStateOf("") }
-    var startDate: String by remember { mutableStateOf("") }
-    var endDate: String by remember { mutableStateOf("") }
+
+    val startDate = remember { mutableStateOf(LocalDate.now()) }
+    val startTime = remember { mutableStateOf(LocalTime.now()) }
+
+    val endDate = remember { mutableStateOf(LocalDate.now()) }
+    val endTime = remember { mutableStateOf(LocalTime.now()) }
+
     var location: String by remember { mutableStateOf("") }
     var place: String by remember { mutableStateOf("") }
     var address: String by remember { mutableStateOf("") }
     var link: String by remember { mutableStateOf("") }
 
-    Surface(
+    val context = LocalContext.current
+
+
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
-        color = Background,
     ) {
         Column(
             Modifier
@@ -84,47 +67,57 @@ fun CreateEventView(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.name)
 
                 name = TextFieldLabeled(name, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.subtitle)
 
                 subtitle = TextFieldLabeled(subtitle, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.description)
 
                 description = TextFieldLabeled(description, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 60.dp)) {
                 var labelText = stringResource(R.string.from)
 
-                startDate = TextFieldLabeled(startDate, labelText)
+                TextFieldDate(context, startDate, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+                var labelText = stringResource(R.string.at)
+
+                TextFieldTime(context, startTime, labelText)
+            }
+            Row(Modifier.padding(start = 60.dp, top = 8.dp, bottom = 8.dp, end = 8.dp)) {
                 var labelText = stringResource(R.string.to)
 
-                endDate = TextFieldLabeled(endDate, labelText)
+                TextFieldDate(context, endDate, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
+                var labelText = stringResource(R.string.at)
+
+                TextFieldTime(context, endTime, labelText)
+            }
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.location)
 
                 location = TextFieldLabeled(location, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.place)
 
                 place = TextFieldLabeled(place, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.address)
 
                 address = TextFieldLabeled(address, labelText)
             }
-            Row(Modifier.padding(vertical = 8.dp)) {
+            Row(Modifier.padding(vertical = 8.dp, horizontal = 20.dp)) {
                 var labelText = stringResource(R.string.link)
 
                 link = TextFieldLabeled(link, labelText)
@@ -135,8 +128,8 @@ fun CreateEventView(
                     name,
                     subtitle,
                     description,
-                    startDate,
-                    endDate,
+                    LocalDateTime.of(startDate.value, startTime.value),
+                    LocalDateTime.of(endDate.value, endTime.value),
                     location,
                     place,
                     address,
@@ -154,8 +147,8 @@ private fun CreateButton(
     name: String,
     subtitle: String,
     description: String,
-    startDate: String,
-    endDate: String,
+    startDate: LocalDateTime,
+    endDate: LocalDateTime,
     location: String,
     place: String,
     address: String,
@@ -171,7 +164,7 @@ private fun CreateButton(
         else if (errorStringId == 2)
             errorString = stringResource(R.string.createEventErrorURLIsNotValid);
         else if (errorStringId == 3)
-            errorString = stringResource(R.string.createEventErrorDateIsNotDate);
+            errorString = stringResource(R.string.createEventInitDateGreaterThanEnd);
         else if (errorStringId == 4)
             errorString = stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
         else
@@ -202,8 +195,8 @@ private fun CreateButton(
                         name,
                         subtitle,
                         description,
-                        startDate,
-                        endDate,
+                        startDate.toString(),
+                        endDate.toString(),
                         location,
                         place,
                         address,
@@ -246,4 +239,85 @@ private fun TextFieldLabeled(
         ),
     )
     return text;
+}
+
+@Composable
+private fun TextFieldDate(
+    context: Context,
+    date: MutableState<LocalDate>,
+    labelText: String,
+) {
+
+    var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(end = 100.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        TextField(
+            value = "${date.value.dayOfMonth}/${date.value.monthValue}/${date.value.year}",
+            onValueChange = {},
+            textStyle = typo.h4,
+            label = {
+                Text(labelText)
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = backgndColor,
+                focusedLabelColor = focusedLabelColor,
+                unfocusedLabelColor = unfocusedLabelColor
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            enabled = false,
+        )
+    }
+    DatePickerButton(date = date, context = context)
+}
+
+@Composable
+private fun TextFieldTime(
+    context: Context,
+    time: MutableState<LocalTime>,
+    labelText: String,
+) {
+
+    var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
+
+    TextField(
+        value = "${time.value.hour}:${time.value.minute}",
+        onValueChange = {},
+        textStyle = typo.h4,
+        label = {
+            Text(labelText)
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = backgndColor,
+            focusedLabelColor = focusedLabelColor,
+            unfocusedLabelColor = unfocusedLabelColor
+        ),
+        modifier = Modifier.width(120.dp),
+        enabled = false,
+    )
+    TimePickerButton(time = time, context = context)
+}
+
+private fun checkInput(name: String, subtitle: String, description: String,
+                       startDate: LocalDateTime, endDate: LocalDateTime, location:String, place: String,
+                       address: String, link: String) : Int{
+    if (!(name != "" && subtitle != "" && description != "" && location != "" && place != "" && address != "" && link != ""))
+        return 1//stringResource(R.string.createEventErrorFieldsEmpty);
+    else if (!URLUtil.isValidUrl(link))
+        return 2//stringResource(R.string.createEventErrorURLIsNotValid);
+    val coords = location.split(',')
+    try {
+        coords[0].toDouble()
+        coords[1].toDouble()
+    } catch (e: java.lang.NumberFormatException)
+    {
+        return 4//stringResource(R.string.createEventErrorLocationIsNotCorrectFormat);
+    }
+    if (startDate >= endDate)
+        return 3
+    else
+        return 0
 }

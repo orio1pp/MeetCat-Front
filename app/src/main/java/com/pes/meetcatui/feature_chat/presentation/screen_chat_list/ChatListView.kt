@@ -3,10 +3,7 @@ package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Divider
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -56,7 +53,7 @@ fun ChatListScreen(
                         viewModel = viewModel
                     )
                 }
-                viewModel.setIsSelected()
+                //viewModel.setIsSelected()
             } else {
                 item {
                     if (chatList.data != null) {
@@ -77,12 +74,6 @@ fun ChatListScreen(
                 }
             }
         }
-        Row(
-            modifier = Modifier.fillMaxHeight(0.2F),
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Navigation(section = "chat")
-        }
     }
 }
 
@@ -94,43 +85,46 @@ fun Chat(
     onChatClick: (GetChatData) -> Unit,
 //lastMessage: String,
 ) {
-    Scaffold(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
             .background(color = Background, shape = RectangleShape)
             .padding(horizontal = 16.dp),
 
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.padding(16.dp, top = 24.dp),
-            ) {
-                Text(
-                    modifier = Modifier
-                        .width(256.dp),
-                    text = sender,
-                    style = typo.h4,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                /*
-                IF THERE IS AN UNSEEN MESSAGE DISPLAY THIS (CURRENTLY NOT POSSIBLE)
-                Box(
-                    modifier = Modifier
-                        .padding(top = 8.dp, start = 16.dp)
-                        .size(12.dp)
-                        .background(color = Highlight, shape = CircleShape)
-                )*/
-            }
-            Divider(
-                startIndent = 0.dp,
-                thickness = 1.dp,
-                color = Gray,
-                modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+        TextButton(
+            modifier = Modifier
+                .fillMaxSize(),
+            onClick = { onChatClick(chat) }) {
+            Text(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp, top = 24.dp),
+                text = sender,
+                style = typo.h4,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
+
+
+        /*
+        IF THERE IS AN UNSEEN MESSAGE DISPLAY THIS (CURRENTLY NOT POSSIBLE)
+        Box(
+            modifier = Modifier
+                .padding(top = 8.dp, start = 16.dp)
+                .size(12.dp)
+                .background(color = Highlight, shape = CircleShape)
+        )*/
+        Divider(
+            startIndent = 0.dp,
+            thickness = 1.dp,
+            color = Gray,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
+
 
 

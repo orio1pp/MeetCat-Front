@@ -23,8 +23,7 @@ class ChatListViewModel(
                     data = allChats,
                     page = 1
                 )
-            }
-            else {
+            } else {
                 chatList.value = ChatListScreenState(
                     hasError = true,
                     errorMessage = "Couldn't get chats"
@@ -34,11 +33,26 @@ class ChatListViewModel(
     }
 
     fun setSelectedChat(chat: GetChatData) {
-        chatList.value = ChatListScreenState(
-            isChatSelected = true,
-            chatSelected = getChat(),
-            data = chatList.value.data
-        )
+        var newChat: Chat? = null
+        viewModelScope.launch {
+            newChat = chat.chatId?.let {
+                chat.friend?.let { it1 ->
+                    chat.chatId?.let { dataRepository.getMessagesByChat(it, 0) }?.let { it2 ->
+                        Chat(
+                            chatId = it,
+                            friend = it1,
+                            user = dataRepository.getUsername(),
+                            messageList = it2
+                        )
+                    }
+                }
+            }
+            chatList.value = ChatListScreenState(
+                isChatSelected = true,
+                chatSelected = newChat,
+                data = chatList.value.data
+            )
+        }
     }
 
     fun setIsSelected() {
@@ -48,7 +62,21 @@ class ChatListViewModel(
         )
     }
 
-    fun getChat() : Chat {
-        return Chat(chatId = 2, friend = "b@gmail.com", messageList = emptyList())
+    private fun GetChatDataToChat(chat: GetChatData): Chat? {
+        var newChat: Chat? = null
+        viewModelScope.launch {
+            newChat = chat.chatId?.let {
+                chat.friend?.let { it1 ->
+                    chat.chatId?.let { dataRepository.getMessagesByChat(it, 0) }?.let { it2 ->
+                        Chat(
+                            chatId = it,
+                            friend = it1,
+                            messageList = it2
+                        )
+                    }
+                }
+            }
+        }
+        return newChat
     }
 }

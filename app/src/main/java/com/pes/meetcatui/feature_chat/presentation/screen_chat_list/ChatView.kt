@@ -1,14 +1,10 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_chat
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Send
@@ -111,7 +107,7 @@ fun AllMessages(
     ) {
         viewModel.chatList.value.chatSelected?.messageList?.let {
             for (message in viewModel.chatList.value.chatSelected?.messageList!!) {
-                MessageX(message = message)
+                MessageX(message = message, viewModel = viewModel)
             }
         }
     }
@@ -120,9 +116,10 @@ fun AllMessages(
 
 @Composable
 fun MessageX(
-    message: MessageData
+    message: MessageData,
+    viewModel: ChatListViewModel
 ) {
-    if (message.username.equals(/*viewModel.chatList.value.chatSelected!!.user*/ "a@gmail.com")
+    if (message.username.equals(viewModel.chatList.value.chatSelected!!.user)
     ) {
         MessageSent(date = message.date.toString(), text = message.text!!)
     } else {

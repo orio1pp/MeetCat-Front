@@ -63,10 +63,7 @@ class DataRepositoryChatsImpl(
     }
 
     override suspend fun getUsername(): String {
-        var username = ""
-        runBlocking(Dispatchers.IO) {
-            dataPreferences.getUser().toString()
-        }
+        var username = dataPreferences.getUser().first()
         return username
     }
 

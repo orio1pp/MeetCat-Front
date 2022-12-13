@@ -35,13 +35,14 @@ class ChatListViewModel(
     fun setSelectedChat(chat: GetChatData) {
         var newChat: Chat? = null
         viewModelScope.launch {
+        val username : String = dataRepository.getUsername()
             newChat = chat.chatId?.let {
                 chat.friend?.let { it1 ->
                     chat.chatId?.let { dataRepository.getMessagesByChat(it, 0) }?.let { it2 ->
                         Chat(
                             chatId = it,
                             friend = it1,
-                            user = dataRepository.getUsername(),
+                            user = username,
                             messageList = it2
                         )
                     }

@@ -33,7 +33,7 @@ fun ChatScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        ChatHeader(username = "Oriol")
+        viewModel.chatList.value.chatSelected?.friend?.let { ChatHeader(username = it) }
 
         AllMessages(viewModel = viewModel)
 

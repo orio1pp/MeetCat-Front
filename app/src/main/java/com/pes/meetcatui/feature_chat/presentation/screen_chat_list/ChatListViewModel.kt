@@ -1,18 +1,23 @@
 package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.feature_chat.domain.Chat
 import com.pes.meetcatui.feature_chat.domain.DataRepositoryChats
 import com.pes.meetcatui.network.chat.GetChatData
+import com.pes.meetcatui.network.chat.MessageData
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ChatListViewModel(
     val dataRepository: DataRepositoryChats
 ) : ViewModel() {
 
     val chatList = mutableStateOf(ChatListScreenState())
+    var newMessage by mutableStateOf("")
 
     init {
         viewModelScope.launch {
@@ -35,7 +40,7 @@ class ChatListViewModel(
     fun setSelectedChat(chat: GetChatData) {
         var newChat: Chat? = null
         viewModelScope.launch {
-        val username : String = dataRepository.getUsername()
+            val username: String = dataRepository.getUsername()
             newChat = chat.chatId?.let {
                 chat.friend?.let { it1 ->
                     chat.chatId?.let { dataRepository.getMessagesByChat(it, 0) }?.let { it2 ->
@@ -50,10 +55,16 @@ class ChatListViewModel(
             }
             chatList.value = ChatListScreenState(
                 isChatSelected = true,
-                chatSelected = newChat,
+                chatSelected = mutableStateOf(newChat),
                 data = chatList.value.data
             )
         }
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                if (chatList.value.isChatSelected)
+                    setSelectedChat(chat)
+            }
+        }, 1000)
     }
 
     fun setIsSelected() {
@@ -63,21 +74,18 @@ class ChatListViewModel(
         )
     }
 
-    private fun GetChatDataToChat(chat: GetChatData): Chat? {
-        var newChat: Chat? = null
+    fun sendMessage() {
         viewModelScope.launch {
-            newChat = chat.chatId?.let {
-                chat.friend?.let { it1 ->
-                    chat.chatId?.let { dataRepository.getMessagesByChat(it, 0) }?.let { it2 ->
-                        Chat(
-                            chatId = it,
-                            friend = it1,
-                            messageList = it2
-                        )
-                    }
-                }
-            }
+            dataRepository.newMessage(
+                MessageData(
+                    messageId = null,
+                    text = newMessage,
+                    date = null,
+                    chatId = chatList.value.chatSelected?.value?.chatId,
+                    username = dataRepository.getUsername()
+                )
+            )
         }
-        return newChat
+        newMessage = ""
     }
 }

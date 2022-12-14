@@ -12,8 +12,6 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.common.ScreenSelector
-import com.pes.meetcatui.commons.presentation.Navigation
-import com.pes.meetcatui.feature_chat.presentation.screen_chat.ChatScreen
 import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.Gray

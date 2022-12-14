@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation.screen_chat
+package com.pes.meetcatui.feature_chat.presentation.screen_chat_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,21 +9,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Send
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListViewModel
 import com.pes.meetcatui.network.chat.MessageData
-import com.pes.meetcatui.ui.theme.Background
-import com.pes.meetcatui.ui.theme.Background_alt
-import com.pes.meetcatui.ui.theme.Highlight
-import com.pes.meetcatui.ui.theme.typo
+import com.pes.meetcatui.ui.theme.*
 
 @Composable
 fun ChatScreen(
@@ -33,13 +25,17 @@ fun ChatScreen(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        viewModel.chatList.value.chatSelected?.friend?.let { ChatHeader(username = it) }
+        viewModel.chatList.value.chatSelected?.value?.friend.let {
+            if (it != null) {
+                ChatHeader(username = it)
+            }
+        }
 
         AllMessages(viewModel = viewModel)
 
         Row(
             modifier = Modifier
-                .height(64.dp),
+                .height(80.dp),
             verticalAlignment = Alignment.Bottom
         ) {
             Texting(viewModel = viewModel)
@@ -54,30 +50,37 @@ fun Texting(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
-            .padding(bottom = 5.dp)
+            .height(80.dp)
             .background(color = Background_alt, shape = RectangleShape),
     ) {
-        val text = remember { mutableStateOf(TextFieldValue()) }
         OutlinedTextField(
             modifier = Modifier
-                .padding(16.dp)
-                .padding(start = 16.dp)
-                .height(32.dp)
-                .background(color = Background, RoundedCornerShape(8.dp)),
-            value = text.value,
+                .padding(10.dp)
+                .padding(start = 16.dp),
+            value = viewModel.newMessage,
             onValueChange = { newText ->
-                text.value = newText
+                viewModel.newMessage = newText
             },
-            textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Start),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Highlight,
-                cursorColor = Highlight
+            textStyle = typo.body1,
+            shape = RoundedCornerShape(
+                topStart = 50.dp,
+                topEnd = 50.dp,
+                bottomEnd = 50.dp,
+                bottomStart = 50.dp
             ),
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.Black,
+                disabledTextColor = Gray,
+                backgroundColor = Background,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+            ),
+            singleLine = true
         )
         Box(
             modifier = Modifier
-                .padding(start = 332.dp, top = 12.dp)
+                .padding(start = 332.dp, top = 24.dp)
                 .height(36.dp)
                 .width(36.dp)
                 .background(color = Highlight, shape = CircleShape),
@@ -86,7 +89,7 @@ fun Texting(
             IconButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { /*viewModel.newMessage(text.value.toString())*/ },
+                onClick = { viewModel.sendMessage() },
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Send,
@@ -105,8 +108,8 @@ fun AllMessages(
     Column(
         //modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
-        viewModel.chatList.value.chatSelected?.messageList?.let {
-            for (message in viewModel.chatList.value.chatSelected?.messageList!!) {
+        viewModel.chatList.value.chatSelected?.value?.messageList?.let {
+            for (message in viewModel.chatList.value.chatSelected?.value?.messageList!!) {
                 MessageX(message = message, viewModel = viewModel)
             }
         }
@@ -119,7 +122,7 @@ fun MessageX(
     message: MessageData,
     viewModel: ChatListViewModel
 ) {
-    if (message.username.equals(viewModel.chatList.value.chatSelected!!.user)
+    if (message.username.equals(viewModel.chatList.value.chatSelected!!.value?.user)
     ) {
         MessageSent(date = message.date.toString(), text = message.text!!)
     } else {

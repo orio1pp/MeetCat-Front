@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation.screen_friend_search
+package com.pes.meetcatui.feature_chat.presentation.screen_user_search
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue

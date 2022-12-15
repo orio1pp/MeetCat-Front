@@ -2,6 +2,7 @@ package com.pes.meetcatui.network
 
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.chat.ChatFriendshipData
 import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.network.chat.MessageData
 import retrofit2.Response
@@ -47,7 +48,7 @@ interface MeetCatApi {
     suspend fun getChatsByUser(@Header("Authorization") accessToken : String): Response<List<GetChatData>>
 
     @GET("chat")
-    suspend fun getChatByFriendship(@Query("friendshipId") friendshipId: Long, @Header("Authorization") accessToken : String): Response<List<GetChatData>>
+    suspend fun getChatByFriendship(@Query("friendshipId") friendshipId: Long, @Header("Authorization") accessToken : String): Response<ChatFriendshipData>
 
     @GET("message")
     suspend fun getMessagesByChat(

@@ -49,4 +49,9 @@ sealed class BottomBarScreen (
         title = "Chats",
         icon = Icons.Default.MailOutline
     )
+    object FriendsList: BottomBarScreen(
+        route = "friends_list",
+        title = "FriendsList",
+        icon = Icons.Default.MailOutline
+    )
 }

@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation.screen_friend_search
+package com.pes.meetcatui.feature_chat.presentation.screen_user_search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,25 +25,26 @@ fun UserSearchScreen(
     viewModel: UserSearchViewModel,
     navToChats: () -> Unit,
     navToUserSearch: () -> Unit,
+    navToFriendsList: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
         Row(
-            modifier = Modifier.height(80.dp),
-            verticalAlignment = Alignment.Top,
+            modifier = Modifier
+                .height(80.dp),
         ) {
-            SearchBar(viewModel)
+            ScreenSelector(navToChats, navToUserSearch, navToFriendsList)
         }
         Row(
             modifier = Modifier
                 .height(80.dp)
                 .padding(top = 80.dp),
+            verticalAlignment = Alignment.Top,
         ) {
-            ScreenSelector(navToChats, navToUserSearch, navToChats)
+            SearchBar(viewModel)
         }
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,12 +71,6 @@ fun UserSearchScreen(
                 .padding(top = 140.dp)
         ) {
             WarningText(text = viewModel.warning.value)
-        }
-        Row(
-            modifier = Modifier.fillMaxHeight(0.2F),
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            //Navigation(section = "chat")
         }
     }
 }

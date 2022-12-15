@@ -22,6 +22,7 @@ fun ChatListScreen(
     viewModel: ChatListViewModel,
     navToChats: () -> Unit,
     navToUserSearch: () -> Unit,
+    navToFriendsList: () -> Unit,
 ) {
 
     val chatList by viewModel.chatList
@@ -33,7 +34,7 @@ fun ChatListScreen(
             modifier = Modifier
                 .height(80.dp)
         ) {
-            ScreenSelector(navToChats, navToUserSearch, navToChats)
+            ScreenSelector(navToChats, navToUserSearch, navToFriendsList)
         }
 
         LazyColumn(

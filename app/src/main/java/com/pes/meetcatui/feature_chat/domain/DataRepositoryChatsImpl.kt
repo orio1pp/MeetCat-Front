@@ -1,7 +1,10 @@
 package com.pes.meetcatui.feature_chat.domain
 
 import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.MeetCatApi
+import com.pes.meetcatui.network.chat.ChatData
+import com.pes.meetcatui.network.chat.ChatFriendshipData
 import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.network.chat.MessageData
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +68,34 @@ class DataRepositoryChatsImpl(
     override suspend fun getUsername(): String {
         var username = dataPreferences.getUser().first()
         return username
+    }
+
+    override suspend fun getFriend(): List<FriendshipData>? {
+        var accessToken: String = "Bearer "
+        runBlocking(Dispatchers.IO) {
+            accessToken += dataPreferences.getAccessToken().first()
+        }
+        try {
+            val friendship = meetCatApi.getFriend(0, 10, accessToken)?.body()
+            return friendship
+        } catch (e: Exception) {
+            println(e.message)
+        }
+        return null
+    }
+
+    override suspend fun getChatByFriendship(id : Long): ChatFriendshipData? {
+        var accessToken: String = "Bearer "
+        runBlocking(Dispatchers.IO) {
+            accessToken += dataPreferences.getAccessToken().first()
+        }
+        try {
+            val chat = meetCatApi.getChatByFriendship(id, accessToken)?.body()
+            return chat
+        } catch (e: Exception) {
+            println(e.message)
+        }
+        return null
     }
 
 

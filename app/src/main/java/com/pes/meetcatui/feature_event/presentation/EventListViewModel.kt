@@ -84,14 +84,14 @@ class EventListViewModel(
 
     fun likeEvent(eventId: Long): Boolean {
         viewModelScope.launch { dataRepository.likeEvent(eventId) }
-        hasLiked = true
+        hasLiked = !hasLiked
         hasDisLiked = false
         return true
     }
 
     fun dislikeEvent(eventId: Long): Boolean {
         viewModelScope.launch { dataRepository.dislikeEvent(eventId) }
-        hasDisLiked = true
+        hasDisLiked = !hasDisLiked
         hasLiked = false
         return true
     }

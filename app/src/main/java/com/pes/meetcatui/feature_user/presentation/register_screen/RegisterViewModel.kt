@@ -28,6 +28,22 @@ class RegisterViewModel(
         }
     }
 
+    suspend fun isUserRegistered(username: String) : Boolean {
+        if (dataRepository.getUser(username) != null) return true
+        return false
+    }
+
+    fun tryRegister(username: String, password: String) {
+        viewModelScope.launch {
+            if (!isUserRegistered(username)) {
+                register(username, password)
+            } else {
+                _warning.value = "L'usuari ja esta registrat."
+            }
+        }
+    }
+
+
     private suspend fun authenticate(username: String, password: String): Boolean {
         return dataRepository.login(username, password)
     }

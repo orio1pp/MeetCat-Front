@@ -51,4 +51,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         return (username == "user" && password == "password")
     }
 
+    fun tancarCompte() {
+        TODO("Not yet implemented")
+    }
+
 }

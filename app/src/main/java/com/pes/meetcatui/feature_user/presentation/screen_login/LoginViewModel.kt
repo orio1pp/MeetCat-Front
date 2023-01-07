@@ -5,13 +5,19 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.pes.meetcatui.SavedPreference
+import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
+import kotlinx.coroutines.launch
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel(application: Application,
+                     val dataRepository: DataRepositoryUsers
+                     ) : AndroidViewModel(application) {
+
     private val _warning = mutableStateOf("")
     val warning: State<String> = _warning
     private val context = getApplication<Application>().applicationContext
@@ -52,7 +58,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun tancarCompte() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            val username = SavedPreference.getUsername(context)
+            if (username != null) {
+                dataRepository.removeAccount(username)
+            }
+        }
     }
 
 }

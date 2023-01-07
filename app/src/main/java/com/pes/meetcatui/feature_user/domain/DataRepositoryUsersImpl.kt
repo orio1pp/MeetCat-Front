@@ -58,6 +58,11 @@ class DataRepositoryUsersImpl(
         return user
     }
 
+    override suspend fun removeAccount(username: String): Response<UserData> {
+        val user = meetCatApi.removeAccount(username)
+        return user
+    }
+
     private fun transformToToken(token: Response<UserToken>): UserToken {
         return UserToken(
             token.body()?.access_token ?: "",

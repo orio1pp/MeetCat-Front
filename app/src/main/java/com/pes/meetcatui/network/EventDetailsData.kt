@@ -18,4 +18,5 @@ data class EventDetailsData(
     val placeName: String?,
     val location: String?,
     val address: String?,
+    val attendeesCount: Int,
 )

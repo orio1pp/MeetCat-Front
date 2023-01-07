@@ -1,8 +1,12 @@
+package com.pes.meetcatui
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 
+
 object SavedPreference {
+
     const val EMAIL= "email"
     const val USERNAME="username"
 
@@ -39,4 +43,5 @@ object SavedPreference {
     fun getUsername(context: Context) = getSharedPreference(
         context
     )?.getString(USERNAME,"")
+
 }

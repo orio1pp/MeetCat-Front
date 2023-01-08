@@ -53,8 +53,25 @@ class DataRepositoryUsersImpl(
         return user
     }
 
+    override suspend fun getCurrentUser(): UserData? {
+        var accessToken: String = "Bearer "
+        var username: String
+        runBlocking(Dispatchers.IO) {
+            accessToken += dataPreferences.getAccessToken().first()
+            username = dataPreferences.getUser().first()
+        }
+
+        val user = meetCatApi.getUser(username, accessToken).body()
+        return user
+    }
+
     override suspend fun postUser(user: UserData) : Response<UserData>{
         val user = meetCatApi.postUser(user)
+        return user
+    }
+
+    override suspend fun removeAccount(id: Long): Response<UserData> {
+        val user = meetCatApi.removeAccount(id)
         return user
     }
 

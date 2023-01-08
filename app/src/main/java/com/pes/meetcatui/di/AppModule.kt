@@ -6,6 +6,7 @@ import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import com.pes.meetcatui.feature_event.presentation.MapViewModel
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterViewModel
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedListViewModel
+import com.pes.meetcatui.feature_user.presentation.screen_login.ProfileViewModel
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +42,11 @@ val appModule = module {
     }
     viewModel {
         FriendSearchViewModel(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        ProfileViewModel(
             dataRepository = get(),
         )
     }

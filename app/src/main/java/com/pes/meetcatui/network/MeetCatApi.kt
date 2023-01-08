@@ -57,6 +57,9 @@ interface MeetCatApi {
     suspend fun removeFriend(@Query("friendId") friendId: String, @Header("Authorization") accessToken : String): Response<FriendshipData>
     suspend fun getUser(@Query("username") username : String): Response<UserData>
 
+    @DELETE("users/{id}")
+    suspend fun removeAccount(@Path("id") id: Long): Response<UserData>
+
     @GET("events/nearest")
     suspend fun getNearestEvents(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<EventsData>
 }

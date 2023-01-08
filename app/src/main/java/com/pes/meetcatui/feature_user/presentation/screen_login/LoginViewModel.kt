@@ -14,8 +14,7 @@ import com.pes.meetcatui.SavedPreference
 import com.pes.meetcatui.feature_user.domain.DataRepositoryUsers
 import kotlinx.coroutines.launch
 
-class LoginViewModel(application: Application,
-                     val dataRepository: DataRepositoryUsers
+class LoginViewModel(application: Application
                      ) : AndroidViewModel(application) {
 
     private val _warning = mutableStateOf("")
@@ -57,13 +56,6 @@ class LoginViewModel(application: Application,
         return (username == "user" && password == "password")
     }
 
-    fun tancarCompte() {
-        viewModelScope.launch {
-            val username = SavedPreference.getUsername(context)
-            if (username != null) {
-                dataRepository.removeAccount(username)
-            }
-        }
-    }
+
 
 }

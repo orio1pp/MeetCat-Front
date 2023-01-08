@@ -12,5 +12,6 @@ interface DataRepositoryUsers {
     suspend fun addFriend(username: String): FriendshipData?
     suspend fun removeFriend(username: String): FriendshipData?
     suspend fun getFriend(): List<FriendshipData>?
-    suspend fun removeAccount(username: String): Response<UserData>
+    suspend fun removeAccount(id: Long): Response<UserData>
+    suspend fun getCurrentUser() : UserData?
 }

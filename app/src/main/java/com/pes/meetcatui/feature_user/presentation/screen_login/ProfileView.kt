@@ -39,13 +39,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModel
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModelFactory
+import com.pes.meetcatui.feature_user.presentation.screen_login.ProfileViewModel
 //import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.ui.theme.typo
-
+import org.koin.androidx.compose.get
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: ProfileViewModel) {
 
     val notification = rememberSaveable { mutableStateOf("") }
 
@@ -148,7 +149,7 @@ fun ProfileScreen() {
         }
 
         CustomButtonTancarSessio()
-        CustomButtonTancarCompte()
+        CustomButtonTancarCompte(viewModel)
 
     }
 
@@ -227,13 +228,9 @@ fun CustomButtonTancarSessio() {
 }
 
 @Composable
-fun CustomButtonTancarCompte() {
+fun CustomButtonTancarCompte(viewModel: ProfileViewModel) {
     val text = "Close Account"
     val context = LocalContext.current
-    val viewModel: LoginViewModel =
-
-        viewModel(factory = LoginViewModelFactory(context.applicationContext as Application))
-
     Button(
         onClick = {
             viewModel.tancarCompte()
@@ -259,6 +256,6 @@ fun CustomButtonTancarCompte() {
 @Composable
 fun DefaultPreview() {
     MeetCatUITheme {
-        ProfileScreen()
+        ProfileScreen(viewModel = get())
     }
 }

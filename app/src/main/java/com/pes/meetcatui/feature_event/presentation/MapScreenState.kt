@@ -8,6 +8,6 @@ import com.google.maps.android.compose.CameraPositionState
 
 data class MapScreenState(
     val lastLocation: Location? = null,
-    val gpsCoords: LatLng = LatLng(41.3870154, 2.1700471),
-    val cameraPosition: CameraPositionState = CameraPositionState(),
+    val gpsCoords: LatLng = LatLng(41.387423, 2.169763),
+    val cameraPosition: MutableState<CameraPositionState> = mutableStateOf(CameraPositionState()),
 )

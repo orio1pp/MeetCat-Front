@@ -55,6 +55,7 @@ fun MapScreen(
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     val events by viewModel.events
+    val mapState by viewModel.mapState
     val attendance by viewModel.attendance
 
     val distanceFilter = remember { mutableStateOf(1)}
@@ -63,7 +64,7 @@ fun MapScreen(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             Column() {
-                if (!isSelected) {
+                if (!events.isDetailsSelected) {
                     FloatingActionButton(
                         onClick = { viewModel.refreshEventsByLocation(distanceFilter.value) },
                         modifier = Modifier
@@ -93,7 +94,7 @@ fun MapScreen(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (!isSelected) {
+            if (!events.isDetailsSelected) {
                 Column(Modifier.padding(horizontal = 16.dp)) {
                     filtersSelection(distanceFilter = distanceFilter)
                 }
@@ -109,12 +110,11 @@ fun MapScreen(
                         fusedLocationClient = fusedLocationClient,
                         viewModel = viewModel,
                         events = events,
-                        selectedEvent = selectedEvent,
-                        onEventSelectedId = {
-                            viewModel.onEventSelectId(it)
+                        onEventSelected = {
+                            viewModel.setSelectedEvent(it!!)
                         },
                         deselectEvent = {
-                            viewModel.deselectEvent()
+                            viewModel.setNotSelected()
                         },
                         attendance = attendance,
                         onClickJoin = {
@@ -135,10 +135,9 @@ fun MapScreen(
 @Composable
 fun displayMap(
     fusedLocationClient: FusedLocationProviderClient,
-    selectedEvent: Event,
     viewModel: MapViewModel,
-    onEventSelectedId: (Long?) -> Unit,
-    events: EventListScreenState,
+    onEventSelected: (Event?) -> Unit,
+    events: EventScreenState,
     deselectEvent: () -> Unit,
     attendance: EventAttendanceState,
     onClickJoin: (Long) -> Unit,
@@ -150,7 +149,7 @@ fun displayMap(
 
     var cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
-            LatLng(viewModel.INITIAL_LATITUDE, viewModel.INITIAL_LONGITUDE),
+            LatLng(mapState.gpsCoords.latitude, mapState.gpsCoords.longitude),
             INITIAL_ZOOM,
         )
     }
@@ -175,31 +174,28 @@ fun displayMap(
                 .fillMaxWidth(),
             mapState,
             cameraPositionState,
-            onEventClicked = {
-                viewModel.onEventSelectId(it.eventId)
-            },
+            onEventClicked = onEventSelected,
             onOutsideClicked = {
                 deselectEvent()
-                onEventSelectedId(null)
             },
             events = events,
             viewModel = viewModel
         )
 
-        AnimatedVisibility(visible = selectedEvent.eventId != 0.toLong()) {
-            if (selectedEvent != null) {
+        AnimatedVisibility(visible = events.isDetailsSelected) {
+            if (events.eventDetailsSelected != null) {
                 EventDisplay(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
                         .animateContentSize()
                         .padding(16.dp),
-                    event = selectedEvent,
+                    event = events.eventDetailsSelected,
                     navBack = deselectEvent,
                     attendance = attendance,
-                    getIsUsers = { viewModel.getIsUsers(selectedEvent) },
-                    onClickJoin = { onClickJoin(selectedEvent.eventId) },
-                    onClickUnjoin = { onClickUnjoin(selectedEvent.eventId) },
+                    getIsUsers = { viewModel.getIsUsers(events.eventDetailsSelected) },
+                    onClickJoin = { onClickJoin(events.eventDetailsSelected.eventId) },
+                    onClickUnjoin = { onClickUnjoin(events.eventDetailsSelected.eventId) },
                 )
             }
         }
@@ -212,7 +208,7 @@ private fun Map(
     mapState: MapScreenState,
     cameraPositionState: CameraPositionState,
     onOutsideClicked: () -> Unit,
-    events: EventListScreenState,
+    events: EventScreenState,
     onEventClicked: (Event) -> Unit,
     viewModel: MapViewModel
 ) {
@@ -227,10 +223,10 @@ private fun Map(
     val scope = rememberCoroutineScope()
 
     Box(modifier = modifier) {
-        viewModel.cameraPositionState = mutableStateOf(cameraPositionState1)
+        viewModel.mapState.value.cameraPosition.value = cameraPositionState1
 
         GoogleMap(
-            cameraPositionState = viewModel.cameraPositionState.value,
+            cameraPositionState = mapState.cameraPosition.value,
             onMapClick = { onOutsideClicked() },
         ) {
             if (events.data != null) {

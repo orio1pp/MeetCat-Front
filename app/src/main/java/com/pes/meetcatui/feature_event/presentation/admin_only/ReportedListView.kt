@@ -22,7 +22,7 @@ fun ReportedEventsListScreen(
 
         EventDetailsScreen(
             event = eventList.eventDetailsSelected!!,
-            onClick = { viewModel.setIsSelected() },
+            onClick = { viewModel.setNotSelected() },
             attendanceState = attendance,
             getIsUsers = { false },
             onClickJoin = {
@@ -33,7 +33,7 @@ fun ReportedEventsListScreen(
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
-        BackHandler { viewModel.setIsSelected() }
+        BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
             viewModel = viewModel,

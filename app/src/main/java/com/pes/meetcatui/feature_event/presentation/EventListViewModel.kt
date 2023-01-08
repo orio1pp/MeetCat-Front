@@ -1,7 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
@@ -13,7 +12,7 @@ open class EventListViewModel(
     override val dataRepository: DataRepository,
 ) : EventViewModel(dataRepository) {
 
-    private val listState = mutableStateOf(EventListScreenState(0))
+    protected val page = mutableStateOf(0)
     var titleSearch: String? = null
 
     init {
@@ -26,9 +25,7 @@ open class EventListViewModel(
                             events.value = EventScreenState(
                                 data = resource.data?.events as MutableList<Event>,
                             )
-                            listState.value = EventListScreenState(
-                                page = 1
-                            )
+                            page.value = 1
                         }
                         is Resource.Error -> {
                             events.value = EventScreenState(
@@ -48,18 +45,16 @@ open class EventListViewModel(
     }
 
     open fun loadMore() {
-        if (events.value.data != null && events.value.data!!.size != 0 && listState.value.page > 0) {
+        if (events.value.data != null && events.value.data!!.size != 0 && page.value > 0) {
             viewModelScope.launch {
-                dataRepository.getEvents(listState.value.page, titleSearch).collect { resource ->
+                dataRepository.getEvents(page.value, titleSearch).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             events.value.data!!.addAll(resource.data!!.events.toMutableList())
                             events.value = EventScreenState(
                                 data = events.value.data,
                             )
-                            listState.value = EventListScreenState(
-                                page = listState.value.page + 1
-                            )
+                            page.value++
                         }
                         is Resource.Error -> {
                             events.value = EventScreenState(
@@ -83,9 +78,7 @@ open class EventListViewModel(
                         events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>,
                         )
-                        listState.value = EventListScreenState(
-                            page = 1
-                        )
+                        page.value = 1
                     }
                     is Resource.Error -> {
                         events.value = EventScreenState(

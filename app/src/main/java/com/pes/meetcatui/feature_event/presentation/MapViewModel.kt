@@ -1,31 +1,22 @@
 package com.pes.meetcatui.feature_event.presentation
 
-
 import android.location.Location
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
 
 class MapViewModel(
     override val dataRepository: DataRepository
 ) : EventViewModel(dataRepository) {
     val mapState = mutableStateOf(MapScreenState())
 
-    val INITIAL_LATITUDE = 41.387423
-    val INITIAL_LONGITUDE = 2.169763
-    var distanceRadiKm = 1.0
     private val locationRequest = LocationRequest
         .Builder(120000)
         .build()
@@ -33,22 +24,22 @@ class MapViewModel(
     init {
         viewModelScope.launch {
             initSuper()
-            dataRepository.getNearestEvents(INITIAL_LATITUDE, INITIAL_LONGITUDE, distanceRadiKm)
+            dataRepository.getNearestEvents(mapState.value.gpsCoords.latitude, mapState.value.gpsCoords.longitude, 1.0)
                 .collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
-                            events.value = EventListScreenState(
+                            events.value = EventScreenState(
                                 data = resource.data?.events as MutableList<Event>
                             )
                         }
                         is Resource.Error -> {
-                            events.value = EventListScreenState(
+                            events.value = EventScreenState(
                                 hasError = true,
                                 errorMessage = resource.message
                             )
                         }
                         is Resource.Loading -> {
-                            events.value = EventListScreenState(
+                            events.value = EventScreenState(
                                 isLoading = true
                             )
                         }
@@ -82,45 +73,27 @@ class MapViewModel(
         )
     }
 
-    fun onEventSelectId(eventId: Long?){
-        if (eventId == null) {
-            selectedEvent.value = Event(0,"",null, null,null,"",null,null,null,null,null, 0)
-        } else {
-            events.value.data?.forEach { event ->
-                if (event.eventId == eventId) {
-                    isSelected.value = true
-                    selectedEvent.value = event
-                }
-            }
-        }
-    }
-
-    fun deselectEvent(){
-        isSelected.value = false
-        selectedEvent.value = Event(0,"",null,null,null,"",null,null,null,null,null, 0)
-    }
-
     fun refreshEventsByLocation(distance: Int) {
         viewModelScope.launch {
             dataRepository.getNearestEvents(
-            cameraPositionState.value.position.target.latitude,
-            cameraPositionState.value.position.target.longitude,
-            distance.toDouble())
-            .collect { resource ->
+                mapState.value.cameraPosition.value.position.target.latitude,
+                mapState.value.cameraPosition.value.position.target.longitude,
+                distance.toDouble()
+            ).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>
                         )
                     }
                     is Resource.Error -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             hasError = true,
                             errorMessage = resource.message
                         )
                     }
                     is Resource.Loading -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             isLoading = true
                         )
                     }

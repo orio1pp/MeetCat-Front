@@ -1,13 +1,11 @@
 package com.pes.meetcatui.feature_event.presentation.admin_only
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
-import com.pes.meetcatui.feature_event.presentation.EventListScreenState
 import com.pes.meetcatui.feature_event.presentation.EventListViewModel
+import com.pes.meetcatui.feature_event.presentation.EventScreenState
 import kotlinx.coroutines.launch
 
 class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel(dataRepository) {
@@ -16,19 +14,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>,
-                            page = 1
                         )
+                        page.value = 1
                     }
                     is Resource.Error -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             hasError = true,
                             errorMessage = resource.message
                         )
                     }
                     is Resource.Loading -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             isLoading = true
                         )
                     }
@@ -38,19 +36,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
     }
 
     override fun loadMore() {
-        if (events.value.data != null && events.value.data!!.size != 0 && events.value.page > 0) {
+        if (events.value.data != null && events.value.data!!.size != 0 && page.value > 0) {
             viewModelScope.launch {
-                dataRepository.getReportedEvents(events.value.page, titleSearch).collect { resource ->
+                dataRepository.getReportedEvents(page.value, titleSearch).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             events.value.data!!.addAll(resource.data!!.events.toMutableList())
-                            events.value = EventListScreenState(
+                            events.value = EventScreenState(
                                 data = events.value.data,
-                                page = events.value.page + 1
                             )
+                            page.value++
                         }
                         is Resource.Error -> {
-                            events.value = EventListScreenState(
+                            events.value = EventScreenState(
                                 hasError = true,
                                 errorMessage = resource.message
                             )
@@ -68,19 +66,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>,
-                            page = 1
                         )
+                        page.value = 1
                     }
                     is Resource.Error -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             hasError = true,
                             errorMessage = resource.message
                         )
                     }
                     is Resource.Loading -> {
-                        events.value = EventListScreenState(
+                        events.value = EventScreenState(
                             isLoading = true
                         )
                     }

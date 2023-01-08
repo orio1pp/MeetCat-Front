@@ -99,7 +99,7 @@ abstract class EventViewModel (
         )
     }
 
-    fun setIsSelected() {
+    fun setNotSelected() {
         events.value = EventScreenState(
             isDetailsSelected = false,
             data = events.value.data

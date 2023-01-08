@@ -52,7 +52,7 @@ fun EventListScreen(
 
         EventDetailsScreen(
             event = eventList.eventDetailsSelected!!,
-            onClick = { viewModel.setIsSelected() },
+            onClick = { viewModel.setNotSelected() },
             attendanceState = attendance,
             getIsUsers = { viewModel.getIsUsers(eventList.eventDetailsSelected!!) },
             onClickJoin = {
@@ -63,7 +63,7 @@ fun EventListScreen(
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
-        BackHandler { viewModel.setIsSelected() }
+        BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
             viewModel = viewModel,
@@ -124,7 +124,6 @@ fun EventListScreenContent(
             } else if (eventList.data != null) {
                 if (!eventList.isDetailsSelected) {
                     EventList(
-                        viewModel,
                         eventList = eventList.data,
                         onEventClick = onEventClick,
                         onLoadMore = { viewModel.loadMore() },
@@ -207,7 +206,6 @@ fun ReportButton(function: () -> Unit = {}) {
 @Composable
 fun EventView(
     event: Event,
-    viewModel: EventListViewModel,
     onEventClick: (event: Event) -> Unit,
 ) {
     Column(
@@ -314,7 +312,6 @@ fun Test() {
 
 @Composable
 private fun EventList(
-    viewModel: EventListViewModel,
     eventList: List<Event>,
     onEventClick: (event: Event) -> Unit,
     onLoadMore: () -> Unit,
@@ -327,7 +324,6 @@ private fun EventList(
         items(eventList) { event ->
             EventView(
                 event = event,
-                viewModel = viewModel,
                 onEventClick = onEventClick
             )
         }

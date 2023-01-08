@@ -9,7 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.pes.meetcatui.R
 import com.pes.meetcatui.common.ContinuousSlider
 import com.pes.meetcatui.ui.theme.typo
 
@@ -21,7 +23,7 @@ fun filtersSelection(
         Column(modifier = Modifier.width(96.dp)) {
             Text(
                 modifier = Modifier.padding(vertical = 12.dp),
-                text = "Distància",
+                text = stringResource(R.string.distance),
                 style = typo.body1,
             )
         }

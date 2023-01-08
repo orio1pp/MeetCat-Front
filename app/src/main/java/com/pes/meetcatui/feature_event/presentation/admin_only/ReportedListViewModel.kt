@@ -16,19 +16,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             data = resource.data?.events as MutableList<Event>,
                             page = 1
                         )
                     }
                     is Resource.Error -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             hasError = true,
                             errorMessage = resource.message
                         )
                     }
                     is Resource.Loading -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             isLoading = true
                         )
                     }
@@ -38,19 +38,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
     }
 
     override fun loadMore() {
-        if (eventList.value.data != null && eventList.value.data!!.size != 0 && eventList.value.page > 0) {
+        if (events.value.data != null && events.value.data!!.size != 0 && events.value.page > 0) {
             viewModelScope.launch {
-                dataRepository.getReportedEvents(eventList.value.page, titleSearch).collect { resource ->
+                dataRepository.getReportedEvents(events.value.page, titleSearch).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
-                            eventList.value.data!!.addAll(resource.data!!.events.toMutableList())
-                            eventList.value = EventListScreenState(
-                                data = eventList.value.data,
-                                page = eventList.value.page + 1
+                            events.value.data!!.addAll(resource.data!!.events.toMutableList())
+                            events.value = EventListScreenState(
+                                data = events.value.data,
+                                page = events.value.page + 1
                             )
                         }
                         is Resource.Error -> {
-                            eventList.value = EventListScreenState(
+                            events.value = EventListScreenState(
                                 hasError = true,
                                 errorMessage = resource.message
                             )
@@ -68,19 +68,19 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
             dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             data = resource.data?.events as MutableList<Event>,
                             page = 1
                         )
                     }
                     is Resource.Error -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             hasError = true,
                             errorMessage = resource.message
                         )
                     }
                     is Resource.Loading -> {
-                        eventList.value = EventListScreenState(
+                        events.value = EventListScreenState(
                             isLoading = true
                         )
                     }

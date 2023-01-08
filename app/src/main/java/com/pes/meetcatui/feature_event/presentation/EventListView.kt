@@ -40,9 +40,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun EventListScreen(
     viewModel: EventListViewModel,
     navToMap: () -> Unit,
-    navToCreateEvent: () -> Unit,
 ) {
-    val eventList by viewModel.eventList
+    val eventList by viewModel.events
     val attendance by viewModel.attendance
 
     if (eventList != null
@@ -55,6 +54,7 @@ fun EventListScreen(
             event = eventList.eventDetailsSelected!!,
             onClick = { viewModel.setIsSelected() },
             attendanceState = attendance,
+            getIsUsers = { viewModel.getIsUsers(eventList.eventDetailsSelected!!) },
             onClickJoin = {
                 viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
             },
@@ -69,7 +69,6 @@ fun EventListScreen(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
-            navToCreateEvent = navToCreateEvent
         ) { event ->
             viewModel.setSelectedEvent(event)
         }
@@ -79,9 +78,8 @@ fun EventListScreen(
 @Composable
 fun EventListScreenContent(
     viewModel: EventListViewModel,
-    eventList: EventListScreenState,
+    eventList: EventScreenState,
     navToMap: () -> Unit,
-    navToCreateEvent: () -> Unit,
     onEventClick: (event: Event) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -142,6 +140,7 @@ fun EventDetailsScreen(
     event: Event,
     onClick: () -> Unit,
     attendanceState: EventAttendanceState,
+    getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickLeave: ()-> Unit,
     reportEvent: (Event) -> Unit,
@@ -158,7 +157,7 @@ fun EventDetailsScreen(
              })
         }
         Surface() {
-            EventDetails(event = event, attendance = attendanceState, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
+            EventDetails(event = event, attendance = attendanceState, getIsUsers, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
         }
     }
 

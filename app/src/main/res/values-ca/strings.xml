@@ -26,4 +26,6 @@
     <string name="areYouSureToReportMsg">Segur que vol reportar aquest event?</string>
     <string name="confirm">Confirmar</string>
     <string name="createEventInitDateIsPast">No pots començar un event avans d\'avui</string>
+    <string name="organizer">Organitzat per</string>
+    <string name="distance">Distància</string>
 </resources>

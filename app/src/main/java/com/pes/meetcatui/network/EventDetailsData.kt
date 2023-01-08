@@ -10,6 +10,7 @@ data class EventDetailsData(
     @SerialName("title")
     val name: String,
     val subtitle: String?,
+    val username: String?,
     val description: String?,
     @SerialName("initDate")
     val startDate: String,

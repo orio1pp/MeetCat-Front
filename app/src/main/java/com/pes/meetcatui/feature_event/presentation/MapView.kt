@@ -55,12 +55,9 @@ fun MapScreen(
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     val events by viewModel.events
-    val selectedEvent by viewModel.selectedEvent
-
-    val isSelected by viewModel.isSelected
-    val distanceFilter = remember { mutableStateOf(1)}
-
     val attendance by viewModel.attendance
+
+    val distanceFilter = remember { mutableStateOf(1)}
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -179,7 +176,6 @@ fun displayMap(
             mapState,
             cameraPositionState,
             onEventClicked = {
-                viewModel.isAttended(it.eventId)
                 viewModel.onEventSelectId(it.eventId)
             },
             onOutsideClicked = {
@@ -201,6 +197,7 @@ fun displayMap(
                     event = selectedEvent,
                     navBack = deselectEvent,
                     attendance = attendance,
+                    getIsUsers = { viewModel.getIsUsers(selectedEvent) },
                     onClickJoin = { onClickJoin(selectedEvent.eventId) },
                     onClickUnjoin = { onClickUnjoin(selectedEvent.eventId) },
                 )
@@ -324,12 +321,14 @@ fun EventDisplay(
     event: Event,
     navBack: () -> Unit,
     attendance: EventAttendanceState,
+    getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickUnjoin: () -> Unit,
 ) {
     EventDetails(
         event = event,
         attendance = attendance,
+        getIsUsers = getIsUsers,
         onClickJoin = onClickJoin,
         onClickLeave = onClickUnjoin,
     )

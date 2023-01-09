@@ -33,6 +33,7 @@ import com.pes.meetcatui.ui.theme.typo
 fun EventDetails(
     event: Event,
     attendance: EventAttendanceState,
+    getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
 ) {
@@ -40,6 +41,7 @@ fun EventDetails(
         EventDetailsContent(
             name = event.name,
             subtitle = event.subtitle,
+            username = event.username!!,
             description = event.description,
             startDate = event.startDate,
             endDate = event.endDate,
@@ -48,6 +50,7 @@ fun EventDetails(
             link = event.link,
             attendeesCount = event.attendeesCount,
             attendance = attendance,
+            isUsers = getIsUsers(),
             onClickJoin = onClickJoin,
             onClickLeave = onClickLeave,
         )
@@ -139,6 +142,7 @@ private fun EventDetailsBody(
 private fun EventDetailsContent(
     name: String,
     subtitle: String?,
+    username: String,
     description: String?,
     startDate: String,
     endDate: String?,
@@ -147,10 +151,11 @@ private fun EventDetailsContent(
     link: String?,
     attendeesCount: Int,
     attendance: EventAttendanceState,
+    isUsers: Boolean,
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
 ) {
-    val attendeesCountState = remember { mutableStateOf(attendeesCount) }
+    val attendeesCountState = mutableStateOf(attendeesCount)
     MaterialTheme {
         Column (
             modifier = Modifier
@@ -168,6 +173,11 @@ private fun EventDetailsContent(
                 Text(
                     text = subtitle ?: "",
                     style = typo.h3,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    text = stringResource(R.string.organizer) + ": " + username,
+                    style = typo.h4,
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
@@ -226,10 +236,41 @@ private fun EventDetailsContent(
                     },
                     shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text(text = if (attendance.isAttended)
+                    Text(text =
+                    if (attendance.isAttended)
                         stringResource(id = R.string.leave)
                     else
                         stringResource(id = R.string.join))
+                }
+            }
+
+            if (isUsers) Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                SpaceDp()
+                Row() {
+                    Button(
+                        modifier = Modifier
+                            .width(120.dp),
+                        onClick = { },
+                        shape = RoundedCornerShape(32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFAA7F00)
+                        )
+                    ) {
+                        Text(stringResource(id = R.string.edit))
+                    }
+                }
+                Row() {
+                    Button(
+                        modifier = Modifier
+                            .width(120.dp),
+                        onClick = { },
+                        shape = RoundedCornerShape(32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFAA0000)
+                        )
+                    ) {
+                        Text(stringResource(id = R.string.delete))
+                    }
                 }
             }
         }
@@ -246,6 +287,7 @@ fun EventScreenPreview() {
     EventDetailsContent(
         name = "MeetCat Release Party",
         subtitle = "Just a party",
+        username = "Username",
         description = "All work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy\nAll work and no play makes Jack a dull boy",
         startDate = "2000-01-01T01:00:00",
         endDate = "2099-12-31T23:59:59.9999",
@@ -253,6 +295,7 @@ fun EventScreenPreview() {
         address = "C. Jordi Girona 12",
         link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
         attendance = EventAttendanceState(),
+        isUsers = false,
         onClickJoin = {},
         onClickLeave = {},
         attendeesCount = 11,

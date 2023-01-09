@@ -40,9 +40,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 fun EventListScreen(
     viewModel: EventListViewModel,
     navToMap: () -> Unit,
-    navToCreateEvent: () -> Unit,
 ) {
-    val eventList by viewModel.eventList
+    val eventList by viewModel.events
     val attendance by viewModel.attendance
 
     if (eventList != null
@@ -53,8 +52,9 @@ fun EventListScreen(
 
         EventDetailsScreen(
             event = eventList.eventDetailsSelected!!,
-            onClick = { viewModel.setIsSelected() },
+            onClick = { viewModel.setNotSelected() },
             attendanceState = attendance,
+            getIsUsers = { viewModel.getIsUsers(eventList.eventDetailsSelected!!) },
             onClickJoin = {
                 viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
             },
@@ -63,13 +63,12 @@ fun EventListScreen(
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
-        BackHandler { viewModel.setIsSelected() }
+        BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
-            navToCreateEvent = navToCreateEvent
         ) { event ->
             viewModel.setSelectedEvent(event)
         }
@@ -79,9 +78,8 @@ fun EventListScreen(
 @Composable
 fun EventListScreenContent(
     viewModel: EventListViewModel,
-    eventList: EventListScreenState,
+    eventList: EventScreenState,
     navToMap: () -> Unit,
-    navToCreateEvent: () -> Unit,
     onEventClick: (event: Event) -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -126,7 +124,6 @@ fun EventListScreenContent(
             } else if (eventList.data != null) {
                 if (!eventList.isDetailsSelected) {
                     EventList(
-                        viewModel,
                         eventList = eventList.data,
                         onEventClick = onEventClick,
                         onLoadMore = { viewModel.loadMore() },
@@ -142,6 +139,7 @@ fun EventDetailsScreen(
     event: Event,
     onClick: () -> Unit,
     attendanceState: EventAttendanceState,
+    getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickLeave: ()-> Unit,
     reportEvent: (Event) -> Unit,
@@ -158,7 +156,7 @@ fun EventDetailsScreen(
              })
         }
         Surface() {
-            EventDetails(event = event, attendance = attendanceState, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
+            EventDetails(event = event, attendance = attendanceState, getIsUsers, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
         }
     }
 
@@ -208,7 +206,6 @@ fun ReportButton(function: () -> Unit = {}) {
 @Composable
 fun EventView(
     event: Event,
-    viewModel: EventListViewModel,
     onEventClick: (event: Event) -> Unit,
 ) {
     Column(
@@ -315,7 +312,6 @@ fun Test() {
 
 @Composable
 private fun EventList(
-    viewModel: EventListViewModel,
     eventList: List<Event>,
     onEventClick: (event: Event) -> Unit,
     onLoadMore: () -> Unit,
@@ -328,7 +324,6 @@ private fun EventList(
         items(eventList) { event ->
             EventView(
                 event = event,
-                viewModel = viewModel,
                 onEventClick = onEventClick
             )
         }

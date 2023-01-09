@@ -10,9 +10,8 @@ import com.pes.meetcatui.feature_event.presentation.EventListScreenContent
 fun ReportedEventsListScreen(
     viewModel: ReportedListViewModel,
     navToMap: () -> Unit,
-    navToCreateEvent: () -> Unit,
 ) {
-    val eventList by viewModel.eventList
+    val eventList by viewModel.events
     val attendance by viewModel.attendance
 
     if (eventList != null
@@ -23,8 +22,9 @@ fun ReportedEventsListScreen(
 
         EventDetailsScreen(
             event = eventList.eventDetailsSelected!!,
-            onClick = { viewModel.setIsSelected() },
+            onClick = { viewModel.setNotSelected() },
             attendanceState = attendance,
+            getIsUsers = { false },
             onClickJoin = {
                 viewModel.addAttendance(eventList.eventDetailsSelected!!.eventId)
             },
@@ -33,13 +33,12 @@ fun ReportedEventsListScreen(
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
         )
-        BackHandler { viewModel.setIsSelected() }
+        BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
-            navToCreateEvent = navToCreateEvent
         ) { event ->
             viewModel.setSelectedEvent(event)
         }

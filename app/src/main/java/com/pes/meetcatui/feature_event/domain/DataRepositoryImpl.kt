@@ -92,7 +92,12 @@ class DataRepositoryImpl (
         try {
             val eventSerial = buildEventDetailsData(event)
             println(eventSerial)
-            meetcatApi.createEvent(eventSerial)
+
+            var accessToken: String = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            meetcatApi.createEvent(eventSerial, accessToken)
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
@@ -184,8 +189,24 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun getUser(): Flow<String> = flow {
-        dataPreferences.getUser()
+    override suspend fun getUsername(): Flow<Resource<String>> = flow {
+        try {
+            var accessToken: String = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            emit(Resource.Loading())
+            val userResponse = meetcatApi.getUserByAuth(accessToken)
+            if (userResponse.isSuccessful) {
+                emit(Resource.Success(userResponse.body()!!.username))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
     }
 
     override suspend fun reportEvent(event: Event): String {
@@ -236,6 +257,7 @@ class DataRepositoryImpl (
         eventId = eventData.eventId,
         name = eventData.name,
         subtitle = eventData.subtitle,
+        username = eventData.username,
         description = eventData.description,
         startDate = eventData.startDate,
         endDate = eventData.endDate,
@@ -252,6 +274,7 @@ class DataRepositoryImpl (
         eventId = eventData.eventId,
         name = eventData.name,
         subtitle = eventData.subtitle,
+        username = eventData.username,
         description = eventData.description,
         startDate = eventData.startDate,
         endDate = eventData.endDate,

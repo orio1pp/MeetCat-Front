@@ -24,7 +24,7 @@ class CreateEventViewModel (
         address: String, link: String
     ) : Boolean {
         viewModelScope.launch {
-            val event = Event(0, name, subtitle, description, startDate, endDate, location, place, address, link, 0)
+            val event = Event(0, name, subtitle, null, description, startDate, endDate, location, place, address, link, 0)
             dataRepository.createEvent( event )
         }
         return true;

@@ -26,8 +26,6 @@ fun BottomNavGraph(
         composable(BottomBarScreen.Events.route) {
             EventListScreen(getViewModel(), navToMap = {
                 navController.navigate(BottomBarScreen.Map.route)
-            }, navToCreateEvent = {
-                navController.navigate(BottomBarScreen.CreateEvent.route)
             })
         }
         composable(BottomBarScreen.Profile.route) {

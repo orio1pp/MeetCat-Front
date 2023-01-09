@@ -17,6 +17,9 @@ interface MeetCatApi {
     @PUT("events/{eventId}/report")
     suspend fun reportEvent(@Path("eventId") eventId: Long)
 
+    @DELETE("events/{eventId}")
+    suspend fun deleteEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken: String)
+
     @GET("events")
     suspend fun getEvents(@Query("page") page: Int?, @Query("size") size:Int?): Response<EventsData>
 
@@ -27,7 +30,7 @@ interface MeetCatApi {
     suspend fun getReportedEventsWithTitle(@Query("page") page: Int?, @Query("size") size:Int?, @Query("title") title:String?): Response<EventsData>
 
     @POST("events")
-    suspend fun createEvent(@Body event: EventDetailsData)
+    suspend fun createEvent(@Body event: EventDetailsData, @Header("Authorization") accessToken: String)
 
     @POST("users")
     suspend fun postUser(@Body user : UserData): Response<UserData>
@@ -46,6 +49,9 @@ interface MeetCatApi {
 
     @GET("users/name")
     suspend fun getUser(@Query("username") username : String, @Header("Authorization") accessToken : String): Response<UserData>
+
+    @GET("users/me")
+    suspend fun getUserByAuth(@Header("Authorization") accessToken : String): Response<UserData>
 
     @POST("friendship")
     suspend fun addFriend(@Body friendship: FriendshipData, @Header("Authorization") accessToken : String): Response<FriendshipData>

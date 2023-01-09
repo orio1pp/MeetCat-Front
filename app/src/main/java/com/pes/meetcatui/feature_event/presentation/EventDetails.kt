@@ -155,7 +155,7 @@ private fun EventDetailsContent(
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
 ) {
-    val attendeesCountState = remember { mutableStateOf(attendeesCount) }
+    val attendeesCountState = mutableStateOf(attendeesCount)
     MaterialTheme {
         Column (
             modifier = Modifier
@@ -236,7 +236,8 @@ private fun EventDetailsContent(
                     },
                     shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text(text = if (attendance.isAttended)
+                    Text(text =
+                    if (attendance.isAttended)
                         stringResource(id = R.string.leave)
                     else
                         stringResource(id = R.string.join))
@@ -245,43 +246,31 @@ private fun EventDetailsContent(
 
             if (isUsers) Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 SpaceDp()
-                Button(
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        if (attendance.isAttended) {
-                            onClickLeave()
-                            --attendeesCountState.value
-                        }
-                        else {
-                            onClickJoin()
-                            ++attendeesCountState.value
-                        }
-                    },
-                    shape = RoundedCornerShape(32.dp)
-                ) {
-                    Text(text = if (attendance.isAttended)
-                        stringResource(id = R.string.leave)
-                    else
-                        stringResource(id = R.string.join))
+                Row() {
+                    Button(
+                        modifier = Modifier
+                            .width(120.dp),
+                        onClick = { },
+                        shape = RoundedCornerShape(32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFAA7F00)
+                        )
+                    ) {
+                        Text(stringResource(id = R.string.edit))
+                    }
                 }
-                Button(
-                    modifier = Modifier.width(120.dp),
-                    onClick = {
-                        if (attendance.isAttended) {
-                            onClickLeave()
-                            --attendeesCountState.value
-                        }
-                        else {
-                            onClickJoin()
-                            ++attendeesCountState.value
-                        }
-                    },
-                    shape = RoundedCornerShape(32.dp)
-                ) {
-                    Text(text = if (attendance.isAttended)
-                        stringResource(id = R.string.leave)
-                    else
-                        stringResource(id = R.string.join))
+                Row() {
+                    Button(
+                        modifier = Modifier
+                            .width(120.dp),
+                        onClick = { },
+                        shape = RoundedCornerShape(32.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFFAA0000)
+                        )
+                    ) {
+                        Text(stringResource(id = R.string.delete))
+                    }
                 }
             }
         }

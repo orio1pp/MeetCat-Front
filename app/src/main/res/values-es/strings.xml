@@ -28,4 +28,6 @@
     <string name="createEventInitDateIsPast">No puedes empezar un evento antes de hoy</string>
     <string name="organizer">Organizado por</string>
     <string name="distance">Distancia</string>
+    <string name="delete">Elimina</string>
+    <string name="edit">Edita</string>
 </resources>

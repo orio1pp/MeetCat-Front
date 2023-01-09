@@ -27,4 +27,6 @@
     <string name="confirm">Confirm</string>
     <string name="createEventInitDateIsPast">You can\'t start an event before today</string>
     <string name="distance">Distance</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

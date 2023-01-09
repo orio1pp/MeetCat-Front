@@ -97,6 +97,29 @@ abstract class EventViewModel (
             eventDetailsSelected = event,
             data = events.value.data
         )
+
+        viewModelScope.launch {
+            dataRepository.getAttendance(event.eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        attendance.value = EventAttendanceState(
+                            isAttended = resource.data!!,
+                        )
+                    }
+                    is Resource.Error -> {
+                        attendance.value = EventAttendanceState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        attendance.value = EventAttendanceState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun setNotSelected() {

@@ -265,9 +265,6 @@ class LoginView : ComponentActivity() {
                     )
                 }
             }
-            if (username != "username") {
-                regviewModel.tryRegister(username, password)
-            }
 
     }
 

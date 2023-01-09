@@ -13,6 +13,7 @@ import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLog
 import com.pes.meetcatui.feature_event.presentation.*
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedEventsListScreen
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.viewModel
 
 @Composable
 fun BottomNavGraph(
@@ -28,7 +29,7 @@ fun BottomNavGraph(
             })
         }
         composable(BottomBarScreen.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(viewModel = getViewModel())
         }
         composable(BottomBarScreen.CreateEvent.route) {
             CreateEventView(getViewModel(), navToEvents =  {

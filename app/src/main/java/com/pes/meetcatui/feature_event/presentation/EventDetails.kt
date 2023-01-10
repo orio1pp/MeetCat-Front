@@ -5,6 +5,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -176,6 +177,8 @@ private fun EventDetailsContent(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
+                    modifier = Modifier
+                        .clickable { },
                     text = stringResource(R.string.organizer) + ": " + username,
                     style = typo.h4,
                     color = MaterialTheme.colors.secondary

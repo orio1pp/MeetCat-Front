@@ -34,6 +34,8 @@ fun ReportedEventsListScreen(
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
             deleteEvent = {},
+            globalEvent = mutableStateOf(null),
+            navToEditEvent = {},
         )
         BackHandler { viewModel.setNotSelected() }
     } else {

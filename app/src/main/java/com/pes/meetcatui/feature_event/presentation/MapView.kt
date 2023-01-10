@@ -49,7 +49,9 @@ private const val INITIAL_ZOOM = 16f
 @Composable
 fun MapScreen(
     viewModel: MapViewModel,
+    globalEvent: MutableState<Event?>,
     navToEventList: () -> Unit,
+    navToEditEvent: () -> Unit,
     fusedLocationClient: FusedLocationProviderClient
 ) {
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -123,6 +125,8 @@ fun MapScreen(
                         onClickUnjoin = {
                             viewModel.deleteAttendance(it)
                         },
+                        navToEdit = navToEditEvent,
+                        globalEvent = globalEvent,
                     )
                 } else {
                     permissionNotGranted(permissionState)
@@ -142,6 +146,8 @@ fun displayMap(
     attendance: EventAttendanceState,
     onClickJoin: (Long) -> Unit,
     onClickUnjoin: (Long) -> Unit,
+    globalEvent: MutableState<Event?>,
+    navToEdit: () -> Unit,
 ) {
     val mapState by viewModel.mapState
 
@@ -197,6 +203,8 @@ fun displayMap(
                     onClickJoin = { onClickJoin(events.eventDetailsSelected.eventId) },
                     onClickUnjoin = { onClickUnjoin(events.eventDetailsSelected.eventId) },
                     deleteEvent = { viewModel.deleteEvent(events.eventDetailsSelected.eventId) },
+                    globalEvent = globalEvent,
+                    navToEdit = navToEdit,
                 )
             }
         }
@@ -322,6 +330,8 @@ fun EventDisplay(
     onClickJoin: () -> Unit,
     onClickUnjoin: () -> Unit,
     deleteEvent: () -> Unit,
+    globalEvent: MutableState<Event?>,
+    navToEdit: () -> Unit,
 ) {
     EventDetails(
         event = event,
@@ -330,6 +340,8 @@ fun EventDisplay(
         onClickJoin = onClickJoin,
         onClickLeave = onClickUnjoin,
         deleteEvent = deleteEvent,
+        globalEvent = globalEvent,
+        navToEdit = navToEdit,
     )
     BackHandlerMap() {
         navBack()

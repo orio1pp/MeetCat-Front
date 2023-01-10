@@ -2,9 +2,11 @@ package com.pes.meetcatui.feature_event.presentation
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -12,10 +14,13 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -35,31 +40,34 @@ import com.pes.meetcatui.ui.theme.typo
 @Composable
 fun EventDetails(
     event: Event,
+    globalEvent: MutableState<Event?>,
     attendance: EventAttendanceState,
     getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
     deleteEvent: () -> Unit,
+    navToEdit: () -> Unit,
 ) {
-    if (event != null) {
-        EventDetailsContent(
-            name = event.name,
-            subtitle = event.subtitle,
-            username = event.username!!,
-            description = event.description,
-            startDate = event.startDate,
-            endDate = event.endDate,
-            placeName = event.placeName,
-            address = event.address,
-            link = event.link,
-            attendeesCount = event.attendeesCount,
-            attendance = attendance,
-            isUsers = getIsUsers(),
-            onClickJoin = onClickJoin,
-            onClickLeave = onClickLeave,
-            deleteEvent = deleteEvent,
-        )
-    }
+    EventDetailsContent(
+        event = event,
+        name = event.name,
+        subtitle = event.subtitle,
+        username = event.username!!,
+        description = event.description,
+        startDate = event.startDate,
+        endDate = event.endDate,
+        placeName = event.placeName,
+        address = event.address,
+        link = event.link,
+        attendeesCount = event.attendeesCount,
+        attendance = attendance,
+        isUsers = getIsUsers(),
+        onClickJoin = onClickJoin,
+        onClickLeave = onClickLeave,
+        deleteEvent = deleteEvent,
+        globalEvent = globalEvent,
+        navToEdit = navToEdit,
+    )
 }
 
 @Composable
@@ -145,6 +153,7 @@ private fun EventDetailsBody(
 
 @Composable
 private fun EventDetailsContent(
+    event: Event?,
     name: String,
     subtitle: String?,
     username: String,
@@ -160,6 +169,8 @@ private fun EventDetailsContent(
     onClickJoin: () -> Unit,
     onClickLeave: () -> Unit,
     deleteEvent: () -> Unit,
+    globalEvent: MutableState<Event?>,
+    navToEdit: () -> Unit,
 ) {
     val attendeesCountState = mutableStateOf(attendeesCount)
     MaterialTheme {
@@ -239,46 +250,77 @@ private fun EventDetailsContent(
                         if (attendance.isAttended) {
                             onClickLeave()
                             --attendeesCountState.value
-                        }
-                        else {
+                        } else {
                             onClickJoin()
                             ++attendeesCountState.value
                         }
                     },
                     shape = RoundedCornerShape(32.dp)
                 ) {
-                    Text(text =
-                    if (attendance.isAttended)
-                        stringResource(id = R.string.leave)
-                    else
-                        stringResource(id = R.string.join))
+                    Text(
+                        text =
+                        if (attendance.isAttended)
+                            stringResource(id = R.string.leave)
+                        else
+                            stringResource(id = R.string.join)
+                    )
                 }
-                if (isUsers) Row() {
+                if (isUsers) {
                     SpaceDp()
-                    Column() {
-                        Button(
-                            modifier = Modifier
-                                .width(120.dp),
-                            onClick = { },
-                            shape = RoundedCornerShape(32.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFFAA7F00)
-                            )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(0.5f),
+                            horizontalAlignment = Alignment.Start,
                         ) {
-                            Text(stringResource(id = R.string.edit))
+                            Button(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(32.dp))
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0xFFFFC927),
+                                        shape = RoundedCornerShape(32.dp)
+                                    )
+                                    .width(90.dp)
+                                    .height(40.dp),
+                                onClick = {
+                                    globalEvent.value = event
+                                    navToEdit()
+                                },
+                                shape = RoundedCornerShape(32.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0x40FFDC00),
+                                    contentColor = Color(0xFF5E5E5E),
+                                )
+                            ) {
+                                Text(text = stringResource(id = R.string.edit))
+                            }
                         }
-                    }
-                    Column() {
-                        Button(
-                            modifier = Modifier
-                                .width(120.dp),
-                            onClick = deleteEvent,
-                            shape = RoundedCornerShape(32.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFFAA0000)
-                            )
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.End,
                         ) {
-                            Text(stringResource(id = R.string.delete))
+                            Button(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(32.dp))
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0x40940000),
+                                        shape = RoundedCornerShape(32.dp)
+                                    )
+                                    .width(90.dp)
+                                    .height(40.dp),
+                                onClick = deleteEvent,
+                                shape = RoundedCornerShape(32.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0x81FF2A2A),
+                                    contentColor = Color(0xFFEEEEEE)
+                                )
+                            ) {
+                                Text(stringResource(id = R.string.delete))
+                            }
                         }
                     }
                 }
@@ -295,6 +337,7 @@ private fun checkSingularHour(date: String): Boolean{
 @Composable
 fun EventScreenPreview() {
     EventDetailsContent(
+        event = null,
         name = "MeetCat Release Party",
         subtitle = "Just a party",
         username = "Username",
@@ -305,11 +348,13 @@ fun EventScreenPreview() {
         address = "C. Jordi Girona 12",
         link = "https://www.youtube.com/watch?v=oYzHlvI7bI8",
         attendance = EventAttendanceState(),
-        isUsers = false,
+        isUsers = true,
         onClickJoin = {},
         onClickLeave = {},
         attendeesCount = 11,
         deleteEvent = {},
+        globalEvent = mutableStateOf(null),
+        navToEdit = {},
     )
     BackButton()
 }

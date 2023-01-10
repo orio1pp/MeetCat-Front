@@ -39,6 +39,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun EventListScreen(
     viewModel: EventListViewModel,
+    globalEvent: MutableState<Event?>,
+    navToEditEvent: () -> Unit,
     navToMap: () -> Unit,
 ) {
     val eventList by viewModel.events
@@ -66,6 +68,9 @@ fun EventListScreen(
             deleteEvent = {
                 viewModel.deleteEvent(eventList.eventDetailsSelected!!.eventId)
             },
+            globalEvent = globalEvent,
+            navToEditEvent = navToEditEvent,
+
         )
         BackHandler { viewModel.setNotSelected() }
     } else {
@@ -154,6 +159,8 @@ fun EventDetailsScreen(
     onClickLeave: ()-> Unit,
     reportEvent: (Event) -> Unit,
     deleteEvent: () -> Unit,
+    globalEvent: MutableState<Event?>,
+    navToEditEvent: () -> Unit,
 )
 {
     val openDialog = remember { mutableStateOf(false)  }
@@ -174,6 +181,8 @@ fun EventDetailsScreen(
                 onClickJoin = onClickJoin,
                 onClickLeave = onClickLeave,
                 deleteEvent = deleteEvent,
+                navToEdit = navToEditEvent,
+                globalEvent = globalEvent,
             )
         }
     }

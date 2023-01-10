@@ -35,6 +35,9 @@ interface MeetCatApi {
     @POST("events")
     suspend fun createEvent(@Body event: EventDetailsData, @Header("Authorization") accessToken: String)
 
+    @PUT("events/{eventId}")
+    suspend fun updateEvent(@Path("eventId") eventId: Long, @Body event: EventDetailsData, @Header("Authorization") accessToken: String)
+
     @POST("users")
     suspend fun postUser(@Body user : UserData): Response<UserData>
 

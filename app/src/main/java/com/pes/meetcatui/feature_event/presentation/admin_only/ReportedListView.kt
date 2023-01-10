@@ -2,6 +2,7 @@ package com.pes.meetcatui.feature_event.presentation.admin_only
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import com.pes.meetcatui.feature_event.presentation.BackHandler
 import com.pes.meetcatui.feature_event.presentation.EventDetailsScreen
 import com.pes.meetcatui.feature_event.presentation.EventListScreenContent
@@ -32,6 +33,7 @@ fun ReportedEventsListScreen(
                 viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
             reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
+            deleteEvent = {},
         )
         BackHandler { viewModel.setNotSelected() }
     } else {
@@ -39,8 +41,10 @@ fun ReportedEventsListScreen(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
-        ) { event ->
-            viewModel.setSelectedEvent(event)
-        }
+            searchText = mutableStateOf(""),
+            onEventClick = { event ->
+                viewModel.setSelectedEvent(event)
+            }
+        )
     }
 }

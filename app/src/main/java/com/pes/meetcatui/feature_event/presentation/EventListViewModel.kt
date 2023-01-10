@@ -1,5 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.pes.meetcatui.common.Resource
@@ -13,32 +14,37 @@ open class EventListViewModel(
 ) : EventViewModel(dataRepository) {
 
     protected val page = mutableStateOf(0)
-    var titleSearch: String? = null
+    protected val titleSearch : MutableState<String?> = mutableStateOf(null)
 
     init {
         if (this !is ReportedListViewModel) {
             viewModelScope.launch {
                 initSuper()
-                dataRepository.getEvents(0, titleSearch).collect { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            events.value = EventScreenState(
-                                data = resource.data?.events as MutableList<Event>,
-                            )
-                            page.value = 1
-                        }
-                        is Resource.Error -> {
-                            events.value = EventScreenState(
-                                hasError = true,
-                                errorMessage = resource.message
-                            )
-                        }
-                        is Resource.Loading -> {
-                            events.value = EventScreenState(
-                                isLoading = true
-                            )
-                        }
-                    }
+                setData()
+            }
+        }
+    }
+
+    override suspend fun setData() {
+        page.value = 0
+        dataRepository.getEvents(0, titleSearch.value).collect { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    events.value = EventScreenState(
+                        data = resource.data?.events as MutableList<Event>,
+                    )
+                    page.value = 1
+                }
+                is Resource.Error -> {
+                    events.value = EventScreenState(
+                        hasError = true,
+                        errorMessage = resource.message
+                    )
+                }
+                is Resource.Loading -> {
+                    events.value = EventScreenState(
+                        isLoading = true
+                    )
                 }
             }
         }
@@ -47,7 +53,7 @@ open class EventListViewModel(
     open fun loadMore() {
         if (events.value.data != null && events.value.data!!.size != 0 && page.value > 0) {
             viewModelScope.launch {
-                dataRepository.getEvents(page.value, titleSearch).collect { resource ->
+                dataRepository.getEvents(page.value, titleSearch.value).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             events.value.data!!.addAll(resource.data!!.events.toMutableList())
@@ -69,16 +75,16 @@ open class EventListViewModel(
         }
     }
 
-    open fun search(text: String) {
-        titleSearch = text
+    open fun search(text: String?) {
         viewModelScope.launch {
-            dataRepository.getEvents(0, titleSearch).collect { resource ->
+            dataRepository.getEvents(0, text).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>,
                         )
                         page.value = 1
+                        titleSearch.value = text.orEmpty()
                     }
                     is Resource.Error -> {
                         events.value = EventScreenState(

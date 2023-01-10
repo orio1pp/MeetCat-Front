@@ -196,6 +196,7 @@ fun displayMap(
                     getIsUsers = { viewModel.getIsUsers(events.eventDetailsSelected) },
                     onClickJoin = { onClickJoin(events.eventDetailsSelected.eventId) },
                     onClickUnjoin = { onClickUnjoin(events.eventDetailsSelected.eventId) },
+                    deleteEvent = { viewModel.deleteEvent(events.eventDetailsSelected.eventId) },
                 )
             }
         }
@@ -320,6 +321,7 @@ fun EventDisplay(
     getIsUsers: () -> Boolean,
     onClickJoin: () -> Unit,
     onClickUnjoin: () -> Unit,
+    deleteEvent: () -> Unit,
 ) {
     EventDetails(
         event = event,
@@ -327,6 +329,7 @@ fun EventDisplay(
         getIsUsers = getIsUsers,
         onClickJoin = onClickJoin,
         onClickLeave = onClickUnjoin,
+        deleteEvent = deleteEvent,
     )
     BackHandlerMap() {
         navBack()

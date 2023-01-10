@@ -18,7 +18,7 @@ interface MeetCatApi {
     suspend fun reportEvent(@Path("eventId") eventId: Long)
 
     @DELETE("events/{eventId}")
-    suspend fun deleteEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken: String)
+    suspend fun deleteEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken: String): Response<Unit>
 
     @GET("events")
     suspend fun getEvents(@Query("page") page: Int?, @Query("size") size:Int?): Response<EventsData>

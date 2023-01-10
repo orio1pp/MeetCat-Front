@@ -15,6 +15,8 @@ abstract class EventViewModel (
     val attendance = mutableStateOf(EventAttendanceState())
     val events = mutableStateOf(EventScreenState())
 
+    abstract suspend fun setData()
+
     fun initSuper() {
         viewModelScope.launch {
             dataRepository.getUsername()
@@ -27,8 +29,32 @@ abstract class EventViewModel (
                 }
         }
     }
-    fun deleteEvent(eventId: Long){
 
+    fun deleteEvent(eventId: Long) {
+        viewModelScope.launch {
+            dataRepository.deleteEvent(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        events.value = EventScreenState(
+                            isLoading = true,
+                        )
+                    }
+                    is Resource.Error -> {
+                        events.value = EventScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        events.value = EventScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+            setData()
+        }
+        setNotSelected()
     }
 
     fun getIsUsers(event: Event) : Boolean {

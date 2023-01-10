@@ -14,6 +14,7 @@ interface DataRepository {
     fun getAttendance(eventId: Long): Flow<Resource<Boolean>>
     suspend fun createAttendance(eventId: Long): Flow<Resource<Long>>
     suspend fun deleteAttendance(eventId: Long): Flow<Resource<Long>>
+    suspend fun deleteEvent(eventId: Long): Flow<Resource<Unit>>
     suspend fun getUsername(): Flow<Resource<String>>
     //suspend fun downloadData()
 }

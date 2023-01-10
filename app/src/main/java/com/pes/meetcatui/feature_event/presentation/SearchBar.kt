@@ -15,19 +15,24 @@ import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.ui.theme.typo
 
 @Composable
-fun searchBar(eventListViewModel: EventListViewModel, modifier: Modifier) {
-    var text: String by remember { mutableStateOf("") }
+fun searchBar(
+    eventListViewModel: EventListViewModel,
+    modifier: Modifier,
+    text: MutableState<String>,
+) {
     Row (
         modifier = modifier.height(65.dp).width(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.Center
     ) {
         TextField(
-            value = text,
+            value = text.value,
             onValueChange = { newText ->
                 if (newText.last() == '\n')
-                    eventListViewModel.search(text)
+                    eventListViewModel.search(text.value)
+                else if (newText.isNullOrEmpty())
+                    text.value = ""
                 else
-                    text = newText;
+                    text.value = newText
             },
             textStyle = typo.h4,
             label = {
@@ -36,7 +41,7 @@ fun searchBar(eventListViewModel: EventListViewModel, modifier: Modifier) {
         )
         Button(
             onClick = {
-                eventListViewModel.search(text)
+                eventListViewModel.search(text.value)
             },
             modifier = Modifier.fillMaxHeight()
         ) {

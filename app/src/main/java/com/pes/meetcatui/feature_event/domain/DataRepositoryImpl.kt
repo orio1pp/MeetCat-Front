@@ -189,9 +189,29 @@ class DataRepositoryImpl (
         }
     }
 
+    override suspend fun deleteEvent(eventId: Long): Flow<Resource<Unit>> = flow {
+        try {
+            var accessToken = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            emit(Resource.Loading())
+            val response = meetcatApi.deleteEvent(eventId, accessToken)
+            if (response.isSuccessful) {
+                emit(Resource.Success(Unit))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
     override suspend fun getUsername(): Flow<Resource<String>> = flow {
         try {
-            var accessToken: String = "Bearer "
+            var accessToken = "Bearer "
             runBlocking(Dispatchers.IO) {
                 accessToken += dataPreferences.getAccessToken().first()
             }

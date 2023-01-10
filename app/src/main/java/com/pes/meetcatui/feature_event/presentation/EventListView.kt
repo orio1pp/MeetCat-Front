@@ -39,13 +39,16 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun EventListScreen(
     viewModel: EventListViewModel,
+    globalEvent: MutableState<Event?>,
+    navToEditEvent: () -> Unit,
     navToMap: () -> Unit,
 ) {
     val eventList by viewModel.events
     val attendance by viewModel.attendance
 
-    if (eventList != null
-        && eventList.data != null
+    val searchText = remember { mutableStateOf("") }
+
+    if (eventList.data != null
         && !eventList.isLoading
         && !eventList.hasError
         && eventList.isDetailsSelected) {
@@ -61,7 +64,13 @@ fun EventListScreen(
             onClickLeave = {
                 viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
-            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
+            reportEvent = { viewModel.reportEvent(eventList.eventDetailsSelected!!) },
+            deleteEvent = {
+                viewModel.deleteEvent(eventList.eventDetailsSelected!!.eventId)
+            },
+            globalEvent = globalEvent,
+            navToEditEvent = navToEditEvent,
+
         )
         BackHandler { viewModel.setNotSelected() }
     } else {
@@ -69,9 +78,12 @@ fun EventListScreen(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
-        ) { event ->
-            viewModel.setSelectedEvent(event)
-        }
+            searchText = searchText,
+            onEventClick = { event ->
+                viewModel.setSelectedEvent(event)
+                searchText.value = ""
+            },
+        )
     }
 }
 
@@ -80,7 +92,9 @@ fun EventListScreenContent(
     viewModel: EventListViewModel,
     eventList: EventScreenState,
     navToMap: () -> Unit,
-    onEventClick: (event: Event) -> Unit) {
+    onEventClick: (event: Event) -> Unit,
+    searchText: MutableState<String>,
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -94,8 +108,9 @@ fun EventListScreenContent(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             searchBar(
-                viewModel,
-                modifier = Modifier.padding(vertical = 8.dp)
+                eventListViewModel = viewModel,
+                modifier = Modifier.padding(vertical = 8.dp),
+                text = if (searchText.value.isNotEmpty()) searchText else mutableStateOf(""),
             )
             filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
@@ -143,6 +158,9 @@ fun EventDetailsScreen(
     onClickJoin: () -> Unit,
     onClickLeave: ()-> Unit,
     reportEvent: (Event) -> Unit,
+    deleteEvent: () -> Unit,
+    globalEvent: MutableState<Event?>,
+    navToEditEvent: () -> Unit,
 )
 {
     val openDialog = remember { mutableStateOf(false)  }
@@ -156,7 +174,16 @@ fun EventDetailsScreen(
              })
         }
         Surface() {
-            EventDetails(event = event, attendance = attendanceState, getIsUsers, onClickJoin = onClickJoin, onClickLeave = onClickLeave)
+            EventDetails(
+                event = event,
+                attendance = attendanceState,
+                getIsUsers = getIsUsers,
+                onClickJoin = onClickJoin,
+                onClickLeave = onClickLeave,
+                deleteEvent = deleteEvent,
+                navToEdit = navToEditEvent,
+                globalEvent = globalEvent,
+            )
         }
     }
 

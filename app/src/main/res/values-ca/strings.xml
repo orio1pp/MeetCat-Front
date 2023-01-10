@@ -30,4 +30,5 @@
     <string name="distance">Distància</string>
     <string name="edit">Edita</string>
     <string name="delete">Suprimeix</string>
+    <string name="create">Crea</string>
 </resources>

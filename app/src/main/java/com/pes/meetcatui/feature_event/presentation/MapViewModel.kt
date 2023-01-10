@@ -24,28 +24,32 @@ class MapViewModel(
     init {
         viewModelScope.launch {
             initSuper()
-            dataRepository.getNearestEvents(mapState.value.gpsCoords.latitude, mapState.value.gpsCoords.longitude, 1.0)
-                .collect { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            events.value = EventScreenState(
-                                data = resource.data?.events as MutableList<Event>
-                            )
-                        }
-                        is Resource.Error -> {
-                            events.value = EventScreenState(
-                                hasError = true,
-                                errorMessage = resource.message
-                            )
-                        }
-                        is Resource.Loading -> {
-                            events.value = EventScreenState(
-                                isLoading = true
-                            )
-                        }
+            setData()
+        }
+    }
+
+    override suspend fun setData() {
+        dataRepository.getNearestEvents(mapState.value.gpsCoords.latitude, mapState.value.gpsCoords.longitude, 1.0)
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        events.value = EventScreenState(
+                            data = resource.data?.events as MutableList<Event>
+                        )
+                    }
+                    is Resource.Error -> {
+                        events.value = EventScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        events.value = EventScreenState(
+                            isLoading = true
+                        )
                     }
                 }
-        }
+            }
     }
 
     fun getLocationCallback() : LocationCallback {

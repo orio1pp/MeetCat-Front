@@ -3,9 +3,7 @@ package com.pes.meetcatui.feature_event.presentation
 import android.content.Context
 import android.webkit.URLUtil
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -18,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.pes.meetcatui.R
+import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.ui.theme.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -39,27 +38,29 @@ val focusedLabelColor = Color(0xFF000000)
 val unfocusedLabelColor = Color(0xFF707070)
 
 @Composable
-fun CreateEventView(
-    viewModel: CreateEventViewModel,
+fun CreateOrEditEventView(
+    viewModel: CreateOrEditEventViewModel,
+    event: Event?,
     navToEvents: () -> Unit,
 ) {
-    var name: String by remember { mutableStateOf("") }
-    var subtitle: String by remember { mutableStateOf("") }
-    var description: String by remember { mutableStateOf("") }
+    val isNull = event == null
 
-    val startDate = remember { mutableStateOf(LocalDate.now()) }
-    val startTime = remember { mutableStateOf(LocalTime.now()) }
+    var name: String by remember { mutableStateOf(if (isNull) "" else event!!.name) }
+    var subtitle: String by remember { mutableStateOf(if (isNull) "" else event!!.subtitle!!) }
+    var description: String by remember { mutableStateOf(if (isNull) "" else event!!.description!!) }
 
-    val endDate = remember { mutableStateOf(LocalDate.now()) }
-    val endTime = remember { mutableStateOf(LocalTime.now()) }
+    val startDate = remember { mutableStateOf(if (isNull) LocalDate.now() else LocalDateTime.parse(event!!.startDate).toLocalDate()) }
+    val startTime = remember { mutableStateOf(if (isNull) LocalTime.now() else LocalDateTime.parse(event!!.startDate).toLocalTime()) }
 
-    var location: String by remember { mutableStateOf("") }
-    var place: String by remember { mutableStateOf("") }
-    var address: String by remember { mutableStateOf("") }
-    var link: String by remember { mutableStateOf("") }
+    val endDate = remember { mutableStateOf(if (isNull) LocalDate.now() else LocalDateTime.parse(event!!.endDate).toLocalDate()) }
+    val endTime = remember { mutableStateOf(if (isNull) LocalTime.now() else LocalDateTime.parse(event!!.endDate).toLocalTime()) }
+
+    var location: String by remember { mutableStateOf(if (isNull) "" else event!!.location!!) }
+    var place: String by remember { mutableStateOf(if (isNull) "" else event!!.placeName!!) }
+    var address: String by remember { mutableStateOf(if (isNull) "" else event!!.address!!) }
+    var link: String by remember { mutableStateOf(if (isNull) "" else event!!.link!!) }
 
     val context = LocalContext.current
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -129,6 +130,7 @@ fun CreateEventView(
             Row(Modifier.padding(vertical = 8.dp)) {
                 CreateButton(
                     viewModel,
+                    if (isNull) null else event!!.eventId,
                     name,
                     subtitle,
                     description,
@@ -138,6 +140,8 @@ fun CreateEventView(
                     place,
                     address,
                     link,
+                    if (isNull) 0 else event!!.attendeesCount,
+                    isNull,
                     navToEvents
                 )
             }
@@ -147,7 +151,8 @@ fun CreateEventView(
 
 @Composable
 private fun CreateButton(
-    viewModel: CreateEventViewModel,
+    viewModel: CreateOrEditEventViewModel,
+    id: Long?,
     name: String,
     subtitle: String,
     description: String,
@@ -157,6 +162,8 @@ private fun CreateButton(
     place: String,
     address: String,
     link: String,
+    attendeesCount: Int,
+    isNull: Boolean,
     navToEvents: () -> Unit
 ) {
     var errorStringId: Int by remember { mutableStateOf(0) }
@@ -197,27 +204,49 @@ private fun CreateButton(
                     link
                 )
                 if (errorStringId == 0) {
-                    viewModel.createEvent(
-                        name,
-                        subtitle,
-                        description,
-                        startDate.toString(),
-                        endDate.toString(),
-                        location,
-                        place,
-                        address,
-                        link
-                    )
+                    if (isNull)
+                        viewModel.createEvent(
+                            name,
+                            subtitle,
+                            description,
+                            startDate.toString(),
+                            endDate.toString(),
+                            location,
+                            place,
+                            address,
+                            link
+                        )
+                    else
+                        viewModel.updateEvent(
+                            id!!,
+                            name,
+                            subtitle,
+                            description,
+                            startDate.toString(),
+                            endDate.toString(),
+                            location,
+                            place,
+                            address,
+                            link,
+                            attendeesCount,
+                        )
                     navToEvents();
                 }
             },
-            Modifier.height(70.dp).padding(vertical = 8.dp).clip(RoundedCornerShape(30.dp)),
+            Modifier
+                .height(70.dp)
+                .padding(vertical = 8.dp)
+                .clip(RoundedCornerShape(30.dp)),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = backgroundColor,
                 contentColor = focusedLabelColor
             )
         ) {
-            Text("Create")
+            Text(
+                if (isNull)
+                    stringResource(id = R.string.create)
+                else
+                    stringResource(id = R.string.edit))
         }
     }
 }
@@ -230,7 +259,10 @@ private fun TextFieldLabeled(
     var text: String by remember { mutableStateOf(previewText) }
     var backgndColor: Color by remember { mutableStateOf(backgroundColor) }
     TextField(
-        modifier = Modifier.width(320.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
+        modifier = Modifier
+            .width(320.dp)
+            .height(70.dp)
+            .clip(RoundedCornerShape(25.dp)),
         value = text,
         onValueChange = { newText ->
             text = newText;
@@ -261,7 +293,10 @@ private fun TextFieldDate(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextField(
-            modifier = Modifier.width(262.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
+            modifier = Modifier
+                .width(262.dp)
+                .height(70.dp)
+                .clip(RoundedCornerShape(25.dp)),
             value = "${date.value.dayOfMonth}/${date.value.monthValue}/${date.value.year}",
             onValueChange = {},
             textStyle = typo.h4,
@@ -292,7 +327,10 @@ private fun TextFieldTime(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextField(
-            modifier = Modifier.width(262.dp).height(70.dp).clip(RoundedCornerShape(25.dp)),
+            modifier = Modifier
+                .width(262.dp)
+                .height(70.dp)
+                .clip(RoundedCornerShape(25.dp)),
             value = "${time.value.hour}:${time.value.minute}",
             onValueChange = {},
             textStyle = typo.h4,

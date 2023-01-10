@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel(dataRepository) {
     init {
         viewModelScope.launch {
-            dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
+            dataRepository.getReportedEvents(0, titleSearch.value).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         events.value = EventScreenState(
@@ -38,7 +38,7 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
     override fun loadMore() {
         if (events.value.data != null && events.value.data!!.size != 0 && page.value > 0) {
             viewModelScope.launch {
-                dataRepository.getReportedEvents(page.value, titleSearch).collect { resource ->
+                dataRepository.getReportedEvents(page.value, titleSearch.value).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             events.value.data!!.addAll(resource.data!!.events.toMutableList())
@@ -60,16 +60,16 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
         }
     }
 
-    override fun search(text: String) {
-        titleSearch = text
+    override fun search(text: String?) {
         viewModelScope.launch {
-            dataRepository.getReportedEvents(0, titleSearch).collect { resource ->
+            dataRepository.getReportedEvents(0, titleSearch.value).collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
                         events.value = EventScreenState(
                             data = resource.data?.events as MutableList<Event>,
                         )
                         page.value = 1
+                        titleSearch.value = text.orEmpty()
                     }
                     is Resource.Error -> {
                         events.value = EventScreenState(

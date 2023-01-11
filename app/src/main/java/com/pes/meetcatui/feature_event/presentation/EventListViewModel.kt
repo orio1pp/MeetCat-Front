@@ -13,6 +13,8 @@ open class EventListViewModel(
     override val dataRepository: DataRepository,
 ) : EventViewModel(dataRepository) {
 
+    var hasLiked: Boolean = false
+    var hasDisLiked: Boolean = false
     protected val page = mutableStateOf(0)
     protected val titleSearch : MutableState<String?> = mutableStateOf(null)
 
@@ -98,6 +100,31 @@ open class EventListViewModel(
                         )
                     }
                 }
+            }
+        }
+    }
+
+    fun likeEvent(eventId: Long): Boolean {
+        //viewModelScope.launch { dataRepository.likeEvent(eventId) }
+        hasLiked = !hasLiked
+        hasDisLiked = false
+        return true
+    }
+
+    fun dislikeEvent(eventId: Long): Boolean {
+        //viewModelScope.launch { dataRepository.dislikeEvent(eventId) }
+        hasDisLiked = !hasDisLiked
+        hasLiked = false
+        return true
+    }
+
+    fun handleVote(vote: String, eventId: Long) {
+        when (vote) {
+            "like" -> {
+                likeEvent(eventId)
+            }
+            "dislike" -> {
+                dislikeEvent(eventId)
             }
         }
     }

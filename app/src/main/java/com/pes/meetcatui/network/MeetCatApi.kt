@@ -74,4 +74,10 @@ interface MeetCatApi {
 
     @GET("events/nearest")
     suspend fun getNearestEvents(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<EventsData>
+
+    @POST("events/{eventId}/like")
+    suspend fun likeEvent(@Path("eventId") eventId: Long)
+
+    @POST("events/{eventId}/dislike")
+    suspend fun dislikeEvent(@Path("eventId") eventId: Long)
 }

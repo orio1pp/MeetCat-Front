@@ -1,6 +1,8 @@
 package com.pes.meetcatui.feature_event.domain
 
 import com.pes.meetcatui.common.Resource
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
@@ -19,6 +21,8 @@ interface DataRepository {
     suspend fun getUsername(): Flow<Resource<String>>
     suspend fun likeEvent(eventId: Long): String
     suspend fun dislikeEvent(eventId: Long): String
+    fun getNearestChargers(latitude: Double, longitude: Double, distance: Double): Flow<Resource<List<Charger>>>
+    fun getNearestBikes(latitude: Double, longitude: Double, distance: Double): Flow<Resource<List<Bike>>>
     //suspend fun downloadData()
 }
 

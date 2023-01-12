@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
@@ -31,12 +32,15 @@ import androidx.compose.ui.window.Popup
 import com.google.accompanist.permissions.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.pes.meetcatui.R
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.presentation.green_wheel_api.BikeScreenState
+import com.pes.meetcatui.feature_event.presentation.green_wheel_api.ChargerScreenState
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,10 +61,12 @@ fun MapScreen(
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
     val events by viewModel.events
+    val chargers by viewModel.chargers
+    val bikes by viewModel.bikes
     val mapState by viewModel.mapState
     val attendance by viewModel.attendance
 
-    val distanceFilter = remember { mutableStateOf(1)}
+    val distanceFilter = remember { mutableStateOf(1) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -112,6 +118,8 @@ fun MapScreen(
                         fusedLocationClient = fusedLocationClient,
                         viewModel = viewModel,
                         events = events,
+                        chargers = chargers,
+                        bikes = bikes,
                         onEventSelected = {
                             viewModel.setSelectedEvent(it!!)
                         },
@@ -142,6 +150,8 @@ fun displayMap(
     viewModel: MapViewModel,
     onEventSelected: (Event?) -> Unit,
     events: EventScreenState,
+    chargers: ChargerScreenState,
+    bikes: BikeScreenState,
     deselectEvent: () -> Unit,
     attendance: EventAttendanceState,
     onClickJoin: (Long) -> Unit,
@@ -160,18 +170,13 @@ fun displayMap(
         )
     }
 
-    fusedLocationClient
-        .requestLocationUpdates(
-            viewModel.getLocationRequest(),
-            viewModel.getLocationCallback(),
-            Looper.getMainLooper()
-        )
+    fusedLocationClient.requestLocationUpdates(
+        viewModel.getLocationRequest(), viewModel.getLocationCallback(), Looper.getMainLooper()
+    )
 
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            if (location != null)
-                viewModel.setPosition(location)
-        }
+    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+        if (location != null) viewModel.setPosition(location)
+    }
 
     Column {
         Map(
@@ -185,6 +190,8 @@ fun displayMap(
                 deselectEvent()
             },
             events = events,
+            chargers = chargers,
+            bikes = bikes,
             viewModel = viewModel
         )
 
@@ -218,14 +225,15 @@ private fun Map(
     cameraPositionState: CameraPositionState,
     onOutsideClicked: () -> Unit,
     events: EventScreenState,
+    chargers: ChargerScreenState,
+    bikes: BikeScreenState,
     onEventClicked: (Event) -> Unit,
     viewModel: MapViewModel
 ) {
     var cameraPositionState1 = cameraPositionState
     if (mapState.lastLocation != null) {
         cameraPositionState1 = rememberCameraPositionState {
-            position =
-                CameraPosition.fromLatLngZoom(mapState.gpsCoords, INITIAL_ZOOM)
+            position = CameraPosition.fromLatLngZoom(mapState.gpsCoords, INITIAL_ZOOM)
         }
     }
 
@@ -240,9 +248,9 @@ private fun Map(
         ) {
             if (events.data != null) {
                 events.data.forEach { event ->
-                    if (event.location != null
-                        && event.location.isNotEmpty()
-                        && checkLocationFormat(event.location)
+                    if (event.location != null && event.location.isNotEmpty() && checkLocationFormat(
+                            event.location
+                        )
                     ) {
                         val ubi = event.location
                         val ll = ubi.split(',')
@@ -260,8 +268,50 @@ private fun Map(
                         )
                     }
                 }
+            }/*
+            if (chargers.data != null) {
+                chargers.data.forEach { charger ->
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(
+                                charger.longitude!!.toDouble(),
+                                charger.latitude!!.toDouble()
+                            )
+                        ),
+                        onClick = {
+                            scope.launch {
+                                cameraPositionState1.animate(CameraUpdateFactory.newLatLng(it.position))
+                            }
+                            TODO()//onEventClicked(charger)
+                            true
+                        },
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
+                    )
+                }
             }
+            if (bikes.data != null) {
+                bikes.data.forEach { bike ->
+                    Marker(
+                        state = MarkerState(
+                            position = LatLng(
+                                bike.longitude!!.toDouble(),
+                                bike.latitude!!.toDouble()
+                            )
+                        ),
+                        onClick = {
+                            scope.launch {
+                                cameraPositionState1.animate(CameraUpdateFactory.newLatLng(it.position))
+                            }
+                            TODO()//onEventClicked(charger)
+                            true
+                        },
+                        icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+                    )
+                }
+            }
+            */
         }
+
     }
 }
 
@@ -285,12 +335,12 @@ fun permissionNotGranted(permissionState: PermissionState) {
 private fun TimedLayout() {
     var show by remember { mutableStateOf(true) }
 
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         delay(5000)
         show = false
     }
 
-    if(show){
+    if (show) {
         Popup(
             alignment = Alignment.BottomCenter
         ) {
@@ -301,7 +351,7 @@ private fun TimedLayout() {
                     .background(Color.White, RoundedCornerShape(20.dp))
                     .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
 
-            ){
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -352,8 +402,7 @@ fun EventDisplay(
 fun checkLocationFormat(location: String): Boolean {
     val loc = location.split(',')
     loc.forEach { coord ->
-        if(coord.toDoubleOrNull() == null)
-            return false
+        if (coord.toDoubleOrNull() == null) return false
     }
     return true
 }

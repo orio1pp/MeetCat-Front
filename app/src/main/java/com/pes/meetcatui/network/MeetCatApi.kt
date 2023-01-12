@@ -1,7 +1,9 @@
 package com.pes.meetcatui.network
 
+import com.pes.meetcatui.feature_chat.domain.Chat
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.chat.ChatData
 import com.pes.meetcatui.network.chat.ChatFriendshipData
 import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.network.chat.MessageData
@@ -61,6 +63,12 @@ interface MeetCatApi {
     @POST("message")
     suspend fun postMessage(
         @Body message: MessageData,
+        @Header("Authorization") accessToken : String
+    ): Response<List<GetChatData>>
+
+    @POST("chat")
+    suspend fun insertChat(
+        @Body chat: ChatData,
         @Header("Authorization") accessToken : String
     ): Response<List<GetChatData>>
 }

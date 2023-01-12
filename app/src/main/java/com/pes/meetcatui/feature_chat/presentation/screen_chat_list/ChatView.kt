@@ -22,8 +22,6 @@ fun ChatScreen(
     viewModel: ChatListViewModel
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
     ) {
         viewModel.chatList.value.chatSelected?.value?.friend.let {
             if (it != null) {
@@ -33,14 +31,13 @@ fun ChatScreen(
 
         AllMessages(viewModel = viewModel)
 
-        Row(
-            modifier = Modifier
-                .height(80.dp),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            Texting(viewModel = viewModel)
-        }
-    }
+
+    }/*
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Texting(viewModel = viewModel)
+    }*/
 }
 
 @Composable
@@ -106,7 +103,7 @@ fun AllMessages(
     viewModel: ChatListViewModel
 ) {
     Column(
-        //modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier.padding(bottom = 100.dp)
     ) {
         viewModel.chatList.value.chatSelected?.value?.messageList?.let {
             for (message in viewModel.chatList.value.chatSelected?.value?.messageList!!) {

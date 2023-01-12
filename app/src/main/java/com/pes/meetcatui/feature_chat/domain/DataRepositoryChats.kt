@@ -13,4 +13,6 @@ interface DataRepositoryChats {
     suspend fun getUsername(): String
     suspend fun getFriend(): List<FriendshipData>?
     suspend fun getChatByFriendship(id : Long): ChatFriendshipData?
+    suspend fun newChat(id : Long)
+
 }

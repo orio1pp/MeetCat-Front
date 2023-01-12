@@ -51,6 +51,7 @@ fun FriendsListScreen(
                                 friendo = it.friendship.ownerId
                             FriendBox(
                                 name = friendo,
+                                id = it.friendship.id,
                                 hasChat = it.hasChat,
                                 viewModel = viewModel
                             )
@@ -66,6 +67,7 @@ fun FriendsListScreen(
 @Composable
 fun FriendBox(
     name: String,
+    id: Long,
     hasChat: Boolean,
     viewModel: FriendsListViewModel
 ) {
@@ -97,8 +99,8 @@ fun FriendBox(
                 .size(32.dp)
         ) {
 
-            if (!hasChat) AddChatButton(viewModel = viewModel)
-            else RemoveChatButton(viewModel = viewModel)
+            if (!hasChat) AddChatButton(viewModel = viewModel, id = id)
+            else RemoveChatButton(viewModel = viewModel, id = id)
         }
         Divider(
             startIndent = 0.dp,
@@ -112,13 +114,14 @@ fun FriendBox(
 
 @Composable
 fun AddChatButton(
-    viewModel: FriendsListViewModel
+    viewModel: FriendsListViewModel,
+    id: Long,
 ) {
     IconButton(
         modifier = Modifier
             .size(20.dp)
             .background(Highlight, RoundedCornerShape(15.dp)),
-        onClick = { /*viewModel.addFriend()*/ }
+        onClick = { viewModel.addChat(id) }
     ) {
         Icon(
             Icons.Filled.Email,
@@ -131,13 +134,14 @@ fun AddChatButton(
 
 @Composable
 fun RemoveChatButton(
-    viewModel: FriendsListViewModel
+    viewModel: FriendsListViewModel,
+    id: Long,
 ) {
     IconButton(
         modifier = Modifier
             .size(32.dp)
             .background(ErrorRed, RoundedCornerShape(15.dp)),
-        onClick = { /*viewModel.removeFriend()*/ }
+        onClick = {  }
     ) {
         Icon(
             Icons.Filled.Delete,

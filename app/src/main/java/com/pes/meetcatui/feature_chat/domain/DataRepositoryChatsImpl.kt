@@ -98,6 +98,19 @@ class DataRepositoryChatsImpl(
         return null
     }
 
+    override suspend fun newChat(id: Long) {
+        var accessToken: String = "Bearer "
+        runBlocking(Dispatchers.IO) {
+            accessToken += dataPreferences.getAccessToken().first()
+        }
+        try {
+            val chat = ChatData(chatId = 1, friendship = id, messageList = emptyList())
+            meetCatApi.insertChat(chat, accessToken)?.body()
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
 
     suspend fun downloadData() {
 

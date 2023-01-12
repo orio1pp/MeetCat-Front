@@ -37,41 +37,61 @@ fun ChatListScreen(
             ScreenSelector(navToChats, navToUserSearch, navToFriendsList)
         }
 
-        LazyColumn(
+        /*LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 80.dp),
-        ) {
+        ) {*/
             if (chatList != null
                 && chatList.data != null
                 && !chatList.hasError
                 && chatList.isChatSelected
             ) {
-                item {
-                    ChatScreen(
-                        viewModel = viewModel
-                    )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 80.dp),
+                ) {
+                    item {
+
+                        ChatScreen(
+                            viewModel = viewModel
+                        )
+
+                    }
                 }
+                Row(
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Texting(viewModel = viewModel)
+                }
+
                 //viewModel.setIsSelected()
             } else {
-                item {
-                    if (chatList.data != null) {
-                        for (chat in chatList.data!!) {
-                            chat.friend?.let {
-                                Chat(
-                                    sender = it,
-                                    viewModel = viewModel,
-                                    chat = chat
-                                ) { chat: GetChatData ->
-                                    viewModel.setSelectedChat(chat)
-                                }
-                                /*lastMessage = chat.messages.get(chat.messages.size - 1).text*/
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 80.dp),
+                ) {
+                    item {
+                        if (chatList.data != null) {
+                            for (chat in chatList.data!!) {
+                                chat.friend?.let {
+                                    Chat(
+                                        sender = it,
+                                        viewModel = viewModel,
+                                        chat = chat
+                                    ) { chat: GetChatData ->
+                                        viewModel.setSelectedChat(chat)
+                                    }
+                                    /*lastMessage = chat.messages.get(chat.messages.size - 1).text*/
 
+                                }
                             }
                         }
                     }
                 }
-            }
+            //}
         }
     }
 }

@@ -262,9 +262,9 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun likeEvent(eventId: Long) : String{
+    override suspend fun likeEvent(eventId: Long, username: String) : String{
         try {
-            meetcatApi.likeEvent(eventId)
+            meetcatApi.likeEvent(eventId, username)
             return ("Api is successful")
         }
         catch (e: IOException) {
@@ -276,9 +276,9 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun dislikeEvent(eventId: Long) : String{
+    override suspend fun dislikeEvent(eventId: Long, username: String) : String{
         try {
-            meetcatApi.dislikeEvent(eventId)
+            meetcatApi.dislikeEvent(eventId, username)
             return ("Api is successful")
         }
         catch (e: IOException) {
@@ -287,6 +287,66 @@ class DataRepositoryImpl (
             return ("Timeout Exception: ${e.message}")
         } catch (e: HttpException) {
             return ("Http Exception: ${e.message}")
+        }
+    }
+
+    override fun getLiked(eventId: Long, username: String): Flow<Resource<Boolean>> = flow {
+        try {
+            //var accessToken: String = "Bearer "
+           // runBlocking(Dispatchers.IO) {
+             //   accessToken += dataPreferences.getAccessToken().first()
+            //}
+            emit(Resource.Loading())
+            val likedResponse = meetcatApi.getLiked(eventId, username)
+            if (likedResponse.isSuccessful) {
+                emit(Resource.Success(likedResponse.body()!!))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+     fun gestAllEvents(): Flow<Resource<EventPage>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getEvents(0, null)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override fun getDisliked(eventId: Long, username: String): Flow<Resource<Boolean>> = flow{
+        try {
+            //var accessToken: String = "Bearer "
+            // runBlocking(Dispatchers.IO) {
+            //   accessToken += dataPreferences.getAccessToken().first()
+            //}
+            emit(Resource.Loading())
+            val dislikedResponse = meetcatApi.getDisliked(eventId, username)
+            if (dislikedResponse.isSuccessful) {
+                emit(Resource.Success(dislikedResponse.body()!!))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
         }
     }
 

@@ -75,9 +75,15 @@ interface MeetCatApi {
     @GET("events/nearest")
     suspend fun getNearestEvents(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<EventsData>
 
-    @POST("events/{eventId}/like")
-    suspend fun likeEvent(@Path("eventId") eventId: Long)
+    @PUT("events/{eventId}/like")
+    suspend fun likeEvent(@Path("eventId") eventId: Long, @Query("username") username:String)
+//could use username in savedpreference in body or smth
+    @PUT("events/{eventId}/dislike")
+    suspend fun dislikeEvent(@Path("eventId") eventId: Long,  @Query("username") username:String)
 
-    @POST("events/{eventId}/dislike")
-    suspend fun dislikeEvent(@Path("eventId") eventId: Long)
+    @GET("events/{eventId}/liked")
+    suspend fun getLiked(@Path("eventId") eventId: Long, @Query("username") username:String): Response<Boolean>
+
+    @GET("events/{eventId}/disliked")
+    suspend fun getDisliked(@Path("eventId") eventId: Long, @Query("username") username:String): Response<Boolean>
 }

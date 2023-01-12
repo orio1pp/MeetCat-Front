@@ -1,5 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -8,15 +9,14 @@ import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedListViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 open class EventListViewModel(
     override val dataRepository: DataRepository,
 ) : EventViewModel(dataRepository) {
 
-    var hasLiked: Boolean = false
-    var hasDisLiked: Boolean = false
     protected val page = mutableStateOf(0)
-    protected val titleSearch : MutableState<String?> = mutableStateOf(null)
+    protected val titleSearch: MutableState<String?> = mutableStateOf(null)
 
     init {
         if (this !is ReportedListViewModel) {
@@ -104,27 +104,71 @@ open class EventListViewModel(
         }
     }
 
-    fun likeEvent(eventId: Long): Boolean {
-        //viewModelScope.launch { dataRepository.likeEvent(eventId) }
-        hasLiked = !hasLiked
-        hasDisLiked = false
+     fun likeEvent(eventId: Long, username: String): Boolean {
+        viewModelScope.launch { dataRepository.likeEvent(eventId, username) }
+        isLiked(eventId, username)
+        //hasLiked = !hasLiked
+        //hasDisLiked = false
         return true
     }
 
-    fun dislikeEvent(eventId: Long): Boolean {
-        //viewModelScope.launch { dataRepository.dislikeEvent(eventId) }
-        hasDisLiked = !hasDisLiked
-        hasLiked = false
+    fun dislikeEvent(eventId: Long, username: String): Boolean {
+        viewModelScope.launch { dataRepository.dislikeEvent(eventId, username) }
+        isDisliked(eventId, username)
+        //hasDisLiked = !hasDisLiked
+        //hasLiked = false
         return true
     }
 
-    fun handleVote(vote: String, eventId: Long) {
+     fun isLiked(eventId: Long, username: String?): Boolean = runBlocking{
+        var liked = false
+
+            if (username != null) {
+                dataRepository.getLiked(eventId, username).collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            liked = resource.data!!
+                           // Log.d("------------ ", "------------")
+                           // Log.d("Event with id: ", eventId.toString())
+                          //  Log.d("isLiked resource success value: ", liked.toString())
+
+                        }
+                    }
+                }
+            }
+
+        //Log.d("isLiked return resource success value: ", liked.toString())
+        return@runBlocking liked
+    }
+
+    fun isDisliked(eventId: Long, username: String?): Boolean = runBlocking{
+        var disliked = false
+
+        if (username != null) {
+            dataRepository.getDisliked(eventId, username).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        disliked = resource.data!!
+                        //Log.d("------------ ", "------------")
+                        //Log.d("Event with id: ", eventId.toString())
+                       // Log.d("isLiked resource success value: ", disliked.toString())
+
+                    }
+                }
+            }
+        }
+
+        //Log.d("isLiked return resource success value: ", disliked.toString())
+        return@runBlocking disliked
+    }
+
+     fun handleVote(vote: String, eventId: Long, username: String) {
         when (vote) {
             "like" -> {
-                likeEvent(eventId)
+                likeEvent(eventId, username)
             }
             "dislike" -> {
-                dislikeEvent(eventId)
+                dislikeEvent(eventId, username)
             }
         }
     }

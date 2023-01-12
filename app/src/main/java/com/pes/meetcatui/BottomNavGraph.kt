@@ -6,6 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListScreen
+import com.pes.meetcatui.feature_chat.presentation.screen_friend_list.FriendsListScreen
+import com.pes.meetcatui.feature_chat.presentation.screen_user_search.UserSearchScreen
+import com.pes.meetcatui.feature_event.presentation.CreateEventView
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen
@@ -73,6 +77,30 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Register.route) {
             RegisterScreen(getViewModel())
+        }
+        composable(BottomBarScreen.UserSearch.route) {
+            UserSearchScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
+        }
+        composable(BottomBarScreen.Chats.route) {
+            ChatListScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
+        }
+        composable(BottomBarScreen.FriendsList.route) {
+            FriendsListScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
         }
     }
 }

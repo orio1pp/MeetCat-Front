@@ -1,7 +1,10 @@
 package com.pes.meetcatui.feature_chat.domain
 
+import com.pes.meetcatui.network.chat.MessageData
+
 data class Chat(
-    val chatId: Int,
-    val username: String,
-    val messages: List<Message>,
+    var chatId: Long,
+    var friend: String,
+    var user: String? = null,
+    var messageList: List<MessageData>
 )

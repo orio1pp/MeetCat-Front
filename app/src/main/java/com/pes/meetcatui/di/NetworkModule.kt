@@ -1,14 +1,20 @@
 package com.pes.meetcatui.di
 
+import android.view.Gravity.apply
+import androidx.core.view.GravityCompat.apply
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.pes.meetcatui.BuildConfig
+import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.feature_user.data.DataPreferencesImpl
 import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.network.MeetCatApiInterceptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.component.getScopeId
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit

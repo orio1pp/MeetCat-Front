@@ -44,4 +44,19 @@ sealed class BottomBarScreen (
         title = "Login",
         icon = Icons.Default.Create
     )
+    object UserSearch: BottomBarScreen(
+        route = "user_search",
+        title = "UserSearch",
+        icon = Icons.Default.MailOutline
+    )
+    object Chats: BottomBarScreen(
+        route = "chats",
+        title = "Chats",
+        icon = Icons.Default.MailOutline
+    )
+    object FriendsList: BottomBarScreen(
+        route = "friends_list",
+        title = "FriendsList",
+        icon = Icons.Default.MailOutline
+    )
 }

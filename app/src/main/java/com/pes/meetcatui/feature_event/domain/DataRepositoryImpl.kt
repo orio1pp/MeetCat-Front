@@ -310,25 +310,6 @@ class DataRepositoryImpl (
         }
     }
 
-     fun gestAllEvents(): Flow<Resource<EventPage>> = flow {
-        try {
-            emit(Resource.Loading())
-            val apiResponse = meetcatApi.getEvents(0, null)
-            if (apiResponse.isSuccessful) {
-                val result = buildEventList(apiResponse.body()!!)
-
-                emit(Resource.Success(result))
-            } else {
-                emit(Resource.Error("Api is unsuccessful"))
-            }
-        } catch (e: IOException) {
-            emit(Resource.Error("IO Exception: ${e.message}"))
-        } catch (e: TimeoutException) {
-            emit(Resource.Error("Timeout Exception: ${e.message}"))
-        } catch (e: HttpException) {
-            emit(Resource.Error("Http Exception: ${e.message}"))
-        }
-    }
 
     override fun getDisliked(eventId: Long, username: String): Flow<Resource<Boolean>> = flow{
         try {

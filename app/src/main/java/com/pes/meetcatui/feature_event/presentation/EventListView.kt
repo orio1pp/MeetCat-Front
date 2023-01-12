@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import android.media.Image
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.border
@@ -22,37 +22,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.common.BackButton
-import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_event.domain.Event
-import com.pes.meetcatui.ui.theme.Background
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.R
+import com.pes.meetcatui.SavedPreference
+
 @Composable
 fun EventListScreen(
     viewModel: EventListViewModel,
@@ -296,21 +285,38 @@ fun EventView(
 
 @Composable
 fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
+    val context = LocalContext.current
+    val username = SavedPreference.getUsername(context)
+    if (username != null) {
+        //viewModel.isLiked(eventId, username)
+        //viewModel.isDisliked(eventId, username)
+    }
     var liked by remember {
         mutableStateOf(
-            viewModel.hasLiked
+            viewModel.isLiked(eventId, username)
         )
     }
     var disliked by remember {
         mutableStateOf(
-            viewModel.hasDisLiked
+            viewModel.isDisliked(eventId, username)
         )
     }
+    //Log.d("------------ ", "------------")
+  //  Log.d("Event with id: ", eventId.toString())
+   // Log.d("on button liked: ", liked.toString())
+  //  Log.d("on button disliked: ", disliked.toString())
+   // Log.d("------------ ", "------------")
     Button(
         onClick = {
-            viewModel.handleVote("like", eventId)
-            liked = viewModel.hasLiked
-            disliked = viewModel.hasDisLiked
+            if (username != null) {
+                viewModel.handleVote("like", eventId, username)
+            }
+            liked = viewModel.isLiked(eventId, username)
+            disliked = viewModel.isDisliked(eventId, username)
+           // Log.d("------------ ", "------------")
+           // Log.d("Event with id: ", eventId.toString())
+           // Log.d("on button clicked like!! ", liked.toString())
+            //Log.d("------------ ", "------------")
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,
@@ -347,9 +353,15 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
     }
     Button(
         onClick = {
-            viewModel.handleVote("dislike", eventId)
-            liked = viewModel.hasLiked
-            disliked = viewModel.hasDisLiked
+            if (username != null) {
+                viewModel.handleVote("dislike", eventId, username)
+            }
+            liked = viewModel.isLiked(eventId, username)
+            disliked = viewModel.isDisliked(eventId, username)
+           // Log.d("------------ ", "------------")
+           // Log.d("Event with id: ", eventId.toString())
+           // Log.d("on button clicked dislike!! ", disliked.toString())
+           // Log.d("------------ ", "------------")
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.White,

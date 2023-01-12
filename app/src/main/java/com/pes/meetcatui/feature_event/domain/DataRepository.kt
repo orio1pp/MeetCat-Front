@@ -17,8 +17,10 @@ interface DataRepository {
     suspend fun deleteAttendance(eventId: Long): Flow<Resource<Long>>
     suspend fun deleteEvent(eventId: Long): Flow<Resource<Unit>>
     suspend fun getUsername(): Flow<Resource<String>>
-    suspend fun likeEvent(eventId: Long): String
-    suspend fun dislikeEvent(eventId: Long): String
+    suspend fun likeEvent(eventId: Long, username: String): String
+    suspend fun dislikeEvent(eventId: Long, username: String): String
+    fun getLiked(eventId: Long, username: String): Flow<Resource<Boolean>>
+    fun getDisliked(eventId: Long, username: String): Flow<Resource<Boolean>>
     //suspend fun downloadData()
 }
 

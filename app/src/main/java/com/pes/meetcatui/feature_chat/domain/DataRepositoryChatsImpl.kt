@@ -1,6 +1,6 @@
 package com.pes.meetcatui.feature_chat.domain
 
-import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.data.DataPreferences
 import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.network.chat.ChatData

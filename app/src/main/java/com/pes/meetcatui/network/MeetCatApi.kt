@@ -1,16 +1,11 @@
 package com.pes.meetcatui.network
 
-import com.pes.meetcatui.feature_chat.domain.Chat
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.chat.ChatData
 import com.pes.meetcatui.network.chat.ChatFriendshipData
 import com.pes.meetcatui.network.chat.GetChatData
 import com.pes.meetcatui.network.chat.MessageData
-import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
-import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
-import com.pes.meetcatui.feature_user.domain.UserToken
-import com.pes.meetcatui.network.Friendships.FriendshipData
 import com.pes.meetcatui.network.green_wheel.BikeData
 import com.pes.meetcatui.network.green_wheel.ChargerData
 import retrofit2.Response

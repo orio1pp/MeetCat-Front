@@ -9,7 +9,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListScreen
 import com.pes.meetcatui.feature_chat.presentation.screen_friend_list.FriendsListScreen
 import com.pes.meetcatui.feature_chat.presentation.screen_user_search.UserSearchScreen
-import com.pes.meetcatui.feature_event.presentation.CreateEventView
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen

@@ -31,4 +31,5 @@
     <string name="edit">Edita</string>
     <string name="delete">Suprimeix</string>
     <string name="create">Crea</string>
+    <string name="date">Data</string>
 </resources>

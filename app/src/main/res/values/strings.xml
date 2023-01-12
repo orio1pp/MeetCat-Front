@@ -30,4 +30,5 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="create">Create</string>
+    <string name="date">Date</string>
 </resources>

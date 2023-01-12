@@ -5,7 +5,7 @@
     <string name="description">Description</string>
     <string name="link">Link</string>
     <string name="from">"From "</string>
-    <string name="to">"To"</string>
+    <string name="to">"To "</string>
     <string name="at">at </string>
     <string name="at_singular">at </string>
     <string name="msg_loc">The location is important for this app. Please grant the permission</string>
@@ -16,7 +16,19 @@
     <string name="place">Place</string>
     <string name="address">Address</string>
     <string name="createEventErrorFieldsEmpty">You left empty fields, please fill all the values</string>
-    <string name="createEventErrorDateIsNotDate">The date you input isn\'t a date, please input a date</string>
+    <string name="createEventInitDateGreaterThanEnd">Event can\'t start after it ends.</string>
     <string name="createEventErrorURLIsNotValid">The URL is not a valid URL, please introduce a valid URL</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">The location is not following the right format, please input \"lat,lon\"</string>
+    <string name="join">Join</string>
+    <string name="leave">Leave</string>
+    <string name="atendees">Attendees</string>
+    <string name="organizer">Organizer</string>
+    <string name="areYouSureToReportMsg">Are you sure you wanna report this event?</string>
+    <string name="confirm">Confirm</string>
+    <string name="createEventInitDateIsPast">You can\'t start an event before today</string>
+    <string name="distance">Distance</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="create">Create</string>
+    <string name="date">Date</string>
 </resources>

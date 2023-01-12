@@ -1,6 +1,6 @@
 package com.pes.meetcatui.network
 
-import com.pes.meetcatui.feature_user.data.DataPreferences
+import com.pes.meetcatui.data.DataPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor

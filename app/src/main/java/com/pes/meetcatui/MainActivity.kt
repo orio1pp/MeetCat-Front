@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -26,8 +24,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchScreen
+import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterViewModel
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
+import org.koin.androidx.compose.get
 
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
+import org.koin.androidx.compose.getViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -44,7 +48,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     App(
                         fusedLocationClient = fusedLocationClient,
-                        lastSignedAccount = GoogleSignIn.getLastSignedInAccount(this)
+                        lastSignedAccount = GoogleSignIn.getLastSignedInAccount(this),
+                        registerViewModel = getViewModel()
                     )
                 }
             }
@@ -55,18 +60,28 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun App(
     fusedLocationClient: FusedLocationProviderClient,
-    lastSignedAccount: GoogleSignInAccount?
+    lastSignedAccount: GoogleSignInAccount?,
+    registerViewModel: RegisterViewModel
     ) {
     val navController = rememberNavController()
 
     val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
+
+    val globalEvent : MutableState<Event?> = remember { mutableStateOf(null) }
 
     val setVisible: (Boolean) -> Unit = { isVisible ->
         bottomBarState.value = isVisible
     }
 
     if (lastSignedAccount != null) {
-        Log.d("EMAIL = ", SavedPreference.EMAIL)
+        //Log.d("EMAIL = ", SavedPreference.EMAIL)
+        val context = LocalContext.current
+
+        SavedPreference.getUsername(context)
+            ?.let {
+                //Log.d("(main activity) saved preference username is", it)
+                registerViewModel.tryRegister(it, it)
+            }
         setVisible(true)
         AppComposable(
             navController = navController,
@@ -74,16 +89,18 @@ private fun App(
             fusedLocationClient = fusedLocationClient,
             bottomBarState = bottomBarState,
             setVisible = setVisible,
+            globalEvent = globalEvent,
         )
     }
     else {
-        Log.d("EMAIL = ", SavedPreference.EMAIL)
+        //Log.d("EMAIL = ", SavedPreference.EMAIL)
         AppComposable(
             navController = navController,
             initRoute = BottomBarScreen.Login.route,
             fusedLocationClient = fusedLocationClient,
             bottomBarState = bottomBarState,
             setVisible = setVisible,
+            globalEvent = globalEvent,
         )
     }
 }
@@ -95,6 +112,7 @@ fun AppComposable(
     bottomBarState: MutableState<Boolean>,
     fusedLocationClient: FusedLocationProviderClient,
     setVisible: (Boolean) -> Unit,
+    globalEvent: MutableState<Event?>,
 ) {
     Scaffold(
         topBar = {
@@ -113,6 +131,7 @@ fun AppComposable(
                 initRoute = initRoute,
                 fusedLocationClient = fusedLocationClient,
                 setVisible = setVisible,
+                globalEvent = globalEvent,
             )
         }
     }

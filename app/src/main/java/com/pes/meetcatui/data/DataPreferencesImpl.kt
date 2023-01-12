@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_user.data
+package com.pes.meetcatui.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_user.domain.UserToken
-import com.pes.meetcatui.network.RoleData
 import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -51,7 +50,6 @@ class DataPreferencesImpl(
             ""
         )
     }
-
 }
 
 private inline fun <reified T> DataStore<Preferences>.getJsonOrDefault(key: String, default: T) =

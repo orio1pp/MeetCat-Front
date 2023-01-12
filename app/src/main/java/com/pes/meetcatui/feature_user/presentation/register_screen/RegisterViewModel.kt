@@ -1,5 +1,6 @@
 package com.pes.meetcatui.feature_user.presentation.register_screen
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,23 @@ class RegisterViewModel(
             //navegar a login
         }
     }
+
+    suspend fun isUserRegistered(username: String) : Boolean {
+        if (dataRepository.getUser(username) != null) return true
+        return false
+    }
+
+    fun tryRegister(username: String, password: String) {
+        viewModelScope.launch {
+            if (!isUserRegistered(username)) {
+                register(username, password)
+            } else {
+                Log.d("(regviewmodel) !!!", "esta registrat ja !!")
+                _warning.value = "L'usuari ja esta registrat."
+            }
+        }
+    }
+
 
     private suspend fun authenticate(username: String, password: String): Boolean {
         return dataRepository.login(username, password)

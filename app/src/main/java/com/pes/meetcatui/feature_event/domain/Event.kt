@@ -7,6 +7,7 @@ data class Event(
     val eventId: Long,
     val name: String,
     val subtitle: String?,
+    val username: String?,
     val description: String?,
     val startDate: String,
     val endDate: String?,
@@ -14,4 +15,5 @@ data class Event(
     val placeName: String?,
     val address: String?,
     val link: String?,
+    val attendeesCount: Int,
 )

@@ -1,6 +1,7 @@
 package com.pes.meetcatui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,6 +10,8 @@ import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListScre
 import com.pes.meetcatui.feature_chat.presentation.screen_friend_list.FriendsListScreen
 import com.pes.meetcatui.feature_chat.presentation.screen_user_search.UserSearchScreen
 import com.pes.meetcatui.feature_event.presentation.CreateEventView
+import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen
 import com.pes.meetcatui.feature_event.presentation.MapScreen
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
@@ -21,26 +24,45 @@ fun BottomNavGraph(
     initRoute: String,
     fusedLocationClient: FusedLocationProviderClient,
     setVisible: (Boolean) -> Unit,
+    globalEvent: MutableState<Event?>
 ) {
     NavHost(navController = navController, startDestination = initRoute) {
         composable(BottomBarScreen.Events.route) {
-            EventListScreen(getViewModel(), navToMap = {
-                navController.navigate(BottomBarScreen.Map.route)
-            }, navToCreateEvent = {
-                navController.navigate(BottomBarScreen.CreateEvent.route)
-            })
+            EventListScreen(
+                viewModel = getViewModel(),
+                globalEvent = globalEvent,
+                navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
+                navToMap = {
+                    navController.navigate(BottomBarScreen.Map.route)
+                }
+            )
         }
         composable(BottomBarScreen.Profile.route) {
-            ProfileScreen()
+            ProfileScreen(viewModel = getViewModel())
         }
         composable(BottomBarScreen.CreateEvent.route) {
-            CreateEventView(getViewModel(), navToEvents =  {
-                navController.navigate(BottomBarScreen.Events.route)
-            })
+            CreateOrEditEventView(
+                viewModel = getViewModel(),
+                event = null,
+                navToEvents = {
+                    navController.navigate(BottomBarScreen.Events.route)
+                }
+            )
+        }
+        composable(BottomBarScreen.EditEvent.route) {
+            CreateOrEditEventView(
+                viewModel = getViewModel(),
+                event = globalEvent.value,
+                navToEvents = {
+                    navController.navigate(BottomBarScreen.Events.route)
+                }
+            )
         }
         composable(BottomBarScreen.Map.route) {
             MapScreen(
                 viewModel = getViewModel(),
+                globalEvent = globalEvent,
+                navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
                 navToEventList = { navController.navigate(BottomBarScreen.Events.route) },
                 fusedLocationClient = fusedLocationClient
             )

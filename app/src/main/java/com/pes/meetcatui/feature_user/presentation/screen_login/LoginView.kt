@@ -40,7 +40,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.pes.meetcatui.*
 import com.pes.meetcatui.R
+import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterViewModel
 import com.pes.meetcatui.ui.theme.*
+import org.koin.androidx.compose.getViewModel
 
 
 class LoginView : ComponentActivity() {
@@ -77,8 +79,11 @@ class LoginView : ComponentActivity() {
     @Preview
     @Composable
     fun LoginScreen(
-        //viewModel: LoginViewModel,
+        //viewModel: LoginViewModel
     ) {
+        val regviewModel: RegisterViewModel
+        regviewModel = getViewModel()
+
         val viewModel: LoginViewModel =
 
             androidx.lifecycle.viewmodel.compose.viewModel(factory = LoginViewModelFactory(this.applicationContext as Application))
@@ -125,7 +130,7 @@ class LoginView : ComponentActivity() {
 
                             ) {
                             CustomButtonGoogle(
-                                text = "Login", viewModel = viewModel
+                                text = "Login", viewModel = viewModel, regviewModel = regviewModel
                             )
                         }
                     }
@@ -227,9 +232,11 @@ class LoginView : ComponentActivity() {
     @Composable
     fun CustomButtonGoogle(
         text: String,
-        viewModel: LoginViewModel
+        viewModel: LoginViewModel,
+        regviewModel: RegisterViewModel
     ) {
-
+        var username by remember { mutableStateOf(SavedPreference.USERNAME) }
+        var password by remember { mutableStateOf(SavedPreference.EMAIL) }
             Button(
                 onClick = {
                     signInGoogle(viewModel)
@@ -245,7 +252,8 @@ class LoginView : ComponentActivity() {
             )
             {
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .align(CenterVertically)
                 ) {
                     Image(
@@ -257,6 +265,7 @@ class LoginView : ComponentActivity() {
                     )
                 }
             }
+
     }
 
 
@@ -338,12 +347,10 @@ class LoginView : ComponentActivity() {
     // UpdateUI() function - this is where we specify what UI updation are needed after google signin has taken place.
     private fun UpdateUI(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-
+        val viewModel: RegisterViewModel
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 SavedPreference.setEmail(this, account.email.toString())
-                Log.d("EMAIL = ", SavedPreference.EMAIL)
-                Log.d("GOOGLE EMAIL = ", account.email.toString())
                 SavedPreference.setUsername(this, account.displayName.toString())
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

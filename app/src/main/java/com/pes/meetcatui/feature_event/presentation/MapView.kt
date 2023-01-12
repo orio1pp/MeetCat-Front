@@ -268,7 +268,7 @@ private fun Map(
                         )
                     }
                 }
-            }/*
+            }
             if (chargers.data != null) {
                 chargers.data.forEach { charger ->
                     Marker(
@@ -282,7 +282,7 @@ private fun Map(
                             scope.launch {
                                 cameraPositionState1.animate(CameraUpdateFactory.newLatLng(it.position))
                             }
-                            TODO()//onEventClicked(charger)
+                            viewModel.setSelectedCharger(charger)
                             true
                         },
                         icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
@@ -302,14 +302,13 @@ private fun Map(
                             scope.launch {
                                 cameraPositionState1.animate(CameraUpdateFactory.newLatLng(it.position))
                             }
-                            TODO()//onEventClicked(charger)
+                            viewModel.setSelectedBike(bike)
                             true
                         },
                         icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
                     )
                 }
             }
-            */
         }
 
     }

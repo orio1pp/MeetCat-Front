@@ -34,11 +34,13 @@ class MapViewModel(
             setChargersData(
                 mapState.value.gpsCoords.latitude,
                 mapState.value.gpsCoords.longitude,
-                1.0)
+                1.0
+            )
             setBikesData(
                 mapState.value.gpsCoords.latitude,
                 mapState.value.gpsCoords.longitude,
-                1.0)
+                1.0
+            )
         }
     }
 
@@ -91,7 +93,11 @@ class MapViewModel(
     }
 
     override suspend fun setData() {
-        dataRepository.getNearestEvents(mapState.value.gpsCoords.latitude, mapState.value.gpsCoords.longitude, 1.0)
+        dataRepository.getNearestEvents(
+            mapState.value.gpsCoords.latitude,
+            mapState.value.gpsCoords.longitude,
+            1.0
+        )
             .collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
@@ -114,7 +120,7 @@ class MapViewModel(
             }
     }
 
-    fun getLocationCallback() : LocationCallback {
+    fun getLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
@@ -176,5 +182,21 @@ class MapViewModel(
                 distance.toDouble()
             )
         }
+    }
+
+    fun setSelectedCharger(charger: Charger) {
+        chargers.value = ChargerScreenState(
+            isDetailsSelected = true,
+            chargerDetailsSelected = charger,
+            data = chargers.value.data
+        )
+    }
+
+    fun setSelectedBike(bike: Bike) {
+        bikes.value = BikeScreenState(
+            isDetailsSelected = true,
+            bikeDetailsSelected = bike,
+            data = bikes.value.data
+        )
     }
 }

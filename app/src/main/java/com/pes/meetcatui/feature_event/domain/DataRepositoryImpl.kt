@@ -1,12 +1,17 @@
 package com.pes.meetcatui.feature_event.domain
+
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.data.DataPreferences
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
 import com.pes.meetcatui.network.*
 import kotlinx.coroutines.Dispatchers
 
 import com.pes.meetcatui.network.EventDetailsData
 import com.pes.meetcatui.network.EventsData
 import com.pes.meetcatui.network.MeetCatApi
+import com.pes.meetcatui.network.green_wheel.BikeData
+import com.pes.meetcatui.network.green_wheel.ChargerData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -15,7 +20,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.TimeoutException
 
-class DataRepositoryImpl (
+class DataRepositoryImpl(
     private val meetcatApi: MeetCatApi,
     private val dataPreferences: DataPreferences,
 ) : DataRepository {
@@ -28,7 +33,7 @@ class DataRepositoryImpl (
 
     //private val eventList = dataPreferences.getEventList()
 
-    override fun getEvents(pageNum:Int, title:String?): Flow<Resource<EventPage>> = flow {
+    override fun getEvents(pageNum: Int, title: String?): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
             val apiResponse = meetcatApi.getEventsWithTitle(pageNum, 20, title)
@@ -68,7 +73,7 @@ class DataRepositoryImpl (
         }
     }
 
-    override fun getReportedEvents(pageNum: Int, title:String?) : Flow<Resource<EventPage>> = flow {
+    override fun getReportedEvents(pageNum: Int, title: String?): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
             val apiResponse = meetcatApi.getReportedEventsWithTitle(pageNum, 20, title)
@@ -88,7 +93,7 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun createEvent( event: Event) : String {
+    override suspend fun createEvent(event: Event): String {
         try {
             val eventSerial = buildEventDetailsData(event)
             println(eventSerial)
@@ -108,7 +113,11 @@ class DataRepositoryImpl (
         }
     }
 
-    override fun getNearestEvents(latitude: Double,longitude: Double,distance: Double): Flow<Resource<EventPage>> = flow{
+    override fun getNearestEvents(
+        latitude: Double,
+        longitude: Double,
+        distance: Double
+    ): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
             val apiResponse = meetcatApi.getNearestEvents(latitude, longitude, distance)
@@ -156,7 +165,8 @@ class DataRepositoryImpl (
                 accessToken += dataPreferences.getAccessToken().first()
             }
             emit(Resource.Loading())
-            val attendanceResponse = meetcatApi.createAttendance(AttendanceData(eventId), accessToken)
+            val attendanceResponse =
+                meetcatApi.createAttendance(AttendanceData(eventId), accessToken)
             if (attendanceResponse.isSuccessful) {
                 emit(Resource.Success(attendanceResponse.body()!!.eventId))
             }
@@ -189,7 +199,7 @@ class DataRepositoryImpl (
         }
     }
 
-    override suspend fun updateEvent(event: Event) : String {
+    override suspend fun updateEvent(event: Event): String {
         try {
             val eventSerial = buildEventDetailsData(event)
             println(eventSerial)
@@ -266,8 +276,7 @@ class DataRepositoryImpl (
         try {
             meetcatApi.likeEvent(eventId, username)
             return ("Api is successful")
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
         } catch (e: TimeoutException) {
             return ("Timeout Exception: ${e.message}")
@@ -280,8 +289,7 @@ class DataRepositoryImpl (
         try {
             meetcatApi.dislikeEvent(eventId, username)
             return ("Api is successful")
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
         } catch (e: TimeoutException) {
             return ("Timeout Exception: ${e.message}")
@@ -331,6 +339,75 @@ class DataRepositoryImpl (
         }
     }
 
+    override fun getNearestChargers(
+        latitude: Double,
+        longitude: Double,
+        distance: Double
+    ): Flow<Resource<List<Charger>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getNearestChargers(latitude, longitude, distance)
+            if (apiResponse.isSuccessful) {
+                val result = apiResponse.body()!!
+                val ret = mutableListOf<Charger>()
+                for (chargerData: ChargerData in result) {
+                    ret.add(
+                        Charger(
+                            id = chargerData.id,
+                            latitude = chargerData.localization?.latitude,
+                            longitude = chargerData.localization?.longitude,
+                            chargerType = chargerData.charger_type
+                        )
+                    )
+                }
+                emit(Resource.Success(ret))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override fun getNearestBikes(
+        latitude: Double,
+        longitude: Double,
+        distance: Double
+    ): Flow<Resource<List<Bike>>> = flow {
+        try {
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getNearestBikes(latitude, longitude, distance)
+            if (apiResponse.isSuccessful) {
+                val result = apiResponse.body()!!
+                val ret = mutableListOf<Bike>()
+                for (bikeData: BikeData in result) {
+                    ret.add(
+                        Bike(
+                            id = bikeData.id,
+                            latitude = bikeData.localization?.latitude,
+                            longitude = bikeData.localization?.longitude,
+                            bikeTypeId = bikeData.bike_type?.id,
+                            bikeTypeName = bikeData.bike_type?.name
+                        )
+                    )
+                }
+                emit(Resource.Success(ret))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
     /*
     override suspend fun downloadData() {
         val events = getEventsData()
@@ -350,14 +427,13 @@ class DataRepositoryImpl (
 
     private fun buildEventList(
         eventsData: EventsData
-    ) : EventPage {
+    ): EventPage {
         val eventList = mutableListOf<Event>()
-        for (event in eventsData.events)
-        {
+        for (event in eventsData.events) {
             eventList.add(buildEvent(event))
         }
         val eventPage = EventPage(eventList, eventsData.page!!)
-        return(eventPage)
+        return (eventPage)
     }
 
     private fun buildEvent(

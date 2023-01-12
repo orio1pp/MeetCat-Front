@@ -10,12 +10,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
+import com.pes.meetcatui.feature_event.presentation.green_wheel_api.BikeScreenState
+import com.pes.meetcatui.feature_event.presentation.green_wheel_api.ChargerScreenState
 import kotlinx.coroutines.launch
 
 class MapViewModel(
     override val dataRepository: DataRepository
 ) : EventViewModel(dataRepository) {
     val mapState = mutableStateOf(MapScreenState())
+    val chargers = mutableStateOf(ChargerScreenState())
+    val bikes = mutableStateOf(BikeScreenState())
 
     private val locationRequest = LocationRequest
         .Builder(120000)
@@ -25,11 +31,73 @@ class MapViewModel(
         viewModelScope.launch {
             initSuper()
             setData()
+            setChargersData(
+                mapState.value.gpsCoords.latitude,
+                mapState.value.gpsCoords.longitude,
+                1.0
+            )
+            setBikesData(
+                mapState.value.gpsCoords.latitude,
+                mapState.value.gpsCoords.longitude,
+                1.0
+            )
         }
     }
 
+    suspend fun setChargersData(latitude: Double, longitude: Double, distance: Double) {
+        dataRepository.getNearestChargers(latitude, longitude, distance)
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        chargers.value = ChargerScreenState(
+                            data = resource.data as MutableList<Charger>
+                        )
+                    }
+                    is Resource.Error -> {
+                        chargers.value = ChargerScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        chargers.value = ChargerScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+    }
+
+    suspend fun setBikesData(latitude: Double, longitude: Double, distance: Double) {
+        dataRepository.getNearestBikes(latitude, longitude, distance)
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        bikes.value = BikeScreenState(
+                            data = resource.data as MutableList<Bike>
+                        )
+                    }
+                    is Resource.Error -> {
+                        bikes.value = BikeScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        bikes.value = BikeScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+    }
+
     override suspend fun setData() {
-        dataRepository.getNearestEvents(mapState.value.gpsCoords.latitude, mapState.value.gpsCoords.longitude, 1.0)
+        dataRepository.getNearestEvents(
+            mapState.value.gpsCoords.latitude,
+            mapState.value.gpsCoords.longitude,
+            1.0
+        )
             .collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
@@ -52,7 +120,7 @@ class MapViewModel(
             }
     }
 
-    fun getLocationCallback() : LocationCallback {
+    fun getLocationCallback(): LocationCallback {
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
@@ -103,6 +171,32 @@ class MapViewModel(
                     }
                 }
             }
+            setBikesData(
+                mapState.value.cameraPosition.value.position.target.latitude,
+                mapState.value.cameraPosition.value.position.target.longitude,
+                distance.toDouble()
+            )
+            setChargersData(
+                mapState.value.cameraPosition.value.position.target.latitude,
+                mapState.value.cameraPosition.value.position.target.longitude,
+                distance.toDouble()
+            )
         }
+    }
+
+    fun setSelectedCharger(charger: Charger) {
+        chargers.value = ChargerScreenState(
+            isDetailsSelected = true,
+            chargerDetailsSelected = charger,
+            data = chargers.value.data
+        )
+    }
+
+    fun setSelectedBike(bike: Bike) {
+        bikes.value = BikeScreenState(
+            isDetailsSelected = true,
+            bikeDetailsSelected = bike,
+            data = bikes.value.data
+        )
     }
 }

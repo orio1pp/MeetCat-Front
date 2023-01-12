@@ -1,7 +1,11 @@
 package com.pes.meetcatui.network
 
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.green_wheel.BikeData
+import com.pes.meetcatui.network.green_wheel.ChargerData
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -86,4 +90,10 @@ interface MeetCatApi {
 
     @GET("events/{eventId}/disliked")
     suspend fun getDisliked(@Path("eventId") eventId: Long, @Query("username") username:String): Response<Boolean>
+
+    @GET("greenwheel/chargers")
+    suspend fun getNearestChargers(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<List<ChargerData>>
+
+    @GET("greenwheel/bikes")
+    suspend fun getNearestBikes(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<List<BikeData>>
 }

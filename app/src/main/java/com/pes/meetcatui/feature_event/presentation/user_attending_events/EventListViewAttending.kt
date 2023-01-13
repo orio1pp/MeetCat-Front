@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_event.presentation
+package com.pes.meetcatui.feature_event.presentation.user_events
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,16 +33,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.R
-import com.pes.meetcatui.SavedPreference
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.presentation.*
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun EventListScreen(
-    viewModel: EventListViewModel,
+fun EventListScreenAttending(
+    viewModel: EventListViewModelAttending,
     globalEvent: MutableState<Event?>,
     navToEditEvent: () -> Unit,
     navToMap: () -> Unit,
@@ -75,8 +74,9 @@ fun EventListScreen(
                 viewModel.deleteEvent(eventList.eventDetailsSelected!!.eventId)
             },
             globalEvent = globalEvent,
-            navToEditEvent = navToEditEvent
-        )
+            navToEditEvent = navToEditEvent,
+
+            )
         BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
@@ -94,7 +94,7 @@ fun EventListScreen(
 
 @Composable
 fun EventListScreenContent(
-    viewModel: EventListViewModel,
+    viewModel: EventListViewModelAttending,
     eventList: EventScreenState,
     navToMap: () -> Unit,
     onEventClick: (event: Event) -> Unit,
@@ -112,12 +112,6 @@ fun EventListScreenContent(
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            searchBar(
-                eventListViewModel = viewModel,
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = if (searchText.value.isNotEmpty()) searchText else mutableStateOf(""),
-            )
-            filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -167,7 +161,6 @@ fun EventDetailsScreen(
     deleteEvent: () -> Unit,
     globalEvent: MutableState<Event?>,
     navToEditEvent: () -> Unit,
-    admin: Boolean = false
 ) {
     val openDialog = remember { mutableStateOf(false) }
 
@@ -189,7 +182,6 @@ fun EventDetailsScreen(
                 deleteEvent = deleteEvent,
                 navToEdit = navToEditEvent,
                 globalEvent = globalEvent,
-                admin = admin
             )
         }
     }
@@ -241,7 +233,7 @@ fun ReportButton(function: () -> Unit = {}) {
 fun EventView(
     event: Event,
     onEventClick: (event: Event) -> Unit,
-    viewModel: EventListViewModel
+    viewModel: EventListViewModelAttending
 ) {
     Column(
         modifier = Modifier
@@ -284,8 +276,8 @@ fun EventView(
 }
 
 @Composable
-fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
-    var liked by remember {
+fun LikeButtons(viewModel: EventListViewModelAttending, eventId: Long) {
+    /*var liked by remember {
         mutableStateOf(
             viewModel.isLiked(eventId)
         )
@@ -294,7 +286,7 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
         mutableStateOf(
             viewModel.isDisliked(eventId)
         )
-    }
+    }*/
 
     //Log.d("------------ ", "------------")
   //  Log.d("Event with id: ", eventId.toString())
@@ -304,8 +296,6 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
     Button(
         onClick = {
             viewModel.handleVote("like", eventId)
-            liked = viewModel.isLiked(eventId)
-            disliked = viewModel.isDisliked(eventId)
 
            // Log.d("------------ ", "------------")
            // Log.d("Event with id: ", eventId.toString())
@@ -320,6 +310,7 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
             //.fillMaxWidth()
             .scale(scaleX = 1f, scaleY = 1f),
         shape = RoundedCornerShape(28.dp),
+        enabled = !viewModel.isLiked(eventId),
         // contentPadding = PaddingValues(15.dp),
         // border = BorderStroke(1.dp, Color.Gray)
     ) {
@@ -331,7 +322,7 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
         ) {
             Image(
                 painter = painterResource(
-                    id = if (liked) {
+                    id = if (viewModel.isLiked(eventId)) {
                         R.drawable.upvote
                     } else {
                         R.drawable.upvote_bnw
@@ -348,8 +339,6 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
     Button(
         onClick = {
             viewModel.handleVote("dislike", eventId)
-            liked = viewModel.isLiked(eventId)
-            disliked = viewModel.isDisliked(eventId)
            // Log.d("------------ ", "------------")
            // Log.d("Event with id: ", eventId.toString())
            // Log.d("on button clicked dislike!! ", disliked.toString())
@@ -363,6 +352,7 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
             //.fillMaxWidth()
             .scale(scaleX = 1f, scaleY = 1f),
         shape = RoundedCornerShape(28.dp),
+        enabled = !viewModel.isDisliked(eventId),
         // contentPadding = PaddingValues(15.dp),
         // border = BorderStroke(1.dp, Color.Gray)
     ) {
@@ -374,7 +364,7 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
         ) {
             Image(
                 painter = painterResource(
-                    id = if (disliked) {
+                    id = if (viewModel.isDisliked(eventId)) {
                         R.drawable.downvote
                     } else {
                         R.drawable.downvote_bnw
@@ -460,7 +450,7 @@ private fun EventList(
     eventList: List<Event>,
     onEventClick: (event: Event) -> Unit,
     onLoadMore: () -> Unit,
-    viewModel: EventListViewModel
+    viewModel: EventListViewModelAttending
 ) {
     val listState = rememberLazyListState()
     LazyColumn(

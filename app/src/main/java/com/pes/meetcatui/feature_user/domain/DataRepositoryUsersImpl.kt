@@ -1,19 +1,17 @@
 package com.pes.meetcatui.feature_user.domain
 
+import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.data.DataPreferences
 import com.pes.meetcatui.network.Friendships.FriendshipData
-import com.pes.meetcatui.network.Friendships.GetFriendshipsData
 import com.pes.meetcatui.network.MeetCatApi
 import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import okhttp3.FormBody
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import org.json.JSONObject
 import retrofit2.Response
 
 class DataRepositoryUsersImpl(
@@ -65,9 +63,33 @@ class DataRepositoryUsersImpl(
         return user
     }
 
+    override suspend fun getUserByAuth(): Flow<Resource<UserData>> = flow {
+        try {
+            var accessToken: String = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            emit(Resource.Loading())
+            val userResponse = meetCatApi.getUserByAuth(accessToken)
+            if (userResponse.isSuccessful) {
+                emit(Resource.Success(userResponse.body()!!))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error("Exception: ${e.message}"))
+        }
+    }
+
     override suspend fun postUser(user: UserData) : Response<UserData>{
         val user = meetCatApi.postUser(user)
         return user
+    }
+
+    override suspend fun update(user: UserData) : Response<UserData>{
+        var accessToken = "Bearer "
+        runBlocking(Dispatchers.IO) {
+            accessToken += dataPreferences.getAccessToken().first()
+        }
+        return meetCatApi.updateUser(user.id!!, user, accessToken)
     }
 
     override suspend fun removeAccount(id: Long): Response<UserData> {

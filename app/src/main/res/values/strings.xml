@@ -31,4 +31,10 @@
     <string name="delete">Delete</string>
     <string name="create">Create</string>
     <string name="date">Date</string>
+    <string name="email" translatable="false">e-mail</string>
+    <string name="bio" translatable="false">Bio</string>
+    <string name="save">Save</string>
+    <string name="logout">Log Out</string>
+    <string name="closeAccount">Delete Account</string>
+    <string name="aboutPlaceholder">Describe yourself</string>
 </resources>

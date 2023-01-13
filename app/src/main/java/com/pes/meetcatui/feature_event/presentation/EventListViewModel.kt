@@ -8,6 +8,8 @@ import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedListViewModel
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelAttending
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelOwn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -16,10 +18,10 @@ open class EventListViewModel(
 ) : EventViewModel(dataRepository) {
 
     protected val page = mutableStateOf(0)
-    protected val titleSearch: MutableState<String?> = mutableStateOf(null)
+    protected val titleSearch : MutableState<String?> = mutableStateOf(null)
 
     init {
-        if (this !is ReportedListViewModel) {
+        if (this !is ReportedListViewModel && this !is EventListViewModelAttending && this !is EventListViewModelOwn) {
             viewModelScope.launch {
                 initSuper()
                 setData()
@@ -104,72 +106,4 @@ open class EventListViewModel(
         }
     }
 
-     fun likeEvent(eventId: Long, username: String): Boolean {
-        viewModelScope.launch { dataRepository.likeEvent(eventId, username) }
-        isLiked(eventId, username)
-        //hasLiked = !hasLiked
-        //hasDisLiked = false
-        return true
-    }
-
-    fun dislikeEvent(eventId: Long, username: String): Boolean {
-        viewModelScope.launch { dataRepository.dislikeEvent(eventId, username) }
-        isDisliked(eventId, username)
-        //hasDisLiked = !hasDisLiked
-        //hasLiked = false
-        return true
-    }
-
-     fun isLiked(eventId: Long, username: String?): Boolean = runBlocking{
-        var liked = false
-
-            if (username != null) {
-                dataRepository.getLiked(eventId, username).collect { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            liked = resource.data!!
-                           // Log.d("------------ ", "------------")
-                           // Log.d("Event with id: ", eventId.toString())
-                          //  Log.d("isLiked resource success value: ", liked.toString())
-
-                        }
-                    }
-                }
-            }
-
-        //Log.d("isLiked return resource success value: ", liked.toString())
-        return@runBlocking liked
-    }
-
-    fun isDisliked(eventId: Long, username: String?): Boolean = runBlocking{
-        var disliked = false
-
-        if (username != null) {
-            dataRepository.getDisliked(eventId, username).collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        disliked = resource.data!!
-                        //Log.d("------------ ", "------------")
-                        //Log.d("Event with id: ", eventId.toString())
-                       // Log.d("isLiked resource success value: ", disliked.toString())
-
-                    }
-                }
-            }
-        }
-
-        //Log.d("isLiked return resource success value: ", disliked.toString())
-        return@runBlocking disliked
-    }
-
-     fun handleVote(vote: String, eventId: Long, username: String) {
-        when (vote) {
-            "like" -> {
-                likeEvent(eventId, username)
-            }
-            "dislike" -> {
-                dislikeEvent(eventId, username)
-            }
-        }
-    }
 }

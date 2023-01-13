@@ -32,4 +32,8 @@
     <string name="edit">Edita</string>
     <string name="create">Crea</string>
     <string name="date">Fecha</string>
+    <string name="save">Guarda</string>
+    <string name="logout">Cierra Sesión</string>
+    <string name="closeAccount">Eliminar Cuenta</string>
+    <string name="aboutPlaceholder">Descríbete</string>
 </resources>

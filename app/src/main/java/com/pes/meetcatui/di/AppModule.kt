@@ -8,6 +8,8 @@ import com.pes.meetcatui.feature_event.presentation.EventListViewModel
 import com.pes.meetcatui.feature_event.presentation.MapViewModel
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterViewModel
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedListViewModel
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelAttending
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelOwn
 import com.pes.meetcatui.feature_user.presentation.screen_login.ProfileViewModel
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import kotlinx.coroutines.SupervisorJob
@@ -64,6 +66,16 @@ val appModule = module {
     }
     viewModel {
         FriendsListViewModel(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        EventListViewModelOwn(
+            dataRepository = get(),
+        )
+    }
+    viewModel {
+        EventListViewModelAttending(
             dataRepository = get(),
         )
     }

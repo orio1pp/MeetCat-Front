@@ -73,6 +73,54 @@ class DataRepositoryImpl(
         }
     }
 
+    override fun getOwnEvents(): Flow<Resource<EventPage>> = flow {
+        try {
+            var accessToken: String = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getMyEvents(accessToken)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
+    override fun getAttendedEvents(): Flow<Resource<EventPage>> = flow {
+        try {
+            var accessToken: String = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            emit(Resource.Loading())
+            val apiResponse = meetcatApi.getComingEvents(accessToken)
+            if (apiResponse.isSuccessful) {
+                val result = buildEventList(apiResponse.body()!!)
+
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error("Api is unsuccessful"))
+            }
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+    }
+
     override fun getReportedEvents(pageNum: Int, title: String?): Flow<Resource<EventPage>> = flow {
         try {
             emit(Resource.Loading())
@@ -285,9 +333,13 @@ class DataRepositoryImpl(
         }
     }
 
-    override suspend fun likeEvent(eventId: Long, username: String) : String{
+    override suspend fun likeEvent(eventId: Long) : String{
         try {
-            meetcatApi.likeEvent(eventId, username)
+            var accessToken = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+            meetcatApi.likeEvent(eventId, accessToken)
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
@@ -298,9 +350,14 @@ class DataRepositoryImpl(
         }
     }
 
-    override suspend fun dislikeEvent(eventId: Long, username: String) : String{
+    override suspend fun dislikeEvent(eventId: Long) : String{
         try {
-            meetcatApi.dislikeEvent(eventId, username)
+            var accessToken = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+
+            meetcatApi.dislikeEvent(eventId, accessToken)
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")
@@ -311,14 +368,15 @@ class DataRepositoryImpl(
         }
     }
 
-    override fun getLiked(eventId: Long, username: String): Flow<Resource<Boolean>> = flow {
+    override fun getLiked(eventId: Long): Flow<Resource<Boolean>> = flow {
         try {
-            //var accessToken: String = "Bearer "
-           // runBlocking(Dispatchers.IO) {
-             //   accessToken += dataPreferences.getAccessToken().first()
-            //}
+            var accessToken = "Bearer "
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+            }
+
             emit(Resource.Loading())
-            val likedResponse = meetcatApi.getLiked(eventId, username)
+            val likedResponse = meetcatApi.getLiked(eventId, accessToken)
             if (likedResponse.isSuccessful) {
                 emit(Resource.Success(likedResponse.body()!!))
             }
@@ -332,14 +390,14 @@ class DataRepositoryImpl(
     }
 
 
-    override fun getDisliked(eventId: Long, username: String): Flow<Resource<Boolean>> = flow{
+    override fun getDisliked(eventId: Long): Flow<Resource<Boolean>> = flow{
         try {
-            //var accessToken: String = "Bearer "
-            // runBlocking(Dispatchers.IO) {
-            //   accessToken += dataPreferences.getAccessToken().first()
-            //}
+            var accessToken: String = "Bearer "
+             runBlocking(Dispatchers.IO) {
+               accessToken += dataPreferences.getAccessToken().first()
+             }
             emit(Resource.Loading())
-            val dislikedResponse = meetcatApi.getDisliked(eventId, username)
+            val dislikedResponse = meetcatApi.getDisliked(eventId, accessToken)
             if (dislikedResponse.isSuccessful) {
                 emit(Resource.Success(dislikedResponse.body()!!))
             }

@@ -43,7 +43,6 @@ class MapViewModel(
                 mapState.value.gpsCoords.longitude,
                 1.0
             )
-            checkAdmin()
         }
     }
 
@@ -60,54 +59,6 @@ class MapViewModel(
                     }
                     is Resource.Loading -> {
                         ;
-                    }
-                }
-            }
-    }
-
-    suspend fun setChargersData(latitude: Double, longitude: Double, distance: Double) {
-        dataRepository.getNearestChargers(latitude, longitude, distance)
-            .collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        chargers.value = ChargerScreenState(
-                            data = resource.data as MutableList<Charger>
-                        )
-                    }
-                    is Resource.Error -> {
-                        chargers.value = ChargerScreenState(
-                            hasError = true,
-                            errorMessage = resource.message
-                        )
-                    }
-                    is Resource.Loading -> {
-                        chargers.value = ChargerScreenState(
-                            isLoading = true
-                        )
-                    }
-                }
-            }
-    }
-
-    suspend fun setBikesData(latitude: Double, longitude: Double, distance: Double) {
-        dataRepository.getNearestBikes(latitude, longitude, distance)
-            .collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        bikes.value = BikeScreenState(
-                            data = resource.data as MutableList<Bike>
-                        )
-                    }
-                    is Resource.Error -> {
-                        bikes.value = BikeScreenState(
-                            hasError = true,
-                            errorMessage = resource.message
-                        )
-                    }
-                    is Resource.Loading -> {
-                        bikes.value = BikeScreenState(
-                            isLoading = true
-                        )
                     }
                 }
             }
@@ -134,6 +85,54 @@ class MapViewModel(
                     }
                     is Resource.Loading -> {
                         events.value = EventScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+    }
+
+    private suspend fun setChargersData(latitude: Double, longitude: Double, distance: Double) {
+        dataRepository.getNearestChargers(latitude, longitude, distance)
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        chargers.value = ChargerScreenState(
+                            data = resource.data as MutableList<Charger>
+                        )
+                    }
+                    is Resource.Error -> {
+                        chargers.value = ChargerScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        chargers.value = ChargerScreenState(
+                            isLoading = true
+                        )
+                    }
+                }
+            }
+    }
+
+    private suspend fun setBikesData(latitude: Double, longitude: Double, distance: Double) {
+        dataRepository.getNearestBikes(latitude, longitude, distance)
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        bikes.value = BikeScreenState(
+                            data = resource.data as MutableList<Bike>
+                        )
+                    }
+                    is Resource.Error -> {
+                        bikes.value = BikeScreenState(
+                            hasError = true,
+                            errorMessage = resource.message
+                        )
+                    }
+                    is Resource.Loading -> {
+                        bikes.value = BikeScreenState(
                             isLoading = true
                         )
                     }

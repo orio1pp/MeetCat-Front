@@ -64,4 +64,14 @@ sealed class BottomBarScreen (
         title = "FriendsList",
         icon = Icons.Default.MailOutline
     )
+    object MyEvents: BottomBarScreen(
+        route = "myEvents",
+        title = "MyEvents",
+        icon = Icons.Default.Create
+    )
+    object ComingEvents: BottomBarScreen(
+        route = "coming",
+        title = "Coming",
+        icon = Icons.Default.Create
+    )
 }

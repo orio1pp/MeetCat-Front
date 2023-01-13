@@ -80,7 +80,7 @@ val appModule = module {
         )
     }
     viewModel {
-        FriendSearchViewModel(
+        UserSearchViewModel(
             dataRepository = get(),
         )
     }

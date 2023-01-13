@@ -7,6 +7,7 @@ import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 abstract class EventViewModel (
     open val dataRepository: DataRepository,

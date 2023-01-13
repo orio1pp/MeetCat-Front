@@ -333,7 +333,7 @@ class DataRepositoryImpl(
         }
     }
 
-    override suspend fun likeEvent(eventId: Long, username: String) : String{
+    override suspend fun likeEvent(eventId: Long) : String{
         try {
             var accessToken = "Bearer "
             runBlocking(Dispatchers.IO) {

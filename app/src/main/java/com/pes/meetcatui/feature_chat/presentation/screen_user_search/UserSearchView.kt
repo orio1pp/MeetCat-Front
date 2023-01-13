@@ -168,15 +168,17 @@ fun UserBox(
             Row(
                 modifier = Modifier.padding(16.dp, top = 44.dp),
             ) {
-                Text(
-                    modifier = Modifier
-                        .width(256.dp),
-                    text = about!!,
-                    color = LightGray,
-                    style = typo.body1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (about!= null) {
+                    Text(
+                        modifier = Modifier
+                            .width(256.dp),
+                        text = about,
+                        color = LightGray,
+                        style = typo.body1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
         Column(

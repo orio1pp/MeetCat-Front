@@ -123,8 +123,14 @@ class DataRepositoryImpl(
 
     override fun getReportedEvents(pageNum: Int, title: String?): Flow<Resource<EventPage>> = flow {
         try {
+            var accessToken: String = "Bearer "
+            var username: String
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+                username = dataPreferences.getUser().first()
+            }
             emit(Resource.Loading())
-            val apiResponse = meetcatApi.getReportedEventsWithTitle(pageNum, 20, title)
+            val apiResponse = meetcatApi.getReportedEventsWithTitle(pageNum, 20, title, accessToken)
             if (apiResponse.isSuccessful) {
                 val result = buildEventList(apiResponse.body()!!)
 
@@ -296,6 +302,7 @@ class DataRepositoryImpl(
             emit(Resource.Loading())
             val userResponse = meetcatApi.getUserByAuth(accessToken)
             if (userResponse.isSuccessful) {
+
                 emit(Resource.Success(userResponse.body()!!.username))
             }
         } catch (e: IOException) {
@@ -322,7 +329,13 @@ class DataRepositoryImpl(
 
     override suspend fun unreportEvent(event: Event): String {
         try {
-            meetcatApi.unreportEvent(event.eventId);
+            var accessToken: String = "Bearer "
+            var username: String
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+                username = dataPreferences.getUser().first()
+            }
+            meetcatApi.unreportEvent(event.eventId, accessToken);
             return ("Api is successful")
         } catch (e: IOException) {
             return ("IO Exception: ${e.message}")

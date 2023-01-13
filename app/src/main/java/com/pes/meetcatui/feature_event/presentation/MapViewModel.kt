@@ -43,6 +43,7 @@ class MapViewModel(
                 mapState.value.gpsCoords.longitude,
                 1.0
             )
+            checkAdmin()
         }
     }
 

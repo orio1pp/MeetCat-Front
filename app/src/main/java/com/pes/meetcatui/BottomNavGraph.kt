@@ -13,6 +13,7 @@ import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen
 import com.pes.meetcatui.feature_event.presentation.MapScreen
+import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedEventsListScreen
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 import org.koin.androidx.compose.getViewModel
@@ -63,6 +64,7 @@ fun BottomNavGraph(
                 globalEvent = globalEvent,
                 navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
                 navToEventList = { navController.navigate(BottomBarScreen.Events.route) },
+                navToReportedEvents = { navController.navigate(BottomBarScreen.ReportedEvents.route)},
                 fusedLocationClient = fusedLocationClient
             )
         }
@@ -76,6 +78,11 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Register.route) {
             RegisterScreen(getViewModel())
+        }
+        composable(BottomBarScreen.ReportedEvents.route) {
+            ReportedEventsListScreen(viewModel = getViewModel(), navToMap = {
+                navController.navigate(BottomBarScreen.Map.route)
+            })
         }
         composable(BottomBarScreen.UserSearch.route) {
             UserSearchScreen(

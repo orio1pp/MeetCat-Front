@@ -1,6 +1,7 @@
 package com.pes.meetcatui.feature_event.presentation
 
 import android.location.Location
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.LocationCallback
@@ -22,6 +23,7 @@ class MapViewModel(
     val mapState = mutableStateOf(MapScreenState())
     val chargers = mutableStateOf(ChargerScreenState())
     val bikes = mutableStateOf(BikeScreenState())
+    val isAdmin = mutableStateOf(false)
 
     private val locationRequest = LocationRequest
         .Builder(120000)
@@ -41,7 +43,26 @@ class MapViewModel(
                 mapState.value.gpsCoords.longitude,
                 1.0
             )
+            checkAdmin()
         }
+    }
+
+    suspend fun checkAdmin() {
+        dataRepository.getAdminStatus()
+            .collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        if (resource.data != null && resource.data == true)
+                            isAdmin.value = resource.data
+                    }
+                    is Resource.Error -> {
+                        ;
+                    }
+                    is Resource.Loading -> {
+                        ;
+                    }
+                }
+            }
     }
 
     suspend fun setChargersData(latitude: Double, longitude: Double, distance: Double) {

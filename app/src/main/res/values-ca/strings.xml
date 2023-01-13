@@ -17,7 +17,23 @@
     <string name="place">Lloc</string>
     <string name="address">Direcció</string>
     <string name="createEventErrorFieldsEmpty">Has deixat paràmetres sense omplir, si us plau ompliu tots els paràmetres</string>
-    <string name="createEventErrorDateIsNotDate">La data introduïda no és una data, si us plau, introduïu una data</string>
+    <string name="createEventInitDateGreaterThanEnd">L\'esdeveniment no pot començar després d\'acabar.</string>
     <string name="createEventErrorURLIsNotValid">La URL introduïda no és una URL vàlida, si us plau, introduïu una URL vàlida</string>
     <string name="createEventErrorLocationIsNotCorrectFormat">La localització no està en el format correcte, si us plau utilitzeu \"lat,lon\"</string>
+    <string name="join">Apunta\'t</string>
+    <string name="leave">Marxa</string>
+    <string name="atendees">Assistents</string>
+    <string name="areYouSureToReportMsg">Segur que vol reportar aquest event?</string>
+    <string name="confirm">Confirmar</string>
+    <string name="createEventInitDateIsPast">No pots començar un event avans d\'avui</string>
+    <string name="organizer">Organitzat per</string>
+    <string name="distance">Distància</string>
+    <string name="edit">Edita</string>
+    <string name="delete">Suprimeix</string>
+    <string name="create">Crea</string>
+    <string name="date">Data</string>
+    <string name="save">Desa</string>
+    <string name="logout">Surt</string>
+    <string name="closeAccount">Esborra Compte</string>
+    <string name="aboutPlaceholder">Descriu-te</string>
 </resources>

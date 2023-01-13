@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlinx-serialization'
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id "org.sonarqube" version "3.5.0.2730"
 }
 
 android {
@@ -119,4 +120,5 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
 }
+
 

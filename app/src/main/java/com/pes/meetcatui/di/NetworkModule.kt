@@ -3,6 +3,7 @@ package com.pes.meetcatui.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.pes.meetcatui.BuildConfig
 import com.pes.meetcatui.network.MeetCatApi
+import com.pes.meetcatui.network.MeetCatApiInterceptor
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -36,6 +37,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<HttpLoggingInterceptor>())
+            //.addInterceptor(get<MeetCatApiInterceptor>())
             .callTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
             .connectTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
             .readTimeout(REQUEST_TIME_OUT, TimeUnit.SECONDS)
@@ -50,6 +52,10 @@ val networkModule = module {
                 HttpLoggingInterceptor.Level.NONE
             }
         }
+    }
+
+    single {
+        MeetCatApiInterceptor(get(), get())
     }
 }
 

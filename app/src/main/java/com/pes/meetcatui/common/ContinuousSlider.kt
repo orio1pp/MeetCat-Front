@@ -13,7 +13,7 @@ import com.pes.meetcatui.ui.theme.typo
 import kotlin.math.roundToInt
 
 @Composable
-fun ContinuousSlider(start: Float, end: Float) {
+fun ContinuousSlider(start: Float, end: Float, state: MutableState<Int>) {
     val range = start..end
     var sliderPosition by remember { mutableStateOf(start) }
     Row {
@@ -25,7 +25,10 @@ fun ContinuousSlider(start: Float, end: Float) {
         Slider(
             value = sliderPosition,
             valueRange = range,
-            onValueChange = { sliderPosition = it },
+            onValueChange = {
+                sliderPosition = it
+                state.value = it.toInt()
+            },
             colors = SliderDefaults.colors(
                 thumbColor = Highlight,
                 activeTrackColor = Highlight,

@@ -79,9 +79,4 @@ val appModule = module {
             dataRepository = get(),
         )
     }
-    viewModel {
-        UserSearchViewModel(
-            dataRepository = get(),
-        )
-    }
 }

@@ -35,7 +35,7 @@ fun filtersSelection(
         Column(modifier = Modifier.width(96.dp)) {
             Text(
                 modifier = Modifier.padding(vertical = 12.dp),
-                text = "Data",
+                text = stringResource(R.string.date),
                 style = typo.body1,
             )
         }

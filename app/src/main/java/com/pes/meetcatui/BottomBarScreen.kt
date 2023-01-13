@@ -44,4 +44,14 @@ sealed class BottomBarScreen (
         title = "Login",
         icon = Icons.Default.Create
     )
+    object MyEvents: BottomBarScreen(
+        route = "myEvents",
+        title = "MyEvents",
+        icon = Icons.Default.Create
+    )
+    object ComingEvents: BottomBarScreen(
+        route = "coming",
+        title = "Coming",
+        icon = Icons.Default.Create
+    )
 }

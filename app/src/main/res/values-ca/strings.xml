@@ -31,4 +31,9 @@
     <string name="edit">Edita</string>
     <string name="delete">Suprimeix</string>
     <string name="create">Crea</string>
+    <string name="date">Data</string>
+    <string name="save">Desa</string>
+    <string name="logout">Surt</string>
+    <string name="closeAccount">Esborra Compte</string>
+    <string name="aboutPlaceholder">Descriu-te</string>
 </resources>

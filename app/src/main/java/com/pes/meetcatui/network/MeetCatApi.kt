@@ -1,7 +1,11 @@
 package com.pes.meetcatui.network
 
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
+import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.green_wheel.BikeData
+import com.pes.meetcatui.network.green_wheel.ChargerData
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -19,6 +23,12 @@ interface MeetCatApi {
 
     @DELETE("events/{eventId}")
     suspend fun deleteEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken: String): Response<Unit>
+
+    @GET("events/coming")
+    suspend fun getComingEvents(@Header("Authorization") accessToken: String): Response<EventsData>
+
+    @GET("events/me")
+    suspend fun getMyEvents(@Header("Authorization") accessToken: String): Response<EventsData>
 
     @GET("events")
     suspend fun getEvents(@Query("page") page: Int?, @Query("size") size:Int?): Response<EventsData>
@@ -59,6 +69,9 @@ interface MeetCatApi {
     @GET("users/me")
     suspend fun getUserByAuth(@Header("Authorization") accessToken : String): Response<UserData>
 
+    @PUT("users/{id}")
+    suspend fun updateUser(@Path("id") id: Long, @Body user: UserData, @Header("Authorization") accessToken: String): Response<UserData>
+
     @POST("friendship")
     suspend fun addFriend(@Body friendship: FriendshipData, @Header("Authorization") accessToken : String): Response<FriendshipData>
 
@@ -74,4 +87,28 @@ interface MeetCatApi {
 
     @GET("events/nearest")
     suspend fun getNearestEvents(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<EventsData>
+
+    @PUT("like/{eventId}/like")
+    suspend fun likeEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken : String)
+
+    @PUT("like/{eventId}/dislike")
+    suspend fun dislikeEvent(@Path("eventId") eventId: Long,  @Header("Authorization") accessToken : String)
+
+    @DELETE("like/{eventId}/like")
+    suspend fun deleteLikeEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken : String)
+
+    @DELETE("like/{eventId}/dislike")
+    suspend fun deleteDislikeEvent(@Path("eventId") eventId: Long,  @Header("Authorization") accessToken : String)
+
+    @GET("like/{eventId}/liked")
+    suspend fun getLiked(@Path("eventId") eventId: Long, @Header("Authorization") accessToken : String): Response<Boolean>
+
+    @GET("like/{eventId}/disliked")
+    suspend fun getDisliked(@Path("eventId") eventId: Long, @Header("Authorization") accessToken : String): Response<Boolean>
+
+    @GET("greenwheel/chargers")
+    suspend fun getNearestChargers(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<List<ChargerData>>
+
+    @GET("greenwheel/bikes")
+    suspend fun getNearestBikes(@Query("latitude") latitude: Double, @Query("longitude") longitude:Double, @Query("distance")distance:Double): Response<List<BikeData>>
 }

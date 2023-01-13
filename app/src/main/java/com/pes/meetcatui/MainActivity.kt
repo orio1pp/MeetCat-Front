@@ -1,7 +1,6 @@
 package com.pes.meetcatui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -24,12 +23,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.pes.meetcatui.feature_chat.presentation.screen_friend_search.FriendSearchScreen
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterViewModel
-import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
-import org.koin.androidx.compose.get
-
+import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModel
+import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginViewModel
 import com.pes.meetcatui.ui.theme.MeetCatUITheme
 import org.koin.androidx.compose.getViewModel
 
@@ -49,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     App(
                         fusedLocationClient = fusedLocationClient,
                         lastSignedAccount = GoogleSignIn.getLastSignedInAccount(this),
-                        registerViewModel = getViewModel()
+                        registerViewModel = getViewModel(),
+                        normalLoginViewModel = getViewModel(),
                     )
                 }
             }
@@ -61,7 +59,8 @@ class MainActivity : ComponentActivity() {
 private fun App(
     fusedLocationClient: FusedLocationProviderClient,
     lastSignedAccount: GoogleSignInAccount?,
-    registerViewModel: RegisterViewModel
+    registerViewModel: RegisterViewModel,
+    normalLoginViewModel: NormalLoginViewModel,
     ) {
     val navController = rememberNavController()
 
@@ -74,13 +73,12 @@ private fun App(
     }
 
     if (lastSignedAccount != null) {
-        //Log.d("EMAIL = ", SavedPreference.EMAIL)
         val context = LocalContext.current
 
         SavedPreference.getUsername(context)
             ?.let {
-                //Log.d("(main activity) saved preference username is", it)
                 registerViewModel.tryRegister(it, it)
+                normalLoginViewModel.login(it, it)
             }
         setVisible(true)
         AppComposable(
@@ -93,7 +91,6 @@ private fun App(
         )
     }
     else {
-        //Log.d("EMAIL = ", SavedPreference.EMAIL)
         AppComposable(
             navController = navController,
             initRoute = BottomBarScreen.Login.route,

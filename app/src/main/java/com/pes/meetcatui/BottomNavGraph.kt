@@ -10,6 +10,8 @@ import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen
 import com.pes.meetcatui.feature_event.presentation.MapScreen
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListScreenAttending
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListScreenOwn
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 import org.koin.androidx.compose.getViewModel
@@ -34,7 +36,15 @@ fun BottomNavGraph(
             )
         }
         composable(BottomBarScreen.Profile.route) {
-            ProfileScreen(viewModel = getViewModel())
+            ProfileScreen(
+                viewModel = getViewModel(),
+                navToUserEvents = {
+                    navController.navigate(BottomBarScreen.MyEvents.route)
+                },
+                navToComingEvents = {
+                    navController.navigate(BottomBarScreen.ComingEvents.route)
+                }
+            )
         }
         composable(BottomBarScreen.CreateEvent.route) {
             CreateOrEditEventView(
@@ -42,6 +52,26 @@ fun BottomNavGraph(
                 event = null,
                 navToEvents = {
                     navController.navigate(BottomBarScreen.Events.route)
+                }
+            )
+        }
+        composable(BottomBarScreen.MyEvents.route) {
+            EventListScreenOwn(
+                viewModel = getViewModel(),
+                globalEvent = globalEvent,
+                navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
+                navToMap = {
+                    navController.navigate(BottomBarScreen.Map.route)
+                }
+            )
+        }
+        composable(BottomBarScreen.ComingEvents.route) {
+            EventListScreenAttending(
+                viewModel = getViewModel(),
+                globalEvent = globalEvent,
+                navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
+                navToMap = {
+                    navController.navigate(BottomBarScreen.Map.route)
                 }
             )
         }

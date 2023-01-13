@@ -1,52 +1,47 @@
 package com.pes.meetcatui
 
+//import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.ui.theme.MeetCatUITheme
-import coil.compose.rememberImagePainter
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
+import coil.compose.rememberImagePainter
+import com.pes.meetcatui.common.SpaceDp
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModel
 import com.pes.meetcatui.feature_user.presentation.screen_login.LoginViewModelFactory
 import com.pes.meetcatui.feature_user.presentation.screen_login.ProfileViewModel
-//import com.pes.meetcatui.feature_user.presentation.screen_login.LoginView
 import com.pes.meetcatui.ui.theme.typo
-import org.koin.androidx.compose.get
 
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel) {
+fun ProfileScreen(viewModel: ProfileViewModel, navToUserEvents: () -> Unit, navToComingEvents: () -> Unit) {
 
     val notification = rememberSaveable { mutableStateOf("") }
 
@@ -57,32 +52,21 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
 
     val context = LocalContext.current
 
-    var name by rememberSaveable { mutableStateOf(SavedPreference.getEmail(context)) }
-    var username by rememberSaveable { mutableStateOf(SavedPreference.getUsername(context)) }
-    var bio by rememberSaveable { mutableStateOf("default bio") }
+    val user by viewModel.user
+    val loading by viewModel.loading
 
+    val dirty = remember { mutableStateOf(false) }
+    
+    val about = remember { mutableStateOf(if (user == null) "" else user!!.about) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(8.dp)
-        //.verticalScroll(rememberScrollState())
+
         , horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = "Cancel",
-                modifier = Modifier.clickable { notification.value = "Cancelled" }
-            )
-            Text(text = "Save",
-                modifier = Modifier.clickable { notification.value = "Saved" }
-            )
-        }
-
         ProfileImage()
 
         Row(
@@ -91,66 +75,84 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Name", modifier = Modifier.width(100.dp))
-            name?.let {
-                TextField(
-                    value = it,
-                    onValueChange = { name = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
-                    )
-                )
-            }
+            Text(
+                text = stringResource(id = R.string.email),
+                modifier = Modifier
+                    .width(100.dp)
+                    .padding(top = 32.dp),
+                textAlign = TextAlign.Left
+            )
+
+            if (!loading) TextField(
+                value = user!!.username,
+                onValueChange = {
+
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.Black
+                ),
+            )
         }
-
-
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
-            username?.let {
-                TextField(
-                    value = it,
-                    onValueChange = { username = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.Transparent,
-                        textColor = Color.Black
-                    )
-                )
-            }
-        }
-
-
-
+        
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.Top
         ) {
-            Text(text = "Bio", modifier = Modifier
-                .width(100.dp)
-                .padding(top = 8.dp))
-            TextField(
-                value = bio,
-                onValueChange = { bio = it },
+            Text(
+                text = stringResource(id = R.string.bio),
+                modifier = Modifier
+                    .width(100.dp)
+                    .padding(32.dp),
+                textAlign = TextAlign.Left
+            )
+            if (!loading) TextField(
+                value = about.value!!,
+                onValueChange = { text ->
+                    dirty.value = text != about.value
+                    about.value = text
+                },
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
-                    textColor = Color.Magenta
+                    textColor = Color.Black
                 ),
                 singleLine = false,
-                modifier = Modifier.height(150.dp)
+                modifier = Modifier.height(150.dp),
+                placeholder = { Text(stringResource(id = R.string.aboutPlaceholder)) }
             )
         }
 
-        CustomButtonTancarSessio()
-        CustomButtonTancarCompte(viewModel)
+        Row {
+            ComingEvents(navToComingEvents)
+            Spacer(modifier = Modifier.width(235.dp))
+            MyEventsButton(navToUserEvents)
+        }
 
+        SpaceDp()
+
+        Button(
+            modifier = Modifier.width(120.dp),
+            onClick = {
+                viewModel.updateBio(about.value!!)
+            },
+            shape = RoundedCornerShape(32.dp),
+            enabled = dirty.value,
+        ) {
+            Text(
+                text = stringResource(id = R.string.save),
+                textAlign = TextAlign.Center,
+            )
+        }
+
+        SpaceDp()
+
+        CustomButtonTancarSessio()
+
+        SpaceDp(4)
+
+        CustomButtonTancarCompte(viewModel)
     }
 
 }
@@ -174,7 +176,6 @@ fun ProfileImage() {
 
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
             .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -201,10 +202,8 @@ fun ProfileImage() {
 
 @Composable
 fun CustomButtonTancarSessio() {
-    val text = "Sign out"
     val context = LocalContext.current
     val viewModel: LoginViewModel =
-
         viewModel(factory = LoginViewModelFactory(context.applicationContext as Application))
 
     Button(
@@ -216,20 +215,20 @@ fun CustomButtonTancarSessio() {
             backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
             contentColor = Color.White
         ),
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(50)
+        modifier = Modifier.width(120.dp),
+        shape = RoundedCornerShape(32.dp),
     )
     {
         Text(
-            text = text,
-            style = typo.body1
+            text = stringResource(id = R.string.logout),
+            style = typo.body1,
+            textAlign = TextAlign.Center,
         )
     }
 }
 
 @Composable
 fun CustomButtonTancarCompte(viewModel: ProfileViewModel) {
-    val text = "Close Account"
     val context = LocalContext.current
     Button(
         onClick = {
@@ -240,22 +239,56 @@ fun CustomButtonTancarCompte(viewModel: ProfileViewModel) {
             backgroundColor = Color.hsv(0f, 0.73f, 0.69f),
             contentColor = Color.White
         ),
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(50)
+        modifier = Modifier.width(120.dp),
+        shape = RoundedCornerShape(32.dp),
     )
     {
         Text(
-            text = text,
-            style = typo.body1
+            text = stringResource(id = R.string.closeAccount),
+            style = typo.body1,
+            textAlign = TextAlign.Center,
         )
     }
 }
 
-
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    MeetCatUITheme {
-        ProfileScreen(viewModel = get())
+fun MyEventsButton(function: () -> Unit = {}) {
+    FloatingActionButton(
+        onClick = function,
+        modifier = Modifier
+            .alpha(1.0f)
+            .padding(start = 16.dp, top = 16.dp)
+            .clip(CircleShape)
+            .border(2.dp, Color(0xFF838383), shape = CircleShape),
+        backgroundColor = Color(0xFFBEBEBE),
+        elevation = FloatingActionButtonDefaults.elevation(2.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Person,
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+            tint = Color(0xFF5A5A5A),
+        )
+    }
+}
+
+@Composable
+fun ComingEvents(function: () -> Unit = {}) {
+    FloatingActionButton(
+        onClick = function,
+        modifier = Modifier
+            .alpha(1.0f)
+            .padding(start = 16.dp, top = 16.dp)
+            .clip(CircleShape)
+            .border(2.dp, Color(0xFF838383), shape = CircleShape),
+        backgroundColor = Color(0xFFBEBEBE),
+        elevation = FloatingActionButtonDefaults.elevation(2.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.DateRange,
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+            tint = Color(0xFF5A5A5A),
+        )
     }
 }

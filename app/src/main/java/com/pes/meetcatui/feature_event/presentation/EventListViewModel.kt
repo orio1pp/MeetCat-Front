@@ -1,5 +1,6 @@
 package com.pes.meetcatui.feature_event.presentation
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,10 @@ import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedListViewModel
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelAttending
+import com.pes.meetcatui.feature_event.presentation.user_events.EventListViewModelOwn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 open class EventListViewModel(
     override val dataRepository: DataRepository,
@@ -17,7 +21,7 @@ open class EventListViewModel(
     protected val titleSearch : MutableState<String?> = mutableStateOf(null)
 
     init {
-        if (this !is ReportedListViewModel) {
+        if (this !is ReportedListViewModel && this !is EventListViewModelAttending && this !is EventListViewModelOwn) {
             viewModelScope.launch {
                 initSuper()
                 setData()
@@ -101,4 +105,5 @@ open class EventListViewModel(
             }
         }
     }
+
 }

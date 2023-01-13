@@ -7,6 +7,7 @@ import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.DataRepository
 import com.pes.meetcatui.feature_event.domain.Event
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 abstract class EventViewModel (
     open val dataRepository: DataRepository,
@@ -25,6 +26,7 @@ abstract class EventViewModel (
                         is Resource.Success -> {
                             username.value = resource.data!!
                         }
+                        else -> {}
                     }
                 }
         }
@@ -153,5 +155,74 @@ abstract class EventViewModel (
             isDetailsSelected = false,
             data = events.value.data
         )
+    }
+
+    fun isLiked(eventId: Long): Boolean = runBlocking{
+        var liked = false
+
+        if (username != null) {
+            dataRepository.getLiked(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        liked = resource.data!!
+                        // Log.d("------------ ", "------------")
+                        // Log.d("Event with id: ", eventId.toString())
+                        //  Log.d("isLiked resource success value: ", liked.toString())
+
+                    }
+                }
+            }
+        }
+
+        //Log.d("isLiked return resource success value: ", liked.toString())
+        return@runBlocking liked
+    }
+
+    fun isDisliked(eventId: Long): Boolean = runBlocking{
+        var disliked = false
+
+        if (username != null) {
+            dataRepository.getDisliked(eventId).collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        disliked = resource.data!!
+                        //Log.d("------------ ", "------------")
+                        //Log.d("Event with id: ", eventId.toString())
+                        // Log.d("isLiked resource success value: ", disliked.toString())
+
+                    }
+                }
+            }
+        }
+
+        //Log.d("isLiked return resource success value: ", disliked.toString())
+        return@runBlocking disliked
+    }
+
+    fun handleVote(vote: String, eventId: Long) {
+        when (vote) {
+            "like" -> {
+                likeEvent(eventId)
+            }
+            "dislike" -> {
+                dislikeEvent(eventId)
+            }
+        }
+    }
+
+    private fun likeEvent(eventId: Long): Boolean {
+        viewModelScope.launch { dataRepository.likeEvent(eventId) }
+        //isLiked(eventId)
+        //hasLiked = !hasLiked
+        //hasDisLiked = false
+        return true
+    }
+
+    private fun dislikeEvent(eventId: Long): Boolean {
+        viewModelScope.launch { dataRepository.dislikeEvent(eventId) }
+        //isDisliked(eventId)
+        //hasDisLiked = !hasDisLiked
+        //hasLiked = false
+        return true
     }
 }

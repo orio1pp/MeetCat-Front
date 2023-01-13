@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_event.presentation
+package com.pes.meetcatui.feature_event.presentation.user_events
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,16 +33,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pes.meetcatui.R
-import com.pes.meetcatui.SavedPreference
 import com.pes.meetcatui.common.BackButton
 import com.pes.meetcatui.feature_event.domain.Event
+import com.pes.meetcatui.feature_event.presentation.*
 import com.pes.meetcatui.ui.theme.LightGray
 import com.pes.meetcatui.ui.theme.typo
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun EventListScreen(
-    viewModel: EventListViewModel,
+fun EventListScreenOwn(
+    viewModel: EventListViewModelOwn,
     globalEvent: MutableState<Event?>,
     navToEditEvent: () -> Unit,
     navToMap: () -> Unit,
@@ -59,7 +58,7 @@ fun EventListScreen(
         && eventList.isDetailsSelected
     ) {
 
-        EventDetailsScreen(
+        EventDetailsScreenO(
             event = eventList.eventDetailsSelected!!,
             onClick = { viewModel.setNotSelected() },
             attendanceState = attendance,
@@ -78,9 +77,9 @@ fun EventListScreen(
             navToEditEvent = navToEditEvent,
 
             )
-        BackHandler { viewModel.setNotSelected() }
+        BackHandlerO { viewModel.setNotSelected() }
     } else {
-        EventListScreenContent(
+        EventListScreenContentO(
             viewModel = viewModel,
             eventList = eventList,
             navToMap = navToMap,
@@ -94,8 +93,8 @@ fun EventListScreen(
 }
 
 @Composable
-fun EventListScreenContent(
-    viewModel: EventListViewModel,
+fun EventListScreenContentO(
+    viewModel: EventListViewModelOwn,
     eventList: EventScreenState,
     navToMap: () -> Unit,
     onEventClick: (event: Event) -> Unit,
@@ -113,12 +112,6 @@ fun EventListScreenContent(
         Column(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            searchBar(
-                eventListViewModel = viewModel,
-                modifier = Modifier.padding(vertical = 8.dp),
-                text = if (searchText.value.isNotEmpty()) searchText else mutableStateOf(""),
-            )
-            filtersSelection(mutableStateOf(1))
             if (eventList.isLoading) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -144,7 +137,7 @@ fun EventListScreenContent(
                 }
             } else if (eventList.data != null) {
                 if (!eventList.isDetailsSelected) {
-                    EventList(
+                    EventListO(
                         eventList = eventList.data,
                         onEventClick = onEventClick,
                         onLoadMore = { viewModel.loadMore() },
@@ -157,7 +150,7 @@ fun EventListScreenContent(
 }
 
 @Composable
-fun EventDetailsScreen(
+fun EventDetailsScreenO(
     event: Event,
     onClick: () -> Unit,
     attendanceState: EventAttendanceState,
@@ -175,9 +168,6 @@ fun EventDetailsScreen(
         Row {
             BackButton(function = onClick)
             Spacer(modifier = Modifier.width(235.dp))
-            ReportButton(function = {
-                openDialog.value = true
-            })
         }
         Surface() {
             EventDetails(
@@ -216,31 +206,10 @@ fun EventDetailsScreen(
 }
 
 @Composable
-fun ReportButton(function: () -> Unit = {}) {
-    FloatingActionButton(
-        onClick = function,
-        modifier = Modifier
-            .alpha(1.0f)
-            .padding(start = 16.dp, top = 16.dp)
-            .clip(CircleShape)
-            .border(2.dp, Color(0xFF838383), shape = CircleShape),
-        backgroundColor = Color(0xFFBEBEBE),
-        elevation = FloatingActionButtonDefaults.elevation(2.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Warning,
-            contentDescription = null,
-            modifier = Modifier.size(40.dp),
-            tint = Color(0xFF5A5A5A),
-        )
-    }
-}
-
-@Composable
-fun EventView(
+fun EventViewO(
     event: Event,
     onEventClick: (event: Event) -> Unit,
-    viewModel: EventListViewModel
+    viewModel: EventListViewModelAttending
 ) {
     Column(
         modifier = Modifier
@@ -265,9 +234,6 @@ fun EventView(
                 event.address ?: ""
             )
         }
-        Row {
-            LikeButtons(viewModel = viewModel, eventId = event.eventId)
-        }
         Row(
             Modifier
                 .padding(horizontal = 8.dp)
@@ -277,115 +243,6 @@ fun EventView(
                 color = LightGray, modifier = Modifier
                     .height(1.dp)
                     .fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
-    var liked by remember {
-        mutableStateOf(
-            viewModel.isLiked(eventId)
-        )
-    }
-    var disliked by remember {
-        mutableStateOf(
-            viewModel.isDisliked(eventId)
-        )
-    }
-
-    //Log.d("------------ ", "------------")
-  //  Log.d("Event with id: ", eventId.toString())
-   // Log.d("on button liked: ", liked.toString())
-  //  Log.d("on button disliked: ", disliked.toString())
-   // Log.d("------------ ", "------------")
-    Button(
-        onClick = {
-            viewModel.handleVote("like", eventId)
-            liked = viewModel.isLiked(eventId)
-            disliked = viewModel.isDisliked(eventId)
-
-           // Log.d("------------ ", "------------")
-           // Log.d("Event with id: ", eventId.toString())
-           // Log.d("on button clicked like!! ", liked.toString())
-            //Log.d("------------ ", "------------")
-        },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.White,
-            contentColor = Color.Black
-        ),
-        modifier = Modifier
-            //.fillMaxWidth()
-            .scale(scaleX = 1f, scaleY = 1f),
-        shape = RoundedCornerShape(28.dp),
-        enabled = !liked,
-        // contentPadding = PaddingValues(15.dp),
-        // border = BorderStroke(1.dp, Color.Gray)
-    ) {
-        Card(
-            //shape = CircleShape,
-            modifier = Modifier
-                //.padding(8.dp)
-                .size(20.dp)
-        ) {
-            Image(
-                painter = painterResource(
-                    id = if (liked) {
-                        R.drawable.upvote
-                    } else {
-                        R.drawable.upvote_bnw
-                    }
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .scale(scaleX = 1.2f, scaleY = 1.2f),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-    Button(
-        onClick = {
-            viewModel.handleVote("dislike", eventId)
-            liked = viewModel.isLiked(eventId)
-            disliked = viewModel.isDisliked(eventId)
-           // Log.d("------------ ", "------------")
-           // Log.d("Event with id: ", eventId.toString())
-           // Log.d("on button clicked dislike!! ", disliked.toString())
-           // Log.d("------------ ", "------------")
-        },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.White,
-            contentColor = Color.Black
-        ),
-        modifier = Modifier
-            //.fillMaxWidth()
-            .scale(scaleX = 1f, scaleY = 1f),
-        shape = RoundedCornerShape(28.dp),
-        enabled = !disliked,
-        // contentPadding = PaddingValues(15.dp),
-        // border = BorderStroke(1.dp, Color.Gray)
-    ) {
-        Card(
-            //shape = CircleShape,
-            modifier = Modifier
-                //.padding(8.dp)
-                .size(20.dp)
-        ) {
-            Image(
-                painter = painterResource(
-                    id = if (disliked) {
-                        R.drawable.downvote
-                    } else {
-                        R.drawable.downvote_bnw
-                    }
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .scale(scaleX = 1.2f, scaleY = 1.2f),
-                contentScale = ContentScale.Crop
             )
         }
     }
@@ -449,19 +306,13 @@ private fun EventData(desc: String?, date: String?, location: String) {
     }
 }
 
-@Preview
-@Composable
-fun Test() {
-    //Screen(getViewModel())
-}
-
 
 @Composable
-private fun EventList(
+private fun EventListO(
     eventList: List<Event>,
     onEventClick: (event: Event) -> Unit,
     onLoadMore: () -> Unit,
-    viewModel: EventListViewModel
+    viewModel: EventListViewModelOwn
 ) {
     val listState = rememberLazyListState()
     LazyColumn(
@@ -476,13 +327,13 @@ private fun EventList(
             )
         }
     }
-    InfiniteListHandler(listState = listState) {
+    InfiniteListHandlerO(listState = listState) {
         onLoadMore()
     }
 }
 
 @Composable
-fun InfiniteListHandler(
+fun InfiniteListHandlerO(
     listState: LazyListState,
     buffer: Int = 2,
     onLoadMore: () -> Unit
@@ -507,7 +358,7 @@ fun InfiniteListHandler(
 }
 
 @Composable
-fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+fun BackHandlerO(enabled: Boolean = true, onBack: () -> Unit) {
     val currentOnBack by rememberUpdatedState(onBack)
 
     val backCallback = remember {

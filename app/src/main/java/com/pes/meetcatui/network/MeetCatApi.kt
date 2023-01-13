@@ -1,9 +1,11 @@
 package com.pes.meetcatui.network
 
-import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
-import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
 import com.pes.meetcatui.feature_user.domain.UserToken
 import com.pes.meetcatui.network.Friendships.FriendshipData
+import com.pes.meetcatui.network.chat.ChatData
+import com.pes.meetcatui.network.chat.ChatFriendshipData
+import com.pes.meetcatui.network.chat.GetChatData
+import com.pes.meetcatui.network.chat.MessageData
 import com.pes.meetcatui.network.green_wheel.BikeData
 import com.pes.meetcatui.network.green_wheel.ChargerData
 import retrofit2.Response
@@ -74,6 +76,32 @@ interface MeetCatApi {
 
     @DELETE("friendship")
     suspend fun removeFriend(@Query("friendId") friendId: String, @Header("Authorization") accessToken : String): Response<FriendshipData>
+
+    @GET("chat/username")
+    suspend fun getChatsByUser(@Header("Authorization") accessToken : String): Response<List<GetChatData>>
+
+    @GET("chat")
+    suspend fun getChatByFriendship(@Query("friendshipId") friendshipId: Long, @Header("Authorization") accessToken : String): Response<ChatFriendshipData>
+
+    @GET("message")
+    suspend fun getMessagesByChat(
+        @Query("chatId") chatId: Long,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Header("Authorization") accessToken : String
+    ): Response<List<MessageData>>
+
+    @POST("message")
+    suspend fun postMessage(
+        @Body message: MessageData,
+        @Header("Authorization") accessToken : String
+    ): Response<List<GetChatData>>
+
+    @POST("chat")
+    suspend fun insertChat(
+        @Body chat: ChatData,
+        @Header("Authorization") accessToken : String
+    ): Response<List<GetChatData>>
     suspend fun getUser(@Query("username") username : String): Response<UserData>
 
     @DELETE("users/{id}")

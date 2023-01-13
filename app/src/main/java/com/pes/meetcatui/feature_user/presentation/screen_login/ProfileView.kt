@@ -67,6 +67,11 @@ fun ProfileScreen(viewModel: ProfileViewModel, navToUserEvents: () -> Unit, navT
 
         , horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row {
+            ComingEvents(navToComingEvents)
+            Spacer(modifier = Modifier.width(235.dp))
+            MyEventsButton(navToUserEvents)
+        }
         ProfileImage()
 
         Row(
@@ -94,6 +99,8 @@ fun ProfileScreen(viewModel: ProfileViewModel, navToUserEvents: () -> Unit, navT
                 ),
             )
         }
+
+
         
         Row(
             modifier = Modifier
@@ -124,11 +131,7 @@ fun ProfileScreen(viewModel: ProfileViewModel, navToUserEvents: () -> Unit, navT
             )
         }
 
-        Row {
-            ComingEvents(navToComingEvents)
-            Spacer(modifier = Modifier.width(235.dp))
-            MyEventsButton(navToUserEvents)
-        }
+
 
         SpaceDp()
 

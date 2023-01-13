@@ -319,7 +319,6 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
             //.fillMaxWidth()
             .scale(scaleX = 1f, scaleY = 1f),
         shape = RoundedCornerShape(28.dp),
-        enabled = !liked,
         // contentPadding = PaddingValues(15.dp),
         // border = BorderStroke(1.dp, Color.Gray)
     ) {
@@ -363,7 +362,6 @@ fun LikeButtons(viewModel: EventListViewModel, eventId: Long) {
             //.fillMaxWidth()
             .scale(scaleX = 1f, scaleY = 1f),
         shape = RoundedCornerShape(28.dp),
-        enabled = !disliked,
         // contentPadding = PaddingValues(15.dp),
         // border = BorderStroke(1.dp, Color.Gray)
     ) {

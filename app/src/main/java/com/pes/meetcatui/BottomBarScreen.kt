@@ -24,6 +24,11 @@ sealed class BottomBarScreen (
         title = "Events",
         icon = Icons.Default.Menu
     )
+    object ReportedEvents: BottomBarScreen (
+        route = "reportedEvents",
+        title = "ReportedEvents",
+        icon = Icons.Default.Create
+    )
     object CreateEvent: BottomBarScreen (
         route = "create_events",
         title = "CreateEvent",
@@ -43,6 +48,21 @@ sealed class BottomBarScreen (
         route = "login",
         title = "Login",
         icon = Icons.Default.Create
+    )
+    object UserSearch: BottomBarScreen(
+        route = "user_search",
+        title = "UserSearch",
+        icon = Icons.Default.MailOutline
+    )
+    object Chats: BottomBarScreen(
+        route = "chats",
+        title = "Chats",
+        icon = Icons.Default.MailOutline
+    )
+    object FriendsList: BottomBarScreen(
+        route = "friends_list",
+        title = "FriendsList",
+        icon = Icons.Default.MailOutline
     )
     object MyEvents: BottomBarScreen(
         route = "myEvents",

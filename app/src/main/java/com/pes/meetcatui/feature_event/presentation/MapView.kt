@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
@@ -56,7 +55,8 @@ fun MapScreen(
     globalEvent: MutableState<Event?>,
     navToEventList: () -> Unit,
     navToEditEvent: () -> Unit,
-    fusedLocationClient: FusedLocationProviderClient
+    fusedLocationClient: FusedLocationProviderClient,
+    navToReportedEvents: () -> Unit
 ) {
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -65,6 +65,7 @@ fun MapScreen(
     val bikes by viewModel.bikes
     val mapState by viewModel.mapState
     val attendance by viewModel.attendance
+    val isAdmin by viewModel.isAdmin
 
     val distanceFilter = remember { mutableStateOf(1) }
 
@@ -93,6 +94,11 @@ fun MapScreen(
                     navToEventList.switchViewButton(
                         icon = Icons.Filled.List,
                     )
+                    Row() {
+                        AnimatedVisibility(visible = isAdmin) {
+                            navToReportedEvents.switchViewButton(icon = Icons.Filled.List)
+                        }
+                    }
                 }
             }
 
@@ -274,8 +280,8 @@ private fun Map(
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                charger.longitude!!.toDouble(),
-                                charger.latitude!!.toDouble()
+                                charger.latitude!!.toDouble(),
+                                charger.longitude!!.toDouble()
                             )
                         ),
                         onClick = {
@@ -294,8 +300,8 @@ private fun Map(
                     Marker(
                         state = MarkerState(
                             position = LatLng(
-                                bike.longitude!!.toDouble(),
-                                bike.latitude!!.toDouble()
+                                bike.latitude!!.toDouble(),
+                                bike.longitude!!.toDouble()
                             )
                         ),
                         onClick = {
@@ -384,13 +390,14 @@ fun EventDisplay(
 ) {
     EventDetails(
         event = event,
+        globalEvent = globalEvent,
         attendance = attendance,
         getIsUsers = getIsUsers,
         onClickJoin = onClickJoin,
         onClickLeave = onClickUnjoin,
         deleteEvent = deleteEvent,
-        globalEvent = globalEvent,
         navToEdit = navToEdit,
+        admin = false,
     )
     BackHandlerMap() {
         navBack()

@@ -142,6 +142,7 @@ fun BottomBar(
     val screens = listOf(
         BottomBarScreen.Map,
         BottomBarScreen.CreateEvent,
+        BottomBarScreen.Chats,
         BottomBarScreen.Profile,
     )
 

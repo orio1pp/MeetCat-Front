@@ -320,7 +320,20 @@ class DataRepositoryImpl(
         }
     }
 
-    override suspend fun likeEvent(eventId: Long) : String{
+    override suspend fun unreportEvent(event: Event): String {
+        try {
+            meetcatApi.unreportEvent(event.eventId);
+            return ("Api is successful")
+        } catch (e: IOException) {
+            return ("IO Exception: ${e.message}")
+        } catch (e: TimeoutException) {
+            return ("Timeout Exception: ${e.message}")
+        } catch (e: HttpException) {
+            return ("Http Exception: ${e.message}")
+        }
+    }
+
+    override suspend fun likeEvent(eventId: Long, username: String) : String{
         try {
             var accessToken = "Bearer "
             runBlocking(Dispatchers.IO) {
@@ -464,6 +477,35 @@ class DataRepositoryImpl(
         } catch (e: HttpException) {
             emit(Resource.Error("Http Exception: ${e.message}"))
         }
+    }
+
+    override fun getAdminStatus(): Flow<Resource<Boolean>>  = flow {
+        try {
+            emit(Resource.Loading())
+            var accessToken: String = "Bearer "
+            var username: String
+            runBlocking(Dispatchers.IO) {
+                accessToken += dataPreferences.getAccessToken().first()
+                username = dataPreferences.getUser().first()
+            }
+            val apiResponse = meetcatApi.getUser(username, accessToken).body()
+            val result = apiResponse
+            if (result != null) {
+                for (role: RoleData in result.roles) {
+                    println(role.name)
+                    if (role.name.equals("admin"))
+                        emit(Resource.Success(true))
+                }
+            }
+            emit(Resource.Success(false))
+        } catch (e: IOException) {
+            emit(Resource.Error("IO Exception: ${e.message}"))
+        } catch (e: TimeoutException) {
+            emit(Resource.Error("Timeout Exception: ${e.message}"))
+        } catch (e: HttpException) {
+            emit(Resource.Error("Http Exception: ${e.message}"))
+        }
+
     }
 
     /*

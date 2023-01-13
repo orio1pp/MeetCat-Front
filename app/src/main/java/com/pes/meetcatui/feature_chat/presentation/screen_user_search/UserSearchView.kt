@@ -1,4 +1,4 @@
-package com.pes.meetcatui.feature_chat.presentation.screen_friend_search
+package com.pes.meetcatui.feature_chat.presentation.screen_user_search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,39 +14,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.pes.meetcatui.commons.presentation.Navigation
+import com.pes.meetcatui.common.ScreenSelector
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.WarningText
 import com.pes.meetcatui.ui.theme.*
 
 @Composable
-fun FriendSearchScreen(
-    viewModel: FriendSearchViewModel
+fun UserSearchScreen(
+    viewModel: UserSearchViewModel,
+    navToChats: () -> Unit,
+    navToUserSearch: () -> Unit,
+    navToFriendsList: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Background,
     ) {
         Row(
-            modifier = Modifier.height(80.dp),
+            modifier = Modifier
+                .height(80.dp),
+        ) {
+            ScreenSelector(navToChats, navToUserSearch, navToFriendsList)
+        }
+        Row(
+            modifier = Modifier
+                .height(80.dp)
+                .padding(top = 80.dp),
             verticalAlignment = Alignment.Top,
         ) {
             SearchBar(viewModel)
         }
-        Row(
-            modifier = Modifier
-                .height(60.dp)
-                .padding(top = 80.dp),
-        ) {
-            ScreenSelector()
-        }
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 140.dp),
+                .padding(top = 160.dp),
         ) {
             item {
                 for (user in viewModel.results.value) {
@@ -70,18 +72,12 @@ fun FriendSearchScreen(
         ) {
             WarningText(text = viewModel.warning.value)
         }
-        Row(
-            modifier = Modifier.fillMaxHeight(0.2F),
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Navigation(section = "chat")
-        }
     }
 }
 
 @Composable
 fun SearchBar(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     Column(
         modifier = Modifier
@@ -147,7 +143,7 @@ fun UserBox(
     name: String,
     about: String?,
     isFriend: Boolean,
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     Box(
         modifier = Modifier
@@ -203,7 +199,7 @@ fun UserBox(
 
 @Composable
 fun AddFriendButton(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     IconButton(
         modifier = Modifier
@@ -222,7 +218,7 @@ fun AddFriendButton(
 
 @Composable
 fun RemoveFriendButton(
-    viewModel: FriendSearchViewModel
+    viewModel: UserSearchViewModel
 ) {
     IconButton(
         modifier = Modifier
@@ -235,78 +231,6 @@ fun RemoveFriendButton(
             contentDescription = "",
             tint = Color.White,
             modifier = Modifier.fillMaxSize()
-        )
-    }
-}
-
-@Composable
-fun ScreenSelector() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Background, shape = RectangleShape)
-            .padding(horizontal = 0.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(color = Background_alt, shape = RectangleShape)
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Chats", Icons.Filled.Email)
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Search", Icons.Filled.Search)
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                FriendNavigationButton("Friends", Icons.Filled.Person)
-            }
-        }
-    }
-}
-
-@Composable
-fun FriendNavigationButton(
-    text: String,
-    icon: ImageVector
-) {
-    TextButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 6.dp)
-            .background(color = Background, shape = CircleShape)
-            .border(1.dp, Gray, CircleShape),
-        onClick = { },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.White.copy(
-                alpha = 0F,
-            )
-        )
-    ) {
-        Icon(
-            icon,
-            contentDescription = "",
-            tint = Gray,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 4.dp),
-            text = text,
-            color = Color.Black,
-            style = typo.body1
         )
     }
 }

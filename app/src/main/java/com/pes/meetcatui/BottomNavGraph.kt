@@ -6,12 +6,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.pes.meetcatui.feature_chat.presentation.screen_chat_list.ChatListScreen
+import com.pes.meetcatui.feature_chat.presentation.screen_friend_list.FriendsListScreen
+import com.pes.meetcatui.feature_chat.presentation.screen_user_search.UserSearchScreen
 import com.pes.meetcatui.feature_event.domain.Event
 import com.pes.meetcatui.feature_event.presentation.CreateOrEditEventView
 import com.pes.meetcatui.feature_event.presentation.EventListScreen
 import com.pes.meetcatui.feature_event.presentation.MapScreen
 import com.pes.meetcatui.feature_event.presentation.user_events.EventListScreenAttending
 import com.pes.meetcatui.feature_event.presentation.user_events.EventListScreenOwn
+import com.pes.meetcatui.feature_event.presentation.admin_only.ReportedEventsListScreen
 import com.pes.meetcatui.feature_user.presentation.register_screen.RegisterScreen
 import com.pes.meetcatui.feature_user.presentation.screen_normal_login.NormalLoginScreen
 import org.koin.androidx.compose.getViewModel
@@ -90,6 +94,7 @@ fun BottomNavGraph(
                 globalEvent = globalEvent,
                 navToEditEvent = { navController.navigate(BottomBarScreen.EditEvent.route) },
                 navToEventList = { navController.navigate(BottomBarScreen.Events.route) },
+                navToReportedEvents = { navController.navigate(BottomBarScreen.ReportedEvents.route)},
                 fusedLocationClient = fusedLocationClient
             )
         }
@@ -103,6 +108,35 @@ fun BottomNavGraph(
         }
         composable(BottomBarScreen.Register.route) {
             RegisterScreen(getViewModel())
+        }
+        composable(BottomBarScreen.ReportedEvents.route) {
+            ReportedEventsListScreen(viewModel = getViewModel(), navToMap = {
+                navController.navigate(BottomBarScreen.Map.route)
+            })
+        }
+        composable(BottomBarScreen.UserSearch.route) {
+            UserSearchScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
+        }
+        composable(BottomBarScreen.Chats.route) {
+            ChatListScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
+        }
+        composable(BottomBarScreen.FriendsList.route) {
+            FriendsListScreen(
+                getViewModel(),
+                navToChats = { navController.navigate(BottomBarScreen.Chats.route) },
+                navToUserSearch = { navController.navigate(BottomBarScreen.UserSearch.route) },
+                navToFriendsList = { navController.navigate(BottomBarScreen.FriendsList.route) },
+            )
         }
     }
 }

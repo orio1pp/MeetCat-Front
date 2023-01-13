@@ -150,12 +150,7 @@ class DataRepositoryUsersImpl(
     }
 
     suspend fun downloadData() {
-        /*descarreguem dades que necessitem*/
-        dataPreferences.setToken(
-            UserToken(
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiQGdtYWlsLmNvbSIsInJvbGVzIjpbXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2xvZ2luIiwiZXhwIjoxNjcwNjc1NzcxfQ.J2CiKF6o7oCs86OpFxaV6KcNirI7nlCABdJzIlTeGFc",
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhQGdtYWlsLmNvbSIsImlzcyI6Imh0dHA6Ly8xMC40LjQxLjQ5OjgwODAvbG9naW4iLCJleHAiOjE2NzA1MjExNDh9.Z622pp9XOYiXkc4MwkbtvvUxKvhjd-AIrsyp_SPfeio"
-            )
-        )
+        val token = meetCatApi.login("a@gmail.com", "a").body()
+        dataPreferences.setToken(token!!)
     }
 }

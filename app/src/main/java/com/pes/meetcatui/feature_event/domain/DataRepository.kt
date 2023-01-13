@@ -3,6 +3,7 @@ package com.pes.meetcatui.feature_event.domain
 import com.pes.meetcatui.common.Resource
 import com.pes.meetcatui.feature_event.domain.green_wheel_api.Bike
 import com.pes.meetcatui.feature_event.domain.green_wheel_api.Charger
+import com.pes.meetcatui.network.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
@@ -15,6 +16,7 @@ interface DataRepository {
     suspend fun createEvent(event:Event): String
     suspend fun updateEvent(event:Event): String
     suspend fun reportEvent(event: Event): String
+    suspend fun unreportEvent(event: Event): String
     fun getNearestEvents(latitude: Double,longitude: Double,distance: Double): Flow<Resource<EventPage>>
     fun getAttendance(eventId: Long): Flow<Resource<Boolean>>
     suspend fun createAttendance(eventId: Long): Flow<Resource<Long>>
@@ -27,6 +29,10 @@ interface DataRepository {
     fun getDisliked(eventId: Long): Flow<Resource<Boolean>>
     fun getNearestChargers(latitude: Double, longitude: Double, distance: Double): Flow<Resource<List<Charger>>>
     fun getNearestBikes(latitude: Double, longitude: Double, distance: Double): Flow<Resource<List<Bike>>>
-    //suspend fun downloadData()
+    fun getAdminStatus(): Flow<Resource<Boolean>>
+
+
 }
+    //suspend fun downloadData()
+
 

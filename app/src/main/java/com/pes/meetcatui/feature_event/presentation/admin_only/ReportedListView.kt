@@ -32,10 +32,11 @@ fun ReportedEventsListScreen(
             onClickLeave = {
                 viewModel.deleteAttendance(eventList.eventDetailsSelected!!.eventId)
             },
-            reportEvent = {viewModel.reportEvent(eventList.eventDetailsSelected!!)},
-            deleteEvent = {},
+            reportEvent = {viewModel.unreportEvent(eventList.eventDetailsSelected!!)},
+            deleteEvent = {viewModel.deleteEvent(eventList.eventDetailsSelected!!.eventId)},
             globalEvent = mutableStateOf(null),
             navToEditEvent = {},
+            admin = true,
         )
         BackHandler { viewModel.setNotSelected() }
     } else {

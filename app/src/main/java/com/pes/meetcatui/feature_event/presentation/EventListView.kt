@@ -1,6 +1,5 @@
 package com.pes.meetcatui.feature_event.presentation
 
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.border
@@ -76,9 +75,8 @@ fun EventListScreen(
                 viewModel.deleteEvent(eventList.eventDetailsSelected!!.eventId)
             },
             globalEvent = globalEvent,
-            navToEditEvent = navToEditEvent,
-
-            )
+            navToEditEvent = navToEditEvent
+        )
         BackHandler { viewModel.setNotSelected() }
     } else {
         EventListScreenContent(
@@ -169,6 +167,7 @@ fun EventDetailsScreen(
     deleteEvent: () -> Unit,
     globalEvent: MutableState<Event?>,
     navToEditEvent: () -> Unit,
+    admin: Boolean = false
 ) {
     val openDialog = remember { mutableStateOf(false) }
 
@@ -190,6 +189,7 @@ fun EventDetailsScreen(
                 deleteEvent = deleteEvent,
                 navToEdit = navToEditEvent,
                 globalEvent = globalEvent,
+                admin = admin
             )
         }
     }

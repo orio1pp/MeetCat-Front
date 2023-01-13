@@ -2,6 +2,7 @@ package com.pes.meetcatui.feature_event.presentation
 
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,18 +10,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,6 +47,7 @@ fun EventDetails(
     onClickLeave: () -> Unit,
     deleteEvent: () -> Unit,
     navToEdit: () -> Unit,
+    admin:Boolean = false
 ) {
     EventDetailsContent(
         event = event,
@@ -67,7 +68,10 @@ fun EventDetails(
         deleteEvent = deleteEvent,
         globalEvent = globalEvent,
         navToEdit = navToEdit,
+        admin = admin
     )
+
+
 }
 
 @Composable
@@ -171,6 +175,7 @@ private fun EventDetailsContent(
     deleteEvent: () -> Unit,
     globalEvent: MutableState<Event?>,
     navToEdit: () -> Unit,
+    admin: Boolean = false
 ) {
     val attendeesCountState = mutableStateOf(attendeesCount)
     MaterialTheme {
@@ -298,6 +303,39 @@ private fun EventDetailsContent(
                                 Text(text = stringResource(id = R.string.edit))
                             }
                         }
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            Button(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(32.dp))
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0x40940000),
+                                        shape = RoundedCornerShape(32.dp)
+                                    )
+                                    .width(90.dp)
+                                    .height(40.dp),
+                                onClick = deleteEvent,
+                                shape = RoundedCornerShape(32.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0x81FF2A2A),
+                                    contentColor = Color(0xFFEEEEEE)
+                                )
+                            ) {
+                                Text(stringResource(id = R.string.delete))
+                            }
+                        }
+                    }
+                }
+                else if (admin == true)
+                {
+                    SpaceDp()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
                         Column(
                             modifier = Modifier.fillMaxWidth(1f),
                             horizontalAlignment = Alignment.End,

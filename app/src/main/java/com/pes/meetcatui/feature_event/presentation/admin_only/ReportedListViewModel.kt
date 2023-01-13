@@ -11,25 +11,29 @@ import kotlinx.coroutines.launch
 class ReportedListViewModel (override val dataRepository: DataRepository) : EventListViewModel(dataRepository) {
     init {
         viewModelScope.launch {
-            dataRepository.getReportedEvents(0, titleSearch.value).collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        events.value = EventScreenState(
-                            data = resource.data?.events as MutableList<Event>,
-                        )
-                        page.value = 1
-                    }
-                    is Resource.Error -> {
-                        events.value = EventScreenState(
-                            hasError = true,
-                            errorMessage = resource.message
-                        )
-                    }
-                    is Resource.Loading -> {
-                        events.value = EventScreenState(
-                            isLoading = true
-                        )
-                    }
+            setData()
+        }
+    }
+
+    override suspend fun setData() {
+        dataRepository.getReportedEvents(0, titleSearch.value).collect { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    events.value = EventScreenState(
+                        data = resource.data?.events as MutableList<Event>,
+                    )
+                    page.value = 1
+                }
+                is Resource.Error -> {
+                    events.value = EventScreenState(
+                        hasError = true,
+                        errorMessage = resource.message
+                    )
+                }
+                is Resource.Loading -> {
+                    events.value = EventScreenState(
+                        isLoading = true
+                    )
                 }
             }
         }
@@ -84,6 +88,13 @@ class ReportedListViewModel (override val dataRepository: DataRepository) : Even
                     }
                 }
             }
+        }
+    }
+
+    fun unreportEvent(event: Event) {
+        viewModelScope.launch {
+            dataRepository.unreportEvent(event)
+            setData()
         }
     }
 }

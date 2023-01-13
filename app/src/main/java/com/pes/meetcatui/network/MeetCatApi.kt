@@ -21,6 +21,9 @@ interface MeetCatApi {
     @PUT("events/{eventId}/report")
     suspend fun reportEvent(@Path("eventId") eventId: Long)
 
+    @PUT("events/{eventId}/unreport")
+    suspend fun unreportEvent(@Path("eventId") eventId: Long)
+
     @DELETE("events/{eventId}")
     suspend fun deleteEvent(@Path("eventId") eventId: Long, @Header("Authorization") accessToken: String): Response<Unit>
 
